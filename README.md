@@ -1,383 +1,204 @@
-# 🌊 Floodzy - Real-time Flood Detection & Weather Monitoring System
+🌊 Floodzy - Real-time Flood Detection & Weather Monitoring System
+<div align="center"> <img src="public/assets/banjir.png" alt="Floodzy Logo" width="200"/> <p align="center"> <strong>Comprehensive flood monitoring, weather tracking, and early warning platform for Indonesia</strong> </p> <p align="center"> <img src="https://img.shields.io/badge/Next.js-13-black?style=for-the-badge&logo=next.js" alt="Next.js"/> <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript" alt="TypeScript"/> <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS"/> <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase" alt="Supabase"/> </p> </div>
+🚀 Overview
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/mattyudha/floodzy/main/public/images/floodzy-logo.png" alt="Floodzy Logo" width="200"/>
-  
-  <p align="center">
-    <strong>Advanced flood detection and weather monitoring platform for Indonesia</strong>
-  </p>
-  
-  <p align="center">
-    <img src="https://img.shields.io/badge/Next.js-13-black?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js"/>
-    <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript"/>
-    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"/>
-    <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase"/>
-  </p>
-  
-  <p align="center">
-    <a href="#-features">Features</a> •
-    <a href="#-quick-start">Quick Start</a> •
-    <a href="#-documentation">Documentation</a> •
-    <a href="#-contributing">Contributing</a> •
-    <a href="#-license">License</a>
-  </p>
-</div>
+Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang memanfaatkan teknologi modern seperti Next.js, TypeScript, Tailwind CSS, dan Supabase.
+Platform ini menyediakan data ketinggian air, status pompa, prakiraan cuaca, analisis bencana, dan peta interaktif untuk mendukung mitigasi bencana di Indonesia.
 
----
+✨ Features
+🗺️ Mapping & Visualization
 
-## 🚀 Overview
+Peta interaktif berbasis Leaflet dengan marker sensor.
 
-Floodzy is a cutting-edge platform designed to provide real-time flood detection and weather monitoring across Indonesia. Built with modern web technologies, it offers an intuitive interface and integrated data sources to help communities, authorities, and organizations make informed decisions for disaster mitigation.
+Layer banjir, cuaca, dan titik evakuasi.
 
-### 🎯 Mission
+Map legend dan kontrol interaktif.
 
-To create a comprehensive, accessible, and reliable flood monitoring system that empowers communities with real-time information for better disaster preparedness and response.
+🌡️ Weather & Flood Data
 
----
+Data cuaca real-time (temperatur, kelembapan, kecepatan angin).
 
-## ✨ Features
+Integrasi OpenWeatherMap.
 
-### 🗺️ **Interactive Mapping**
+Riwayat cuaca & banjir.
 
-- Real-time flood risk visualization using Leaflet
-- Weather station and water level monitoring points
-- Responsive map controls with custom markers
+🚨 Alerts & Analysis
 
-### 🌡️ **Weather Monitoring**
+Peringatan bencana dengan sumber data terintegrasi.
 
-- Live weather data (temperature, humidity, wind speed)
-- Integration with OpenWeatherMap API
-- Location-specific weather forecasts
+Analisis bencana otomatis menggunakan Gemini API.
 
-### 🚨 **Flood Detection & Alerts**
+Ringkasan berita bencana.
 
-- Early warning system based on integrated data sources
-- Real-time flood risk assessment
-- Automated alert notifications
+📍 Region & Evacuation
 
-### 📍 **Region Selection**
+Pilihan wilayah hingga tingkat kota/kecamatan.
 
-- Granular location selection (Province → Regency/City → District)
-- Localized data display
-- Regional-specific monitoring
+Informasi jalur & titik evakuasi.
 
-### 🔧 **Infrastructure Monitoring**
+💬 User Interaction
 
-- Flood pump status tracking
-- Water level monitoring stations
-- Equipment operational status
+Laporan banjir langsung dari pengguna.
 
-### 📱 **Modern UI/UX**
+Chatbot informasi banjir & cuaca.
 
-- Responsive design for all devices
-- Smooth animations with Framer Motion
-- Dark/light theme support
-- Intuitive dashboard interface
+🛠 Developer Friendly
 
----
+API publik (/api) untuk integrasi data.
 
-## 🛠️ Tech Stack
+Custom hooks untuk pengelolaan state & UI.
 
-<table>
-  <tr>
-    <td align="center"><strong>Frontend</strong></td>
-    <td align="center"><strong>Backend</strong></td>
-    <td align="center"><strong>Database</strong></td>
-    <td align="center"><strong>APIs</strong></td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="https://nextjs.org/static/favicon/favicon-32x32.png" width="20"/> Next.js 13<br/>
-      <img src="https://www.typescriptlang.org/favicon-32x32.png" width="20"/> TypeScript<br/>
-      <img src="https://tailwindcss.com/favicon-32x32.png" width="20"/> Tailwind CSS<br/>
-      <img src="https://www.framer.com/favicon-32x32.png" width="20"/> Framer Motion
-    </td>
-    <td align="center">
-      <img src="https://nextjs.org/static/favicon/favicon-32x32.png" width="20"/> Next.js API Routes<br/>
-      <img src="https://supabase.com/favicon/favicon-32x32.png" width="20"/> Supabase<br/>
-      🔧 Custom Hooks<br/>
-      📊 Recharts
-    </td>
-    <td align="center">
-      <img src="https://supabase.com/favicon/favicon-32x32.png" width="20"/> Supabase<br/>
-      🗄️ PostgreSQL<br/>
-      🔄 Real-time subscriptions<br/>
-      🔐 Row Level Security
-    </td>
-    <td align="center">
-      🌤️ OpenWeatherMap<br/>
-      🗺️ Overpass API<br/>
-      🏛️ PUPR/Sihka/GEO API<br/>
-      📡 Custom APIs
-    </td>
-  </tr>
-</table>
 
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Node.js** (v16.14.0 or higher, v18+ recommended)
-- **npm** or **yarn**
-- **OpenWeatherMap API key**
-- **Supabase project**
-
-### Installation
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/mattyudha/floodzy.git
-   cd floodzy
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
-
-3. **Environment setup**
-
-   Create a `.env.local` file in the root directory:
-
-   ```env
-   # Supabase Configuration
-   NEXT_PUBLIC_SUPABASE_URL="your_supabase_project_url"
-   NEXT_PUBLIC_SUPABASE_ANON_KEY="your_supabase_anon_key"
-   SUPABASE_SERVICE_ROLE_KEY="your_service_role_key"
-
-   # OpenWeatherMap API
-   OPENWEATHER_API_KEY="your_openweathermap_api_key"
-
-   # Optional: Mapbox (if using Mapbox features)
-   NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN="your_mapbox_token"
-   ```
-
-4. **Start development server**
-
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
-
-5. **Open your browser**
-
-   Navigate to `http://localhost:3000`
-
-### 🎯 Getting API Keys
-
-- **OpenWeatherMap**: Sign up at [openweathermap.org](https://openweathermap.org/api)
-- **Supabase**: Create a project at [supabase.com](https://supabase.com)
-
----
-
-## 📁 Project Structure
-
-```
 floodzy/
-├── 📁 app/
-│   ├── 📁 api/              # API routes (regional, water-level, pump-status)
-│   ├── 📄 globals.css       # Global styles & Tailwind configuration
-│   ├── 📄 layout.tsx        # Main application layout
-│   └── 📄 page.tsx          # Homepage dashboard
-├── 📁 components/
-│   ├── 📁 dashboard/        # Dashboard statistics components
-│   ├── 📁 flood/            # Flood warning components
-│   ├── 📁 layout/           # Header & sidebar components
-│   ├── 📁 map/              # Interactive map components
-│   ├── 📁 region-selector/  # Region selection dropdown
-│   ├── 📁 ui/               # Shadcn/ui components
-│   └── 📁 weather/          # Weather display components
-├── 📁 hooks/                # Custom React hooks
-├── 📁 lib/                  # Utilities & API services
-├── 📁 public/               # Static assets
-├── 📁 types/                # TypeScript type definitions
-└── 📄 Configuration files
-```
+├── app/                 # Halaman utama & API Routes
+│   ├── api/             # Endpoint API
+│   │   ├── analysis/route.ts               # Analisis bencana
+│   │   ├── alerts-data/route.ts            # Data peringatan
+│   │   ├── chatbot/route.ts                # Chatbot banjir
+│   │   ├── evakuasi/route.ts               # Titik evakuasi
+│   │   ├── gemini-alerts/route.ts          # Peringatan berbasis AI
+│   │   ├── gemini-analysis/route.ts        # Analisis bencana AI
+│   │   ├── laporan/route.ts                # Laporan banjir pengguna
+│   │   ├── pump-status-proxy/route.ts      # Status pompa banjir
+│   │   ├── regions/route.ts                # Data wilayah
+│   │   ├── summarize-news-batch/route.ts   # Ringkasan berita
+│   │   ├── water-level-proxy/route.ts      # Data ketinggian air
+│   │   ├── weather/route.ts                # Cuaca saat ini
+│   │   ├── weather-history/route.ts        # Riwayat cuaca
+│   │   └── ...
+│   ├── peta-banjir/page.tsx                # Halaman peta banjir
+│   ├── lapor-banjir/page.tsx               # Form laporan banjir
+│   ├── prakiraan-cuaca/page.tsx            # Prakiraan cuaca
+│   ├── statistika/page.tsx                 # Statistik banjir
+│   └── ...
+├── components/          # Komponen UI & modul
+│   ├── dashboard/       # Statistik & analisis
+│   ├── flood/           # Kartu & alert banjir
+│   ├── map/             # Komponen peta
+│   ├── weather/         # Tampilan data cuaca
+│   ├── ui/              # Shadcn/UI reusable components
+│   └── ...
+├── hooks/               # Custom React Hooks
+│   ├── useAirPollutionData.ts
+│   ├── useBmkgQuakeData.ts
+│   ├── useDisasterData.ts
+│   ├── usePumpStatusData.ts
+│   ├── useRegionData.ts
+│   └── ...
+├── lib/                 # Utility & service API
+│   ├── supabase/        # Client & server Supabase
+│   ├── api.client.ts
+│   ├── api.server.ts
+│   ├── geocodingService.ts
+│   └── ...
+├── public/              # Aset publik (gambar, ikon)
+├── types/               # Definisi TypeScript types
+└── ...
 
----
 
-## 🎨 Usage
+| Endpoint                 | Deskripsi                              | Parameter            |
+| ------------------------ | -------------------------------------- | -------------------- |
+| `/api/analysis`          | Analisis data bencana berbasis AI      | -                    |
+| `/api/alerts-data`       | Data peringatan bencana                | -                    |
+| `/api/chatbot`           | Chatbot informasi banjir & cuaca       | `message`            |
+| `/api/evakuasi`          | Titik evakuasi terdekat                | `regionId`           |
+| `/api/gemini-alerts`     | Peringatan otomatis berbasis Gemini AI | -                    |
+| `/api/gemini-analysis`   | Analisis mendalam banjir berbasis AI   | -                    |
+| `/api/laporan`           | Laporan banjir pengguna                | `location`, `status` |
+| `/api/pump-status-proxy` | Status pompa banjir                    | `pumpId`             |
+| `/api/regions`           | Daftar wilayah monitoring              | -                    |
+| `/api/water-level-proxy` | Ketinggian air                         | `stationId`          |
+| `/api/weather`           | Cuaca terkini                          | `lat`, `lon`         |
+| `/api/weather-history`   | Riwayat cuaca                          | `regionId`           |
 
-### Basic Usage
 
-1. **Select Location**: Use the region dropdown to choose your area of interest
-2. **View Map**: Interactive map shows flood-prone areas and monitoring stations
-3. **Monitor Weather**: Real-time weather data for selected locations
-4. **Check Alerts**: View flood warnings and pump status updates
+🪝 Custom Hooks
 
-### Advanced Features
+useRegionData → Data wilayah & monitoring.
 
-- **Custom Regions**: Add your own monitoring points
-- **Historical Data**: Access past flood and weather records
-- **API Integration**: Connect with external monitoring systems
+usePumpStatusData → Status pompa banjir.
 
----
+useWaterLevelData → Data ketinggian air.
 
-## 🤝 Contributing
+useAirPollutionData → Data kualitas udara.
 
-We welcome contributions from the community! Here's how you can help:
+useBmkgQuakeData → Data gempa dari BMKG.
 
-### Development Process
+useDisasterData → Data bencana umum.
 
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
+useTheme → Manajemen tema UI.
 
-### Contribution Guidelines
+useDebounce → Input debouncing.
 
-- Follow the existing code style
-- Write clear commit messages
-- Add tests for new features
-- Update documentation as needed
+use-toast → Notifikasi toast.
 
-### Code Style
+💻 Usage
+Basic
 
-- Use TypeScript for type safety
-- Follow ESLint configuration
-- Use Prettier for code formatting
-- Write meaningful variable names
+Jalankan npm run dev
 
----
+Buka http://localhost:3000
 
-## 📖 Documentation
+Pilih wilayah di dropdown/map.
 
-### API Documentation
+Lihat data banjir, cuaca, dan analisis.
 
-- **Regional Data API**: `/api/regional-data`
-- **Water Level API**: `/api/water-level`
-- **Pump Status API**: `/api/pump-status`
-- **Weather API**: `/api/weather`
+Advanced
 
-### Custom Hooks
+Kirim laporan banjir via menu Lapor Banjir.
 
-- `useRegionData`: Manage regional data state
-- `useMediaQuery`: Handle responsive design
-- `useTheme`: Theme management
-- `useDebounce`: Debounced input handling
-- `useToast`: Toast notifications
+Gunakan chatbot untuk informasi cepat.
 
-### Components
+Lihat analisis bencana di dashboard.
 
-Detailed component documentation available in the `/docs` directory.
+🔧 Configuration
 
----
+Buat file .env.local:
 
-## 🔧 Configuration
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+OPENWEATHER_API_KEY=...
+NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=...
 
-### Environment Variables
+📊 Performance
 
-| Variable                          | Description               | Required |
-| --------------------------------- | ------------------------- | -------- |
-| `NEXT_PUBLIC_SUPABASE_URL`        | Supabase project URL      | Yes      |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY`   | Supabase anonymous key    | Yes      |
-| `SUPABASE_SERVICE_ROLE_KEY`       | Supabase service role key | Yes      |
-| `OPENWEATHER_API_KEY`             | OpenWeatherMap API key    | Yes      |
-| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Mapbox access token       | Optional |
+Lighthouse Score: 95+
 
-### Deployment
+FCP: < 1.5s
 
-The app is optimized for deployment on:
+TTI: < 3s
 
-- **Vercel** (recommended)
-- **Netlify**
-- **AWS Amplify**
-- **Custom VPS**
+🛡️ Security
 
----
+Supabase Row Level Security (RLS)
 
-## 📊 Performance
+Validasi input di server
 
-- **Lighthouse Score**: 95+ for Performance, Accessibility, Best Practices
-- **First Contentful Paint**: < 1.5s
-- **Time to Interactive**: < 3s
-- **Mobile Optimized**: Responsive design for all devices
+API key aman di environment variables
 
----
+🌟 Roadmap
 
-## 🛡️ Security
+ Monitoring banjir dasar
 
-- **Environment Variables**: Secure API key management
-- **Row Level Security**: Supabase RLS policies
-- **Input Validation**: Comprehensive data validation
-- **CORS Configuration**: Proper cross-origin resource sharing
+ Integrasi cuaca & peta
 
----
+ Aplikasi mobile
 
-## 🌟 Roadmap
+ Prediksi AI banjir
 
-### Phase 1 (Current)
+ IoT sensor
 
-- [x] Basic flood monitoring
-- [x] Weather integration
-- [x] Interactive mapping
-- [x] Region selection
+ Laporan komunitas
 
-### Phase 2 (Next)
+🎉 Acknowledgments
 
-- [ ] Mobile app development
-- [ ] Advanced analytics
-- [ ] Machine learning predictions
-- [ ] Multi-language support
+OpenWeatherMap
 
-### Phase 3 (Future)
+Supabase
 
-- [ ] Satellite imagery integration
-- [ ] IoT sensor network
-- [ ] Community reporting system
-- [ ] Emergency response integration
+Leaflet
 
----
+BMKG
 
-## 🎉 Acknowledgments
-
-- **OpenWeatherMap** for weather data API
-- **Supabase** for backend infrastructure
-- **Leaflet** for interactive mapping
-- **Next.js** team for the amazing framework
-- **Indonesian Ministry of Public Works** for flood data
-
----
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/mattyudha/floodzy/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/mattyudha/floodzy/discussions)
-- **Email**: dewarahmat12334@gmail.com
-
----
-
-MIT License
-
-Copyright (c) 2025 Matt
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Kementerian PUPR
