@@ -1,54 +1,61 @@
-🌊 Floodzy - Real-time Flood Detection & Weather Monitoring System
-<div align="center"> <img src="public/assets/banjir.png" alt="Floodzy Logo" width="200"/> <p align="center"> <strong>Comprehensive flood monitoring, weather tracking, and early warning platform for Indonesia</strong> </p> <p align="center"> <img src="https://img.shields.io/badge/Next.js-13-black?style=for-the-badge&logo=next.js" alt="Next.js"/> <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript" alt="TypeScript"/> <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS"/> <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase" alt="Supabase"/> </p> </div>
-🚀 Overview
+# 🌊 Floodzy - Real-time Flood Detection & Weather Monitoring System
 
-Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang memanfaatkan teknologi modern seperti Next.js, TypeScript, Tailwind CSS, dan Supabase.
+<div align="center">
+  <img src="public/assets/banjir.png" alt="Floodzy Logo" width="200"/>
+  
+  <p align="center">
+    <strong>Comprehensive flood monitoring, weather tracking, and early warning platform for Indonesia</strong>
+  </p>
+  
+  <p align="center">
+    <img src="https://img.shields.io/badge/Next.js-13-black?style=for-the-badge&logo=next.js" alt="Next.js"/>
+    <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript" alt="TypeScript"/>
+    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS"/>
+    <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase" alt="Supabase"/>
+  </p>
+</div>
+
+---
+
+## 🚀 Overview
+Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang memanfaatkan teknologi modern seperti **Next.js**, **TypeScript**, **Tailwind CSS**, dan **Supabase**.  
 Platform ini menyediakan data ketinggian air, status pompa, prakiraan cuaca, analisis bencana, dan peta interaktif untuk mendukung mitigasi bencana di Indonesia.
 
-✨ Features
-🗺️ Mapping & Visualization
+---
 
-Peta interaktif berbasis Leaflet dengan marker sensor.
+## ✨ Features
 
-Layer banjir, cuaca, dan titik evakuasi.
+### 🗺️ Mapping & Visualization
+- Peta interaktif berbasis Leaflet dengan marker sensor.
+- Layer banjir, cuaca, dan titik evakuasi.
+- Map legend dan kontrol interaktif.
 
-Map legend dan kontrol interaktif.
+### 🌡️ Weather & Flood Data
+- Data cuaca real-time (temperatur, kelembapan, kecepatan angin).
+- Integrasi OpenWeatherMap.
+- Riwayat cuaca & banjir.
 
-🌡️ Weather & Flood Data
+### 🚨 Alerts & Analysis
+- Peringatan bencana dengan sumber data terintegrasi.
+- Analisis bencana otomatis menggunakan Gemini API.
+- Ringkasan berita bencana.
 
-Data cuaca real-time (temperatur, kelembapan, kecepatan angin).
+### 📍 Region & Evacuation
+- Pilihan wilayah hingga tingkat kota/kecamatan.
+- Informasi jalur & titik evakuasi.
 
-Integrasi OpenWeatherMap.
+### 💬 User Interaction
+- Laporan banjir langsung dari pengguna.
+- Chatbot informasi banjir & cuaca.
 
-Riwayat cuaca & banjir.
+### 🛠 Developer Friendly
+- API publik (`/api`) untuk integrasi data.
+- Custom hooks untuk pengelolaan state & UI.
 
-🚨 Alerts & Analysis
+---
 
-Peringatan bencana dengan sumber data terintegrasi.
-
-Analisis bencana otomatis menggunakan Gemini API.
-
-Ringkasan berita bencana.
-
-📍 Region & Evacuation
-
-Pilihan wilayah hingga tingkat kota/kecamatan.
-
-Informasi jalur & titik evakuasi.
-
-💬 User Interaction
-
-Laporan banjir langsung dari pengguna.
-
-Chatbot informasi banjir & cuaca.
-
-🛠 Developer Friendly
-
-API publik (/api) untuk integrasi data.
-
-Custom hooks untuk pengelolaan state & UI.
-
-
+## 📁 Project Structure
+```plaintext
 floodzy/
 ├── app/                      # Halaman utama & API Routes
 │   ├── api/                  # Endpoint API
@@ -94,8 +101,6 @@ floodzy/
 ├── public/                  # Aset publik (gambar, ikon)
 ├── types/                   # Definisi TypeScript types
 └── ...
-
-
 | Endpoint                 | Deskripsi                              | Parameter            |
 | ------------------------ | -------------------------------------- | -------------------- |
 | `/api/analysis`          | Analisis data bencana berbasis AI      | -                    |
@@ -110,8 +115,6 @@ floodzy/
 | `/api/water-level-proxy` | Ketinggian air                         | `stationId`          |
 | `/api/weather`           | Cuaca terkini                          | `lat`, `lon`         |
 | `/api/weather-history`   | Riwayat cuaca                          | `regionId`           |
-
-
 🪝 Custom Hooks
 
 useRegionData → Data wilayah & monitoring.
@@ -133,6 +136,7 @@ useDebounce → Input debouncing.
 use-toast → Notifikasi toast.
 
 💻 Usage
+
 Basic
 
 Jalankan npm run dev
@@ -202,3 +206,7 @@ Leaflet
 BMKG
 
 Kementerian PUPR
+
+
+Kalau kamu paste ke GitHub, semua tabel, pohon folder, dan elemen HTML di atas akan tampil rapi.  
+Mau aku sekalian tambahkan **screenshot UI** biar README kamu makin menarik?
