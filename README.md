@@ -52,9 +52,11 @@ Platform ini menyediakan data ketinggian air, status pompa, prakiraan cuaca, ana
 - API publik (`/api`) untuk integrasi data.
 - Custom hooks untuk pengelolaan state & UI.
 
----
+
+
 
 ## 📁 Project Structure
+
 ```plaintext
 floodzy/
 ├── app/                      # Halaman utama & API Routes
@@ -101,6 +103,8 @@ floodzy/
 ├── public/                  # Aset publik (gambar, ikon)
 ├── types/                   # Definisi TypeScript types
 └── ...
+
+
 | Endpoint                 | Deskripsi                              | Parameter            |
 | ------------------------ | -------------------------------------- | -------------------- |
 | `/api/analysis`          | Analisis data bencana berbasis AI      | -                    |
@@ -115,6 +119,8 @@ floodzy/
 | `/api/water-level-proxy` | Ketinggian air                         | `stationId`          |
 | `/api/weather`           | Cuaca terkini                          | `lat`, `lon`         |
 | `/api/weather-history`   | Riwayat cuaca                          | `regionId`           |
+
+
 🪝 Custom Hooks
 
 useRegionData → Data wilayah & monitoring.
@@ -206,7 +212,3 @@ Leaflet
 BMKG
 
 Kementerian PUPR
-
-
-Kalau kamu paste ke GitHub, semua tabel, pohon folder, dan elemen HTML di atas akan tampil rapi.  
-Mau aku sekalian tambahkan **screenshot UI** biar README kamu makin menarik?
