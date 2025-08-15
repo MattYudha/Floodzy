@@ -190,19 +190,15 @@ Server-side Validation untuk semua input
 
 API Keys disimpan di environment variables
 
-🌟 Roadmap
+## 🌟 Roadmap
 
- Monitoring banjir dasar
+- [x] 🌊 **Monitoring Banjir Dasar** – Peta interaktif & data ketinggian air.
+- [x] 🌦 **Integrasi Cuaca & Peta** – Data cuaca real-time, prakiraan, dan visualisasi.
+- [ ] 📱 **Aplikasi Mobile** – Versi Android & iOS untuk pemantauan di genggaman.
+- [ ] 🤖 **Prediksi AI Banjir** – Analisis risiko banjir berbasis Machine Learning.
+- [ ] 📡 **Integrasi IoT Sensor** – Data real-time dari sensor fisik lapangan.
+- [ ] 🗣 **Laporan Komunitas** – Sistem pelaporan banjir berbasis partisipasi warga.
 
- Integrasi cuaca & peta
-
- Aplikasi mobile
-
- Prediksi AI banjir
-
- IoT sensor integrasi
-
- Laporan komunitas berbasis pengguna
 
 🎉 Acknowledgments
 
