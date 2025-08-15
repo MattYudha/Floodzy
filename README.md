@@ -58,51 +58,103 @@ Platform ini menyediakan data ketinggian air, status pompa, prakiraan cuaca, ana
 
 ```plaintext
 floodzy/
-├── app/                      # Halaman utama & API Routes
-│   ├── api/                  # Endpoint API
-│   │   ├── analysis/route.ts               # Analisis bencana
-│   │   ├── alerts-data/route.ts            # Data peringatan
-│   │   ├── chatbot/route.ts                # Chatbot banjir
-│   │   ├── evakuasi/route.ts               # Titik evakuasi
-│   │   ├── gemini-alerts/route.ts          # Peringatan berbasis AI
-│   │   ├── gemini-analysis/route.ts        # Analisis bencana AI
-│   │   ├── laporan/route.ts                # Laporan banjir pengguna
-│   │   ├── pump-status-proxy/route.ts      # Status pompa banjir
-│   │   ├── regions/route.ts                # Data wilayah
-│   │   ├── summarize-news-batch/route.ts   # Ringkasan berita
-│   │   ├── water-level-proxy/route.ts      # Data ketinggian air
-│   │   ├── weather/route.ts                # Cuaca saat ini
-│   │   ├── weather-history/route.ts        # Riwayat cuaca
-│   │   └── ...
-│   ├── peta-banjir/page.tsx                # Halaman peta banjir
-│   ├── lapor-banjir/page.tsx               # Form laporan banjir
-│   ├── prakiraan-cuaca/page.tsx            # Prakiraan cuaca
-│   ├── statistika/page.tsx                 # Statistik banjir
-│   └── ...
-├── components/              # Komponen UI & modul
-│   ├── dashboard/           # Statistik & analisis
-│   ├── flood/               # Kartu & alert banjir
-│   ├── map/                 # Komponen peta
-│   ├── weather/             # Tampilan data cuaca
-│   ├── ui/                  # Shadcn/UI reusable components
-│   └── ...
-├── hooks/                   # Custom React Hooks
+├── 📂 app/                               # Halaman utama & API Routes (Next.js App Router)
+│   ├── 📂 api/                           # Endpoint API
+│   │   ├── 📂 analysis/route.ts          # Analisis bencana berbasis AI
+│   │   ├── 📂 alerts-data/route.ts       # Data peringatan bencana
+│   │   ├── 📂 chatbot/route.ts           # Chatbot banjir
+│   │   ├── 📂 evakuasi/route.ts          # Titik evakuasi
+│   │   ├── 📂 gemini-alerts/route.ts     # Peringatan AI (Gemini)
+│   │   ├── 📂 gemini-analysis/route.ts   # Analisis AI (Gemini)
+│   │   ├── 📂 health/route.ts            # Health check API
+│   │   ├── 📂 laporan/route.ts           # Laporan banjir pengguna
+│   │   ├── 📂 petabencana-proxy-new/route.ts # Proxy API PetaBencana
+│   │   ├── 📂 pump-status-proxy/route.ts # Status pompa banjir
+│   │   ├── 📂 regions/route.ts           # Data wilayah
+│   │   ├── 📂 summarize-news-batch/route.ts # Ringkasan berita bencana
+│   │   ├── 📂 water-level-proxy/route.ts # Data ketinggian air
+│   │   ├── 📂 weather/                   # Data cuaca
+│   │   │   ├── route.ts                  # Cuaca saat ini
+│   │   │   └── 📂 tiles/[...tile]/route.ts # Tile map cuaca
+│   │   └── 📂 weather-history/route.ts   # Riwayat cuaca
+│   ├── 📄 data-sensor/page.tsx           # Halaman data sensor IoT
+│   ├── 📄 info-evakuasi/page.tsx         # Info titik evakuasi
+│   ├── 📄 lapor-banjir/page.tsx          # Form laporan banjir
+│   ├── 📄 peta-banjir/page.tsx           # Peta banjir interaktif
+│   ├── 📄 peringatan/page.tsx            # Peringatan bencana
+│   ├── 📄 prakiraan-cuaca/page.tsx       # Prakiraan cuaca
+│   ├── 📄 settings/page.tsx              # Pengaturan aplikasi
+│   ├── 📄 statistika/page.tsx            # Statistik banjir
+│   ├── 📄 test/route.ts                  # Endpoint testing
+│   ├── 🎨 globals.css                    # Style global
+│   ├── 📄 layout.tsx                     # Layout utama
+│   ├── 📄 page.tsx                       # Landing page
+│   └── 📄 state.ts                       # State management global
+│
+├── 📂 components/                        # Komponen UI & modul
+│   ├── background/                       # Efek background
+│   ├── contexts/                         # Context API
+│   ├── data-sensor/                      # Komponen analisis data sensor
+│   ├── dashboard/                        # Statistik & analisis
+│   ├── flood/                            # Kartu & alert banjir
+│   ├── layout/                           # Header, Sidebar
+│   ├── map/                              # Peta & kontrol
+│   ├── modals/                           # Modal popup
+│   ├── providers/                        # Provider global
+│   ├── region-selector/                  # Dropdown wilayah
+│   ├── ui/                               # Shadcn/UI reusable components
+│   └── weather/                          # Komponen cuaca
+│
+├── 📂 hooks/                             # Custom React Hooks
 │   ├── useAirPollutionData.ts
 │   ├── useBmkgQuakeData.ts
+│   ├── useDebounce.ts
 │   ├── useDisasterData.ts
+│   ├── useMediaQuery.ts
 │   ├── usePumpStatusData.ts
 │   ├── useRegionData.ts
-│   └── ...
-├── lib/                     # Utility & service API
-│   ├── supabase/            # Client & server Supabase
+│   ├── useTheme.tsx
+│   ├── use-toast.ts
+│   └── useWaterLevelData.ts
+│
+├── 📂 lib/                               # Utilities & service API
+│   ├── supabase/                         # Supabase client/server
 │   ├── api.client.ts
 │   ├── api.server.ts
+│   ├── api.ts
+│   ├── constants.ts
+│   ├── fetch-utils.ts
 │   ├── geocodingService.ts
-│   └── ...
-├── public/                  # Aset publik (gambar, ikon)
-├── types/                   # Definisi TypeScript types
-└── ...
-##
+│   ├── supabase.ts
+│   ├── supabaseAdmin.ts
+│   └── utils.ts
+│
+├── 📂 public/                            # Aset publik
+│   ├── assets/                           # Gambar, ikon
+│   └── leaflet/images/                   # Ikon peta
+│
+├── 📂 types/                             # TypeScript types
+│   ├── airPollution.ts
+│   ├── geocoding.ts
+│   ├── index.d.ts
+│   └── index.ts
+│
+├── ⚙️ Konfigurasi & metadata
+│   ├── .bolt/                            # Config Bolt AI
+│   ├── .eslintrc.json
+│   ├── .gitignore
+│   ├── next.config.js
+│   ├── postcss.config.js
+│   ├── tsconfig.json
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── components.json
+│   ├── commit_message.txt
+│   ├── eslint-errors.txt
+│   ├── ts-errors.txt
+│   ├── build.log
+│   ├── test-supabase.js
+│   └── README.md
 
 ```
 | Endpoint                 | Deskripsi                              | Parameter            |
