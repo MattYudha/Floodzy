@@ -142,29 +142,41 @@ useDebounce → Input debouncing
 
 use-toast → Notifikasi toast
 
-💻 Usage
+## 💻 Usage
 
-Basic
+### **Basic**
+1. **Jalankan Development Server**
+   ```bash
+   npm run dev
+Buka Aplikasi
 
-Jalankan npm run dev
+Akses melalui http://localhost:3000
 
-Buka http://localhost:3000
+Pilih Wilayah
 
-Pilih wilayah di dropdown/map
+Gunakan dropdown atau klik langsung pada peta
 
-Lihat data banjir, cuaca, dan analisis
+Pantau Informasi
+
+Lihat data banjir, cuaca, dan analisis bencana secara real-time
 
 Advanced
 
-Kirim laporan banjir via menu Lapor Banjir
+Kirim Laporan Banjir
 
-Gunakan chatbot untuk informasi cepat
+Gunakan menu Lapor Banjir untuk mengirim laporan kondisi terkini
 
-Lihat analisis bencana di dashboard
+Gunakan Chatbot
+
+Dapatkan informasi cepat tentang banjir & cuaca melalui chatbot
+
+Analisis Bencana
+
+Lihat hasil analisis AI pada dashboard untuk prediksi dan laporan ringkas
 
 🔧 Configuration
 
-Buat file .env.local:
+Buat file .env.local di root project dengan isi:
 
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
@@ -176,17 +188,17 @@ NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=...
 
 Lighthouse Score: 95+
 
-FCP: < 1.5s
+First Contentful Paint (FCP): < 1.5 detik
 
-TTI: < 3s
+Time to Interactive (TTI): < 3 detik
 
 🛡️ Security
 
 Supabase Row Level Security (RLS)
 
-Validasi input di server
+Server-side Validation untuk semua input
 
-API key aman di environment variables
+API Keys disimpan di environment variables
 
 🌟 Roadmap
 
@@ -198,9 +210,9 @@ API key aman di environment variables
 
  Prediksi AI banjir
 
- IoT sensor
+ IoT sensor integrasi
 
- Laporan komunitas
+ Laporan komunitas berbasis pengguna
 
 🎉 Acknowledgments
 
