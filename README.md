@@ -50,8 +50,8 @@ Custom hooks untuk pengelolaan state & UI.
 
 
 floodzy/
-├── app/                 # Halaman utama & API Routes
-│   ├── api/             # Endpoint API
+├── app/                      # Halaman utama & API Routes
+│   ├── api/                  # Endpoint API
 │   │   ├── analysis/route.ts               # Analisis bencana
 │   │   ├── alerts-data/route.ts            # Data peringatan
 │   │   ├── chatbot/route.ts                # Chatbot banjir
@@ -71,28 +71,28 @@ floodzy/
 │   ├── prakiraan-cuaca/page.tsx            # Prakiraan cuaca
 │   ├── statistika/page.tsx                 # Statistik banjir
 │   └── ...
-├── components/          # Komponen UI & modul
-│   ├── dashboard/       # Statistik & analisis
-│   ├── flood/           # Kartu & alert banjir
-│   ├── map/             # Komponen peta
-│   ├── weather/         # Tampilan data cuaca
-│   ├── ui/              # Shadcn/UI reusable components
+├── components/              # Komponen UI & modul
+│   ├── dashboard/           # Statistik & analisis
+│   ├── flood/               # Kartu & alert banjir
+│   ├── map/                 # Komponen peta
+│   ├── weather/             # Tampilan data cuaca
+│   ├── ui/                  # Shadcn/UI reusable components
 │   └── ...
-├── hooks/               # Custom React Hooks
+├── hooks/                   # Custom React Hooks
 │   ├── useAirPollutionData.ts
 │   ├── useBmkgQuakeData.ts
 │   ├── useDisasterData.ts
 │   ├── usePumpStatusData.ts
 │   ├── useRegionData.ts
 │   └── ...
-├── lib/                 # Utility & service API
-│   ├── supabase/        # Client & server Supabase
+├── lib/                     # Utility & service API
+│   ├── supabase/            # Client & server Supabase
 │   ├── api.client.ts
 │   ├── api.server.ts
 │   ├── geocodingService.ts
 │   └── ...
-├── public/              # Aset publik (gambar, ikon)
-├── types/               # Definisi TypeScript types
+├── public/                  # Aset publik (gambar, ikon)
+├── types/                   # Definisi TypeScript types
 └── ...
 
 
