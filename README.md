@@ -144,35 +144,25 @@ use-toast → Notifikasi toast
 
 ## 💻 Usage
 
-### **Basic**
-1. **Jalankan Development Server**
-   ```bash
-   npm run dev
-Buka Aplikasi
+```plaintext
+Basic Usage:
+├── Jalankan development server:
+│   └── npm run dev
+├── Buka aplikasi:
+│   └── http://localhost:3000
+├── Pilih wilayah:
+│   └── Gunakan dropdown atau klik peta
+└── Pantau informasi:
+    └── Lihat data banjir, cuaca, dan analisis bencana
 
-Akses melalui http://localhost:3000
+Advanced Usage:
+├── Kirim laporan banjir:
+│   └── Menu "Lapor Banjir"
+├── Gunakan chatbot:
+│   └── Informasi cepat banjir & cuaca
+└── Analisis bencana:
+    └── Lihat hasil analisis AI di dashboard
 
-Pilih Wilayah
-
-Gunakan dropdown atau klik langsung pada peta
-
-Pantau Informasi
-
-Lihat data banjir, cuaca, dan analisis bencana secara real-time
-
-Advanced
-
-Kirim Laporan Banjir
-
-Gunakan menu Lapor Banjir untuk mengirim laporan kondisi terkini
-
-Gunakan Chatbot
-
-Dapatkan informasi cepat tentang banjir & cuaca melalui chatbot
-
-Analisis Bencana
-
-Lihat hasil analisis AI pada dashboard untuk prediksi dan laporan ringkas
 
 🔧 Configuration
 
