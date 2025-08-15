@@ -102,3 +102,114 @@ floodzy/
 ├── public/                  # Aset publik (gambar, ikon)
 ├── types/                   # Definisi TypeScript types
 └── ...
+##
+
+```
+| Endpoint                 | Deskripsi                              | Parameter            |
+| ------------------------ | -------------------------------------- | -------------------- |
+| `/api/analysis`          | Analisis data bencana berbasis AI      | -                    |
+| `/api/alerts-data`       | Data peringatan bencana                | -                    |
+| `/api/chatbot`           | Chatbot informasi banjir & cuaca       | `message`            |
+| `/api/evakuasi`          | Titik evakuasi terdekat                | `regionId`           |
+| `/api/gemini-alerts`     | Peringatan otomatis berbasis Gemini AI | -                    |
+| `/api/gemini-analysis`   | Analisis mendalam banjir berbasis AI   | -                    |
+| `/api/laporan`           | Laporan banjir pengguna                | `location`, `status` |
+| `/api/pump-status-proxy` | Status pompa banjir                    | `pumpId`             |
+| `/api/regions`           | Daftar wilayah monitoring              | -                    |
+| `/api/water-level-proxy` | Ketinggian air                         | `stationId`          |
+| `/api/weather`           | Cuaca terkini                          | `lat`, `lon`         |
+| `/api/weather-history`   | Riwayat cuaca                          | `regionId`           |
+
+
+
+🪝 Custom Hooks
+
+useRegionData → Data wilayah & monitoring
+
+usePumpStatusData → Status pompa banjir
+
+useWaterLevelData → Data ketinggian air
+
+useAirPollutionData → Data kualitas udara
+
+useBmkgQuakeData → Data gempa dari BMKG
+
+useDisasterData → Data bencana umum
+
+useTheme → Manajemen tema UI
+
+useDebounce → Input debouncing
+
+use-toast → Notifikasi toast
+
+💻 Usage
+
+Basic
+
+Jalankan npm run dev
+
+Buka http://localhost:3000
+
+Pilih wilayah di dropdown/map
+
+Lihat data banjir, cuaca, dan analisis
+
+Advanced
+
+Kirim laporan banjir via menu Lapor Banjir
+
+Gunakan chatbot untuk informasi cepat
+
+Lihat analisis bencana di dashboard
+
+🔧 Configuration
+
+Buat file .env.local:
+
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+OPENWEATHER_API_KEY=...
+NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=...
+
+📊 Performance
+
+Lighthouse Score: 95+
+
+FCP: < 1.5s
+
+TTI: < 3s
+
+🛡️ Security
+
+Supabase Row Level Security (RLS)
+
+Validasi input di server
+
+API key aman di environment variables
+
+🌟 Roadmap
+
+ Monitoring banjir dasar
+
+ Integrasi cuaca & peta
+
+ Aplikasi mobile
+
+ Prediksi AI banjir
+
+ IoT sensor
+
+ Laporan komunitas
+
+🎉 Acknowledgments
+
+OpenWeatherMap
+
+Supabase
+
+Leaflet
+
+BMKG
+
+Kementerian PUPR
