@@ -110,12 +110,31 @@ function RainParticles({ count = 1500 }: { count?: number }) {
 }
 
 /* ----------------------------- ENHANCED ROBOT COMPONENT ----------------------------- */
-function RobotModel({ idle = 'Wave', onModelError }: { idle?: string; onModelError: (error: any) => void }) {
+function RobotModel({ 
+  idle = 'Wave', 
+  onModelError, 
+  onModelLoaded 
+}: { 
+  idle?: string; 
+  onModelError: (error: any) => void;
+  onModelLoaded: () => void;
+}) {
   const group = useRef<THREE.Group>(null);
   
   // Error akan ditangkap oleh ErrorBoundary dan diteruskan ke onModelError
   const { scene, animations } = useGLTF(MODEL_URL);
   const { actions, mixer } = useAnimations(animations, group);
+
+  // Notify parent when model is loaded and ready
+  useEffect(() => {
+    if (scene && actions && mixer) {
+      // Add a small delay to ensure everything is properly initialized
+      const timer = setTimeout(() => {
+        onModelLoaded();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [scene, actions, mixer, onModelLoaded]);
 
   const prepared = useMemo(() => {
     if (!scene) return null;
@@ -228,7 +247,13 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-function Robot({ idle = 'Wave' }: { idle?: string }) {
+function Robot({ 
+  idle = 'Wave', 
+  onModelLoaded 
+}: { 
+  idle?: string;
+  onModelLoaded: () => void;
+}) {
   const [modelError, setModelError] = useState<string | null>(null);
 
   const handleModelError = (error: any) => {
@@ -252,7 +277,11 @@ function Robot({ idle = 'Wave' }: { idle?: string }) {
   return (
     <ErrorBoundary fallback={errorFallback} onError={handleModelError}>
       <Suspense fallback={<EmptyHtmlLoader />}>
-        <RobotModel idle={idle} onModelError={handleModelError} />
+        <RobotModel 
+          idle={idle} 
+          onModelError={handleModelError}
+          onModelLoaded={onModelLoaded}
+        />
       </Suspense>
     </ErrorBoundary>
   );
@@ -267,11 +296,14 @@ function EmptyHtmlLoader() {
 function Enhanced3DCanvas({
   loadingProgress,
   setLoadingProgress,
+  onModelLoaded,
 }: {
   loadingProgress: LoadingProgress;
   setLoadingProgress: (progress: LoadingProgress) => void;
+  onModelLoaded: () => void;
 }) {
   const [is3DSupported, setIs3DSupported] = useState(true);
+  const [isCanvasReady, setIsCanvasReady] = useState(false);
 
   const deviceCapabilities = useMemo(() => {
     if (typeof window === 'undefined')
@@ -299,21 +331,10 @@ function Enhanced3DCanvas({
     return { supported: true, quality, renderer, vendor };
   }, []);
 
-  useEffect(() => {
-    if (
-      loadingProgress.phase === 'loading-3d' &&
-      loadingProgress.progress < 100
-    ) {
-      const timer = setTimeout(() => {
-        setLoadingProgress({
-          progress: 100,
-          phase: 'loading-data',
-          message: 'Memuat data cuaca...',
-        });
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [loadingProgress.phase, loadingProgress.progress, setLoadingProgress]);
+  // Handle canvas ready state
+  const handleCanvasCreated = useCallback(() => {
+    setIsCanvasReady(true);
+  }, []);
 
   if (!is3DSupported) {
     return (
@@ -361,6 +382,7 @@ function Enhanced3DCanvas({
         if (deviceCapabilities.quality === 'low') {
           gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
         }
+        handleCanvasCreated();
       }}
       style={{ width: '100%', height: '100%' }}
     >
@@ -415,7 +437,7 @@ function Enhanced3DCanvas({
           snap={{ mass: 1, tension: 180, friction: 25 }}
         >
           <Bounds fit observe clip margin={1.1}>
-            <Robot />
+            <Robot onModelLoaded={onModelLoaded} />
           </Bounds>
 
           {shadows && (
@@ -544,6 +566,15 @@ export function SplashScreen({ isFadingOut, onComplete }: SplashScreenProps) {
   });
 
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [is3DModelLoaded, setIs3DModelLoaded] = useState(false);
+  const [isCanvasReady, setIsCanvasReady] = useState(false);
+  const [canProceedToApp, setCanProceedToApp] = useState(false);
+
+  // Callback when 3D model is fully loaded
+  const handleModelLoaded = useCallback(() => {
+    console.log('[SplashScreen] 3D Model loaded successfully');
+    setIs3DModelLoaded(true);
+  }, []);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -559,29 +590,31 @@ export function SplashScreen({ isFadingOut, onComplete }: SplashScreenProps) {
   }, []);
 
   useEffect(() => {
-    // PERUBAHAN: Durasi diperpanjang agar totalnya ~6.5 detik
+    // Enhanced loading phases with proper 3D model synchronization
     const phases: Array<{
       phase: LoadingProgress['phase'];
       message: string;
       duration: number;
       targetProgress: number;
+      waitFor3D?: boolean;
     }> = [
       {
         phase: 'initializing',
         message: 'Mempersiapkan aplikasi...',
-        duration: 1000, // dari 800
+        duration: 1200,
         targetProgress: 20,
       },
       {
         phase: 'loading-3d',
         message: 'Memuat elemen visual...',
-        duration: 4000, // dari 1200
-        targetProgress: 50,
+        duration: 3000,
+        targetProgress: 60,
+        waitFor3D: true, // This phase waits for 3D model
       },
       {
         phase: 'loading-data',
         message: 'Memuat data cuaca...',
-        duration: 1500, // dari 1000
+        duration: 1800,
         targetProgress: 80,
       },
       {
@@ -589,18 +622,19 @@ export function SplashScreen({ isFadingOut, onComplete }: SplashScreenProps) {
         message: isOnline
           ? 'Menghubungkan ke server...'
           : 'Mencoba menghubungkan kembali...',
-        duration: 1200, // dari 800
+        duration: 1500,
         targetProgress: 95,
       },
       {
         phase: 'ready',
         message: 'Siap digunakan!',
-        duration: 500, // tetap
+        duration: 800,
         targetProgress: 100,
       },
     ];
 
     let currentPhaseIndex = 0;
+    let phaseTimer: NodeJS.Timeout | null = null;
 
     const progressPhase = () => {
       if (currentPhaseIndex >= phases.length) return;
@@ -622,6 +656,48 @@ export function SplashScreen({ isFadingOut, onComplete }: SplashScreenProps) {
             : currentPhase.message,
       }));
 
+      // Special handling for 3D loading phase
+      if (currentPhase.waitFor3D) {
+        const check3DProgress = () => {
+          const elapsed = Date.now() - startTime;
+          const timeProgress = Math.min(elapsed / currentPhase.duration, 1);
+          const easedTimeProgress = easeInOutSine(timeProgress);
+          
+          // Progress based on both time and 3D model loading
+          let combinedProgress;
+          if (is3DModelLoaded) {
+            // If 3D is loaded, allow progress to complete
+            combinedProgress = Math.max(easedTimeProgress, 0.9); // At least 90% when model is loaded
+          } else {
+            // If 3D not loaded yet, cap progress at 70% regardless of time
+            combinedProgress = Math.min(easedTimeProgress, 0.7);
+          }
+          
+          const newProgress = startProgress + progressRange * combinedProgress;
+          
+          setLoadingProgress((prev) => ({
+            ...prev,
+            progress: Math.round(newProgress),
+            message: is3DModelLoaded 
+              ? 'Elemen visual siap...' 
+              : 'Memuat model 3D...',
+          }));
+          
+          // Continue to next phase only if both time elapsed and 3D model loaded
+          if (timeProgress >= 1 && is3DModelLoaded) {
+            currentPhaseIndex++;
+            setTimeout(progressPhase, 300);
+          } else {
+            // Continue checking
+            requestAnimationFrame(check3DProgress);
+          }
+        };
+        
+        requestAnimationFrame(check3DProgress);
+        return;
+      }
+
+      // Normal progress for non-3D phases
       const updateProgress = () => {
         const elapsed = Date.now() - startTime;
         const progressRatio = Math.min(elapsed / currentPhase.duration, 1);
@@ -637,14 +713,10 @@ export function SplashScreen({ isFadingOut, onComplete }: SplashScreenProps) {
           requestAnimationFrame(updateProgress);
         } else {
           currentPhaseIndex++;
-          // Panggil onComplete HANYA setelah fase 'ready' selesai dan progress 100%
+          // Call onComplete ONLY after 'ready' phase and when we can proceed
           if (currentPhase.phase === 'ready' && newProgress === 100) {
-            // Beri jeda sedikit sebelum transisi agar pengguna melihat 100%
-            setTimeout(() => {
-              onComplete?.();
-            }, 300);
+            setCanProceedToApp(true);
           } else {
-            // Lanjutkan ke fase berikutnya
             setTimeout(progressPhase, 200);
           }
         }
@@ -653,9 +725,24 @@ export function SplashScreen({ isFadingOut, onComplete }: SplashScreenProps) {
       requestAnimationFrame(updateProgress);
     };
 
-    const initialDelay = setTimeout(progressPhase, 500);
-    return () => clearTimeout(initialDelay);
-  }, [onComplete, isOnline]); // Dependensi disederhanakan
+    phaseTimer = setTimeout(progressPhase, 500);
+    
+    return () => {
+      if (phaseTimer) clearTimeout(phaseTimer);
+    };
+  }, [onComplete, isOnline, is3DModelLoaded]);
+
+  // Effect to handle final transition to app
+  useEffect(() => {
+    if (canProceedToApp && is3DModelLoaded) {
+      console.log('[SplashScreen] All conditions met, proceeding to app...');
+      const finalTimer = setTimeout(() => {
+        onComplete?.();
+      }, 500); // Give user time to see 100%
+      
+      return () => clearTimeout(finalTimer);
+    }
+  }, [canProceedToApp, is3DModelLoaded, onComplete]);
 
   return (
     <AnimatePresence>
@@ -710,6 +797,7 @@ export function SplashScreen({ isFadingOut, onComplete }: SplashScreenProps) {
             <Enhanced3DCanvas
               loadingProgress={loadingProgress}
               setLoadingProgress={setLoadingProgress}
+              onModelLoaded={handleModelLoaded}
             />
           </motion.div>
 
@@ -829,7 +917,9 @@ export function SplashScreen({ isFadingOut, onComplete }: SplashScreenProps) {
                 {[0, 1, 2].map((index) => (
                   <motion.div
                     key={index}
-                    className="w-1.5 h-1.5 bg-blue-400 rounded-full"
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      is3DModelLoaded ? 'bg-green-400' : 'bg-blue-400'
+                    }`}
                     animate={{
                       scale: [1, 1.5, 1],
                       opacity: [0.5, 1, 0.5],
@@ -843,6 +933,20 @@ export function SplashScreen({ isFadingOut, onComplete }: SplashScreenProps) {
                   />
                 ))}
               </motion.div>
+              
+              {/* Debug info for development */}
+              {process.env.NODE_ENV === 'development' && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 2 }}
+                  className="text-xs text-white/50 text-center mt-4"
+                >
+                  <div>3D Model: {is3DModelLoaded ? '✅ Loaded' : '⏳ Loading...'}</div>
+                  <div>Canvas: {isCanvasReady ? '✅ Ready' : '⏳ Preparing...'}</div>
+                  <div>Can Proceed: {canProceedToApp ? '✅ Yes' : '❌ No'}</div>
+                </motion.div>
+              )}
             </motion.div>
           </motion.div>
         </motion.div>
