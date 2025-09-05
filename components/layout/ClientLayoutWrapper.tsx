@@ -24,14 +24,15 @@ export default function ClientLayoutWrapper({
       return;
     }
 
+    // Increased timing to ensure proper 3D loading
     const fadeTimer = setTimeout(() => {
       setIsFadingOut(true);
-    }, 3000);
+    }, 6000); // Increased from 3000 to 6000
 
     const hideTimer = setTimeout(() => {
       setShowSplash(false);
       sessionStorage.setItem('splashShown', 'true');
-    }, 3500);
+    }, 6500); // Increased from 3500 to 6500
 
     return () => {
       clearTimeout(fadeTimer);
