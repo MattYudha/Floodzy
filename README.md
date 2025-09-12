@@ -52,7 +52,7 @@ Floodzy menyediakan serangkaian fitur lengkap untuk pemantauan bencana yang komp
 
 ### 📍 Region & Evacuation
 
-- Pilihan wilayah hingga tingkat kota/kecamatan.
+- Pilihan wilayah hingga tingkat provinbsi/kota/kecamatan.
 - Informasi jalur & titik evakuasi.
 
 ### 💬 User Interaction
