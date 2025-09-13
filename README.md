@@ -1,4 +1,4 @@
-# 🌊 Floodzy - Real-time Pendeteksi Banjir  & Monitoring Cuaca
+# 🌊 Floodzy - Real-time Pendeteksi Banjir  & Monitoring Cuaca di Indonesia
 
 <div align="center">
   <img src="public/assets/ChatGPT Image 4 Sep 2025, 08.50.45.png" alt="Floodzy Logo" width="200"/>
@@ -274,7 +274,7 @@ floodzy/
 ├── test-supabase.js
 ├── ts-errors.txt
 └── tsconfig.json
-```
+``
 
 ## API Hardening: Rate Limiting & Caching
 
@@ -417,7 +417,7 @@ Key fields in the logs:
 ```plaintext
 ## 🚀 Panduan Memulai (Getting Started)
 
-Ikuti langkah-langkah ini untuk menjalankan Floodzy di lingkungan pengembangan lokal Anda.
+Ikuti langkah-langkah ini untukclone dan  menjalankan Floodzy di lingkungan pengembangan lokal Anda.
 
 ### 1. Prasyarat
 
