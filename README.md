@@ -293,7 +293,7 @@ UPSTASH_REDIS_REST_TOKEN=YOUR_UPSTASH_REDIS_REST_TOKEN
 You can override the default cache TTL for specific routes by passing an `ttl` option to the caching function within the route handler. For example:
 
 ```typescript
-await setCache(cacheKey, data, { ttl: 300 }); // Cache for 5 minutes
+await setCache(cacheKey, data, { ttl: 300 }); 
 ```
 
 ## Observability
