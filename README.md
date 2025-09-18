@@ -4,7 +4,7 @@
   <img src="public/assets/ChatGPT Image 4 Sep 2025, 08.50.45.png" alt="Floodzy Logo" width="200"/>
   
   <p align="center">
-    <strong>Comprehensive flood monitoring, weather tracking, and early warning platform for Indonesia</strong>
+    <strong>Comprehensive flood monitoring, weather tracking, and early warning platform for Indonesia citizen</strong>
   </p>
 
   <p align="center">
