@@ -4,7 +4,7 @@
   <img src="public/assets/ChatGPT Image 4 Sep 2025, 08.50.45.png" alt="Floodzy Logo" width="200"/>
   
   <p align="center">
-    <strong>Comprehensive flood monitoring, weather tracking, and early warning platform for Indonesia citizen</strong>
+    <strong>Platform pemantauan banjir, pelacakan cuaca, dan peringatan dini yang komprehensif untuk warga Indonesia </strong>
   </p>
 
   <p align="center">
@@ -278,19 +278,20 @@ floodzy/
 
 ## API Hardening: Rate Limiting & Caching
 
-To ensure API stability and prevent abuse, Floodzy APIs implement rate limiting and caching mechanisms.
+Untuk menjaga stabilitas API dan mencegah penyalahgunaan, Floodzy API menerapkan mekanisme rate limiting dan caching.
 
-- **Rate Limiting**: APIs are limited to **60 requests per minute per IP address**. Exceeding this limit will result in a `429 Too Many Requests` response.
-- **Caching**: API responses are cached to reduce server load and improve response times. The default cache TTL (Time-To-Live) is **60 seconds**.
+Rate Limiting: API dibatasi hingga 60 permintaan per menit per alamat IP. Jika melebihi batas ini, akan muncul respons 429 Too Many Requests.
 
-Both features are powered by **Upstash Redis**. Ensure the following environment variables are set in your `.env.local` file:
+Caching: Respons API disimpan dalam cache untuk mengurangi beban server dan mempercepat waktu respon. Nilai default cache TTL (Time-To-Live) adalah 60 detik.
 
+Kedua fitur ini dijalankan menggunakan Upstash Redis. Pastikan variabel lingkungan berikut sudah disetel di file .env.local:
 ```
 UPSTASH_REDIS_REST_URL=YOUR_UPSTASH_REDIS_REST_URL
 UPSTASH_REDIS_REST_TOKEN=YOUR_UPSTASH_REDIS_REST_TOKEN
 ```
 
-You can override the default cache TTL for specific routes by passing an `ttl` option to the caching function within the route handler. For example:
+Anda dapat menimpa (override) nilai default cache TTL untuk rute tertentu dengan memberikan opsi ttl pada fungsi caching di dalam route handler.
+Sebagai contoh:
 
 ```typescript
 await setCache(cacheKey, data, { ttl: 300 }); 
@@ -298,11 +299,11 @@ await setCache(cacheKey, data, { ttl: 300 });
 
 ## Observability
 
-Floodzy integrates with Sentry for error monitoring and performance tracing, and implements structured logging for API routes to enhance observability.
+Floodzy terintegrasi dengan Sentry untuk pemantauan error dan pelacakan performa, serta menerapkan structured logging pada rute API untuk meningkatkan observabilitas.
 
-### Sentry Configuration
+Konfigurasi Sentry
 
-Sentry helps in real-time error tracking and performance monitoring. To enable Sentry, set the following environment variables in your `.env.local` (for local development) and your deployment environment (e.g., Vercel) for preview and production stages:
+Sentry membantu dalam pelacakan error secara real-time dan pemantauan performa. Untuk mengaktifkan Sentry, atur variabel lingkungan berikut di file .env.local (untuk pengembangan lokal) dan juga di environment deployment Anda (misalnya Vercel) pada tahap preview dan production:
 
 ```
 SENTRY_DSN="https://<your-dsn>.ingest.sentry.io/<project-id>"
@@ -316,13 +317,13 @@ SENTRY_ENVIRONMENT="development" # or "production", "preview"
 - `SENTRY_PROFILES_SAMPLE_RATE`: Percentage of transactions to sample for profiling (e.g., 0.0 for disabled).
 - `SENTRY_ENVIRONMENT`: The environment name (e.g., `development`, `production`, `preview`).
 
-You can view captured errors and performance traces in your Sentry dashboard under the "Issues" and "Performance" tabs, respectively.
+Anda dapat melihat error yang tertangkap dan jejak performa di dashboard Sentry, masing-masing pada tab "Issues" dan "Performance".
 
 ### Structured API Logging
 
 API routes (`/api/*`) now produce structured JSON logs to provide better insights into request processing. Each API response includes an `X-Request-Id` header, which can be used to correlate logs for a single request.
 
-Example log entry (you can `grep` for `X-Request-Id` in your Vercel logs):
+Contoh entri log (Anda dapat menggunakan perintah grep untuk mencari X-Request-Id di log Vercel Anda):
 ```
 ```
 ```json
