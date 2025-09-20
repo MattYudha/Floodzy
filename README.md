@@ -29,12 +29,12 @@ Platform ini menyediakan data ketinggian air, status pompa, prakiraan cuaca, ana
 Floodzy menyediakan serangkaian fitur lengkap untuk pemantauan bencana yang komprehensif:
 
 -   **🗺️ Peta Bencana Interaktif**: Visualisasi data banjir, cuaca, dan sensor secara real-time menggunakan Leaflet, lengkap dengan marker, layer, dan legenda yang interaktif.
--   **📊 Dashboard Statistik & Analisis**: Halaman dashboard (`/statistika`) yang menampilkan statistik historis bencana, grafik curah hujan, dan laporan banjir dalam bentuk visual yang mudah dipahami.
+-   **📊 Dashboard Statistik & Analisis**: Halaman dashboard (`/statistika`) yang menampilkan statistik historis bencana, grafik curah hujan, dan laporan banjir dalam bentuk visual yang mudah dipahami dan data realtime.
 -   **🤖 Analisis Bencana Berbasis AI**: Integrasi dengan Gemini API untuk memberikan analisis otomatis terhadap data bencana, peringatan dini, dan ringkasan berita terkini.
 -   **🚨 Peringatan Dini Multi-Sumber**: Mengagregasi data peringatan dari berbagai sumber terpercaya untuk memberikan notifikasi bencana yang akurat.
 -   **🌦️ Prakiraan & Riwayat Cuaca**: Menyajikan data cuaca real-time (suhu, kelembapan, angin) dari OpenWeatherMap dan riwayat cuaca untuk analisis tren.
 -   **🌬️ Pemantauan Kualitas Udara**: Fitur untuk memantau tingkat polusi udara di wilayah terpilih, memberikan informasi kesehatan lingkungan yang krusial.
--   **🌍 Informasi Gempa Bumi**: Menampilkan data gempa bumi terkini langsung dari BMKG untuk meningkatkan kesiapsiagaan terhadap bencana geologi.
+-   **🌍 Informasi Gempa Bumi**: Menampilkan data gempa bumi terkini langsung dari BMKG untuk meningkatkan kesiapsiagaan terhadap bencana geologi maupun mencana banjir secara realtime .
 -   **📱 Dukungan Progressive Web App (PWA)**: Floodzy dapat diinstal di perangkat mobile layaknya aplikasi native, serta mendukung fungsionalitas offline untuk akses di kondisi darurat.
 -   **💬 Laporan Pengguna & Chatbot**: Memungkinkan pengguna melaporkan kejadian banjir secara langsung dan menyediakan chatbot interaktif untuk menjawab pertanyaan seputar cuaca dan bencana.
 
