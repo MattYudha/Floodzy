@@ -65,7 +65,7 @@ Floodzy menyediakan serangkaian fitur lengkap untuk pemantauan bencana yang komp
 - API publik (`/api`) untuk integrasi data.
 - Custom hooks untuk pengelolaan state & UI.
 
-## 📁 Project Structure
+## 📁 Struktur Project
 
 ```plaintext
 floodzy/
