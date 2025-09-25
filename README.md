@@ -19,7 +19,7 @@
 
 ## 🚀 Overview
 
-Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang memanfaatkan teknologi modern seperti **Next.js**,**React**, **TypeScript**, **Tailwind CSS**, dan **Supabase**.  
+Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang memanfaatkan teknologi modern seperti **Next.js**,**React**, **TypeScript**,**React**, **Tailwind CSS**, dan **Supabase**.  
 Platform ini menyediakan data ketinggian air, status pompa, prakiraan cuaca, analisis bencana, dan peta interaktif untuk mendukung mitigasi bencana di Indonesia dan data nya bisa untuk seluruh wilayah indonesia sampai ke kecamatan dengan detail dan terstruktur.
 
 ---
