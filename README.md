@@ -24,7 +24,7 @@ Platform ini menyediakan data ketinggian air, status pompa, prakiraan cuaca, ana
 
 ---
 
-### ✨ Features
+### ✨ Fitur
 
 Floodzy menyediakan serangkaian fitur lengkap untuk pemantauan bencana yang komprehensif:
 
@@ -38,7 +38,7 @@ Floodzy menyediakan serangkaian fitur lengkap untuk pemantauan bencana yang komp
 - **📱 Dukungan Progressive Web App (PWA)**: Floodzy dapat diinstal di perangkat mobile layaknya aplikasi native, serta mendukung fungsionalitas offline untuk akses di kondisi darurat.
 - **💬 Laporan Pengguna & Chatbot**: Memungkinkan pengguna melaporkan kejadian banjir secara langsung dan menyediakan chatbot interaktif untuk menjawab pertanyaan seputar cuaca dan bencana.
 
-### 🌡️ Weather & Flood Data
+### 🌡️ Cuaca & Data Banjir
 
 - Data cuaca real-time (temperatur, kelembapan, kecepatan angin).
 - Integrasi OpenWeatherMap.
