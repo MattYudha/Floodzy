@@ -305,7 +305,7 @@ Floodzy terintegrasi dengan Sentry untuk pemantauan error dan pelacakan performa
 
 Konfigurasi Sentry
 
-Sentry membantu dalam pelacakan error secara real-time dan pemantauan performa. Untuk mengaktifkan Sentry, atur variabel lingkungan berikut di file .env.local (untuk pengembangan lokal) dan juga di environment deployment Anda (misalnya Vercel) pada tahap preview dan production:
+Sentry membantu kita dalam pelacakan error secara real-time dan pemantauan performa. Untuk mengaktifkan Sentry, atur variabel lingkungan berikut di file .env.local (untuk pengembangan lokal) dan juga di environment deployment Anda (misalnya Vercel) pada tahap preview dan production:
 
 ```
 SENTRY_DSN="https://<your-dsn>.ingest.sentry.io/<project-id>"
@@ -514,7 +514,7 @@ NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=...
 ````
 
 ```plaintext
-📊 Performance
+📊 Performa
 
 Lighthouse Score: 95+
 
@@ -546,15 +546,15 @@ Floodzy dibangun di atas tumpukan teknologi modern yang dirancang untuk skalabil
 ```plaintext
 🎉 Acknowledgments
 
-OpenWeatherMap
+-> OpenWeatherMap
 
-Supabase
+-> Supabase
 
-Leaflet
+-> Leaflet
 
-BMKG
+-> BMKG
 
-Kementerian PUPR
+-> Kementerian PUPR
 ```
 
 MIT License
