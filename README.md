@@ -44,18 +44,18 @@ Floodzy menyediakan serangkaian fitur lengkap untuk pemantauan bencana yang komp
 - Integrasi OpenWeatherMap.
 - Riwayat cuaca & banjir.
 
-### 🚨 Alerts & Analysis
+### 🚨 Peringatan& Analisis
 
 - Peringatan bencana dengan sumber data terintegrasi.
 - Analisis bencana otomatis menggunakan Gemini API.
 - Ringkasan berita bencana.
 
-### 📍 Region & Evacuation
+### 📍 Wilayah & Titik Evakuasi
 
 - Pilihan wilayah hingga tingkat provinbsi/kota/kecamatan.
 - Informasi jalur & titik evakuasi.
 
-### 💬 User Interaction
+### 💬 Interaksi User
 
 - Laporan banjir langsung dari pengguna.
 - Chatbot informasi banjir & cuaca.
