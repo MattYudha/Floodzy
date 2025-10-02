@@ -1,4 +1,4 @@
-# 🌊 Floodzy - Real-time Pendeteksi  Potensi Banjir & Monitoring Cuaca di Indonesia
+# 🌊 Floodzy - Real-time Pendeteksi/Prediksi  Potensi Banjir & Monitoring Cuaca di Indonesia
 
 <div align="center">
   <img src="public/assets/ChatGPT Image 4 Sep 2025, 08.50.45.png" alt="Floodzy Logo" width="200"/>
@@ -321,7 +321,7 @@ SENTRY_ENVIRONMENT="development" # or "production", "preview"
 
 Anda dapat melihat error yang tertangkap dan jejak performa di dashboard Sentry, masing-masing pada tab "Issues" dan "Performance".
 
-### Structured API Logging
+### Struktur API Loging
 
 API routes (`/api/*`) now produce structured JSON logs to provide better insights into request processing. Each API response includes an `X-Request-Id` header, which can be used to correlate logs for a single request.
 
