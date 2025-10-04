@@ -38,7 +38,7 @@ Floodzy menyediakan serangkaian fitur lengkap untuk pemantauan bencana yang komp
 - **📱 Dukungan Progressive Web App (PWA)**: Floodzy dapat diinstal di perangkat mobile layaknya aplikasi native, serta mendukung fungsionalitas offline untuk akses di kondisi darurat.
 - **💬 Laporan Pengguna & Chatbot**: Memungkinkan pengguna melaporkan kejadian banjir secara langsung dan menyediakan chatbot interaktif untuk menjawab pertanyaan seputar cuaca dan bencana.
 
-### 🌡️ Cuaca & Data Banjir
+### 🌡️ Cuaca & Data Banjir Di Indonesia 
 
 - Data cuaca real-time (temperatur, kelembapan, kecepatan angin).
 - Integrasi OpenWeatherMap.
@@ -299,11 +299,11 @@ Sebagai contoh:
 await setCache(cacheKey, data, { ttl: 300 });
 ````
 
-## Observability
+## Observability 
 
 Floodzy terintegrasi dengan Sentry untuk pemantauan error dan pelacakan performa, serta menerapkan structured logging pada rute API untuk meningkatkan observabilitas.
 
-Konfigurasi Sentry
+Konfigurasi Sentry Di Project Floodzy
 
 Sentry membantu kita dalam pelacakan error secara real-time dan pemantauan performa. Untuk mengaktifkan Sentry, atur variabel lingkungan berikut di file .env.local (untuk pengembangan lokal) dan juga di environment deployment Anda (misalnya Vercel) pada tahap preview dan production:
 
