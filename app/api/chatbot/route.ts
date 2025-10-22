@@ -95,7 +95,7 @@ export async function POST(request: Request) {
     }
 
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       tools: tools,
       systemInstruction:
         "Anda adalah asisten Floodzy. Tugas Anda adalah menjawab pertanyaan terkait banjir dan cuaca menggunakan tools yang tersedia. Aturan: 1. Jika nama lokasi disebutkan (misal: 'cuaca di Jakarta'), Anda WAJIB menggunakan tool `geocodeLocation` lalu `fetchWeatherData`. JANGAN PERNAH membalas dengan teks konfirmasi seperti 'Baik, saya akan cek'. Langsung panggil tool-nya. 2. Jika lokasi tidak spesifik ('di sekitar saya'), Anda WAJIB memanggil `requestUserLocation`. 3. Selalu gunakan tools jika memungkinkan.",
@@ -194,6 +194,17 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error('[Chatbot API] Fatal Error in POST handler:', error);
     const errorMessage = 'Terjadi kesalahan internal server yang tidak terduga. Mohon coba lagi nanti.';
+    
+    // Add detailed error message in development
+    if (process.env.NODE_ENV !== 'production') {
+      return NextResponse.json({ 
+        error: errorMessage, 
+        message: errorMessage, 
+        details: error.message, // Include the actual error message
+        stack: error.stack      // Include the stack trace
+      }, { status: 500 });
+    }
+
     return NextResponse.json({ error: errorMessage, message: errorMessage }, { status: 500 });
   }
 }
