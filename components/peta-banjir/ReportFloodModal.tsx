@@ -75,10 +75,10 @@ export default function ReportFloodModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]" aria-labelledby="report-flood-dialog-title">
+      <DialogContent className="sm:max-w-[425px]" aria-labelledby="report-flood-dialog-title" aria-describedby="report-flood-dialog-description">
         <DialogHeader>
           <DialogTitle id="report-flood-dialog-title">Lapor Banjir di Lokasi Pilihan</DialogTitle>
-          <DialogDescription>
+          <DialogDescription id="report-flood-dialog-description">
             Laporkan detail banjir di koordinat: {location ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}` : 'N/A'}
           </DialogDescription>
         </DialogHeader>
