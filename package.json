@@ -103,7 +103,10 @@
     "@types/leaflet": "^1.9.20",
     "@types/node": "^24.3.0",
     "esbuild": "^0.25.9",
-    "vitest": "^1.0.0",
-    "@vitest/ui": "^1.0.0"
+    "vitest": "^4.0.1",
+    "@vitest/ui": "^4.0.1",
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite-tsconfig-paths": "^4.0.0",
+    "@vitest/coverage-v8": "^4.0.1"
   }
 }
