@@ -23,14 +23,12 @@ export function CommandMenu({ isOpen, setIsOpen }: CommandMenuProps) {
 
   const { setSelectedLocation, setMapBounds } = useAppStore();
 
-  // We need to create this custom hook
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   React.useEffect(() => {
     if (debouncedSearchQuery.length > 2) {
       const fetchLocations = async () => {
         setIsLoading(true);
-        // We need to adapt this service to return an array and take a limit
         const searchResults = await getCoordsByLocationName(debouncedSearchQuery, 5);
         setResults(searchResults || []);
         setIsLoading(false);
@@ -84,7 +82,7 @@ export function CommandMenu({ isOpen, setIsOpen }: CommandMenuProps) {
               <CommandItem
                 key={`${location.lat}-${location.lon}`}
                 onSelect={() => handleSelect(location)}
-                value={location.name}
+                value={`${location.name}, ${location.state ? location.state + ', ' : ''}${location.country}`}
               >
                 <MapPin className="mr-2 h-4 w-4" />
                 <span>{`${location.name}, ${location.state ? location.state + ', ' : ''}${location.country}`}</span>

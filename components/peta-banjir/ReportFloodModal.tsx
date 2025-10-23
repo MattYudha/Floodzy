@@ -76,14 +76,12 @@ export default function ReportFloodModal({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]" aria-labelledby="report-flood-dialog-title" aria-describedby="report-flood-dialog-description">
-        <DialogHeader>
-          <DialogTitle id="report-flood-dialog-title">Lapor Banjir di Lokasi Pilihan</DialogTitle>
-          <DialogDescription id="report-flood-dialog-description">
-            Laporkan detail banjir di koordinat: {location ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}` : 'N/A'}
-          </DialogDescription>
-        </DialogHeader>
+        <DialogTitle id="report-flood-dialog-title" className="text-lg font-semibold">Lapor Banjir di Lokasi Pilihan</DialogTitle>
+        <DialogDescription id="report-flood-dialog-description" className="text-sm text-muted-foreground mb-4">
+          Laporkan detail banjir di koordinat: {location ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}` : 'N/A'}
+        </DialogDescription>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="grid gap-4 py-4" aria-labelledby="report-flood-dialog-title">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="grid gap-4 py-4">
             <FormField
               control={form.control}
               name="waterLevel"
