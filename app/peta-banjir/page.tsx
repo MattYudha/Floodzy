@@ -31,6 +31,7 @@ interface FloodReport {
   locationName: string; // New property
   trend: 'rising' | 'falling' | 'stable'; // New property
   severity: 'low' | 'moderate' | 'high'; // New property
+  imageUrl?: string; // New property
 }
 
 interface EvacuationPoint {

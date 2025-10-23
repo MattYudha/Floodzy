@@ -371,8 +371,6 @@ export default function StatistikPage() {
         geminiResponse={geminiResponse}
         isGeminiLoading={isGeminiLoading}
         handleGeminiAnalysis={handleGeminiAnalysis}
-        messages={messages}
-        setMessages={setMessages}
       />
     </div>
   );

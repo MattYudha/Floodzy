@@ -253,6 +253,14 @@ function RegionSelectField({
   );
 }
 
+interface RegionDropdownProps {
+  onSelectDistrict: (location: SelectedLocation) => void;
+  selectedLocation: SelectedLocation | null;
+  currentWeatherData?: CombinedWeatherData | null;
+  loadingWeather?: boolean;
+  weatherError?: string | null;
+}
+
 // Main component that orchestrates the dropdowns
 export function RegionDropdown({
   onSelectDistrict,

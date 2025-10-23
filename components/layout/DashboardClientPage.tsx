@@ -320,9 +320,9 @@ export function DashboardClientPage({ initialData }) {
     setChatHistory(newHistory);
     setChatInput('');
 
+    let needsLocation = false;
     try {
       let currentHistory = newHistory;
-      let needsLocation = false;
 
       const body = {
         question: message,

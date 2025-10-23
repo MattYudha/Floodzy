@@ -18,6 +18,7 @@ import {
   Eye,
   Sun,
   Moon,
+  Zap,
 } from 'lucide-react';
 
 interface CurrentWeatherDisplayProps {
