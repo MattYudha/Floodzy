@@ -47,6 +47,8 @@ export default function LaporBanjirPage() {
     preview: string;
   } | null>(null);
   const [errors, setErrors] = useState<z.ZodIssue[]>([]); // ADDED: State for Zod validation errors
+  const [predictionResult, setPredictionResult] = useState<number | null>(null); // New state for ML prediction result
+  const [predictionRiskLabel, setPredictionRiskLabel] = useState<string | null>(null); // New state for ML prediction risk label
 
   // ✅ PERBAIKAN: Inisialisasi Supabase hanya satu kali saat komponen pertama kali dimuat.
   const [supabase] = useState<SupabaseClient>(() =>
@@ -141,6 +143,8 @@ export default function LaporBanjirPage() {
     setMessage('');
     setMessageType('');
     setErrors([]); // Clear previous errors
+    setPredictionResult(null); // Clear previous prediction
+    setPredictionRiskLabel(null); // Clear previous prediction label
 
     // Prepare data for Zod validation
     const formData = {
@@ -165,15 +169,88 @@ export default function LaporBanjirPage() {
     }
 
     try {
+      // 1. Siapkan data untuk prediksi ML dengan format yang BENAR
+      const waterLevelMap: { [key: string]: number } = {
+        'semata_kaki': 0,
+        'selutut': 1,
+        'sepaha': 2,
+        'sepusar': 3,
+        'lebih_dari_sepusar': 4,
+      };
+      const numericWaterLevel = waterLevelMap[validationResult.data.water_level];
+
+      // BUAT PAYLOAD DENGAN KEY YANG JELAS, BUKAN 'features'
+      const predictionPayload = {
+        latitude: validationResult.data.latitude,
+        longitude: validationResult.data.longitude,
+        water_level: numericWaterLevel,
+        // Menambahkan field yang hilang dengan nilai placeholder/derivasi
+        curah_hujan_24h: 0, // Placeholder: Anda bisa menambahkan input form untuk ini
+        kecepatan_angin: 0, // Placeholder: Anda bisa menambahkan input form untuk ini
+        suhu: 28, // Placeholder: Suhu rata-rata, Anda bisa menambahkan input form
+        kelembapan: 80, // Placeholder: Kelembapan rata-rata, Anda bisa menambahkan input form
+        ketinggian_air_cm: numericWaterLevel * 30, // Derivasi sederhana dari water_level (0=0cm, 1=30cm, 2=60cm, dst.)
+        tren_air_6h: 0, // Placeholder: 0=stabil, 1=naik, -1=turun. Anda bisa menambahkan input form
+        mdpl: 0, // Placeholder: Meter di atas permukaan laut. Ini bisa didapatkan dari API geocoding
+        jarak_sungai_m: 100, // Placeholder: Jarak ke sungai terdekat. Ini bisa didapatkan dari data geografis
+        jumlah_banjir_5th: 0, // Placeholder: Jumlah kejadian banjir dalam 5 tahun terakhir di lokasi tersebut
+      };
+
+      // 2. Panggil API route Next.js Anda
+      const predictionResponse = await fetch('/api/predict-flood', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(predictionPayload), // Kirim payload yang sudah benar
+      });
+
+                if (!predictionResponse.ok) {
+                  const errorData = await predictionResponse.json();
+                  let detailedErrorMessage = 'Error tidak diketahui';
+                  if (errorData && errorData.detail && Array.isArray(errorData.detail)) {
+                    detailedErrorMessage = errorData.detail.map((err: any) => {
+                      const field = err.loc && err.loc.length > 1 ? err.loc[1] : 'unknown field';
+                      return `${field}: ${err.msg}`;
+                    }).join('; ');
+                  } else if (errorData && errorData.message) {
+                    detailedErrorMessage = errorData.message;
+                  }
+                  setMessage(`Gagal mendapatkan prediksi ML: ${detailedErrorMessage}`);
+                  setMessageType('error');
+                  setLoading(false); // Stop loading on error
+                  return; // Exit the function
+                }
+      const predictionData = await predictionResponse.json();
+      // console.log('Prediction data from API:', predictionData); // Log for debugging - REMOVED
+
+      // 3. Tampilkan hasil dari endpoint /predict/flood-potential-xgb
+      setPredictionResult(predictionData.probability); // Simpan probabilitas
+
+      // Map API risk labels to more descriptive, user-friendly strings for display
+      const riskLabelMap: { [key: string]: string } = {
+        'HIGH': 'Risiko Tinggi',
+        'MED': 'Risiko Medium',
+        'LOW': 'Risiko Rendah',
+      };
+
+      // Use the map to get the descriptive label, with a fallback to the original label
+      const descriptiveRiskLabel = riskLabelMap[predictionData.risk_label] || predictionData.risk_label;
+      
+      // Set the descriptive label for display in the UI
+      setPredictionRiskLabel(descriptiveRiskLabel);
+
+      setMessage('Laporan berhasil dikirim!');
+      setMessageType('success');
+
       let photoUrl = '';
 
-      // 1. Proses unggah foto jika ada
+      // Proses unggah foto (kode Anda di sini sudah benar)
       if (selectedPhoto) {
         const file = selectedPhoto.file;
         const filePath = `${Date.now()}_${file.name}`;
-
         const { error: uploadError } = await supabase.storage
-          .from('laporan-banjir') // Nama bucket di Supabase Storage
+          .from('laporan-banjir')
           .upload(filePath, file);
 
         if (uploadError) {
@@ -183,45 +260,41 @@ export default function LaporBanjirPage() {
         const { data: publicUrlData } = supabase.storage
           .from('laporan-banjir')
           .getPublicUrl(filePath);
-
         photoUrl = publicUrlData.publicUrl;
       }
 
-      // 2. Simpan data laporan ke tabel
+      // Simpan data ke Supabase (kode Anda di sini sudah benar)
       const { error: insertError } = await supabase
         .from('laporan_banjir')
-        .insert([
-          {
-            location: validationResult.data.location, // Use validated data
-            latitude: validationResult.data.latitude,
-            longitude: validationResult.data.longitude,
-            water_level: validationResult.data.water_level,
-            description: validationResult.data.description,
-            photo_url: photoUrl,
-            reporter_name: validationResult.data.reporter_name,
-            reporter_contact: validationResult.data.reporter_contact,
-          },
-        ]);
+        .insert([{
+          location: validationResult.data.location,
+          latitude: validationResult.data.latitude,
+          longitude: validationResult.data.longitude,
+          water_level: validationResult.data.water_level,
+          description: validationResult.data.description,
+          photo_url: photoUrl,
+          reporter_name: validationResult.data.reporter_name,
+          reporter_contact: validationResult.data.reporter_contact,
+          // TAMBAHAN: Simpan hasil prediksi ke database jika perlu
+          prediction_risk: predictionData.risk_label,
+          prediction_probability: predictionData.probability,
+        }]);
 
       if (insertError) {
         throw insertError;
       }
 
-      // 3. Berhasil
-      setMessage('Laporan banjir berhasil dikirim! Terima kasih.');
-      setMessageType('success');
-
-      // Reset form
+      // Reset form (kode Anda di sini sudah benar)
       setLocation('');
-      setManualLocationInput(''); // Reset manual input
-      setLatitude(-6.2088); // Reset to default Jakarta
-      setLongitude(106.8456); // Reset to default Jakarta
+      setManualLocationInput('');
+      setLatitude(-6.2088);
+      setLongitude(106.8456);
       setWaterLevel('');
       setDescription('');
       setReporterName('');
       setReporterContact('');
       setSelectedPhoto(null);
-      setErrors([]); // Clear errors on successful submission
+      setErrors([]);
     } catch (error: any) {
       console.error('Error submitting report:', error.message);
       setMessage(`Gagal mengirim laporan: ${error.message}`);
@@ -310,6 +383,12 @@ export default function LaporBanjirPage() {
                     )}
                     <p className="font-medium">{message}</p>
                   </div>
+                  {predictionResult !== null && predictionRiskLabel !== null && messageType === 'success' && (
+                    <div className="mt-2 text-sm">
+                      <p>Prediksi Risiko: <span className="font-bold">{predictionRiskLabel}</span></p>
+                      <p>Probabilitas Banjir: <span className="font-bold">{(predictionResult * 100).toFixed(2)}%</span></p>
+                    </div>
+                  )}
                 </motion.div>
               )}
 
