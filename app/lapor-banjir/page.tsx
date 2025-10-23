@@ -524,7 +524,7 @@ export default function LaporBanjirPage() {
                           alt="Preview"
                           width={64}
                           height={64}
-                          className="object-cover rounded-lg"
+                          className="object-contain rounded-lg"
                         />
                         <div>
                           <p className="text-sm sm:text-base text-white font-medium">

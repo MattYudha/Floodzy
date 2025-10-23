@@ -26,6 +26,7 @@ import { cn } from '@/lib/utils';
 import { useAlertCount } from '@/components/contexts/AlertCountContext';
 import { CommandMenu } from './CommandMenu';
 import { SearchTrigger } from './SearchTrigger';
+import { WeatherShortcut } from '@/components/weather/WeatherShortcut';
 
 
 interface HeaderProps {
@@ -204,6 +205,8 @@ export function Header({ onMenuToggle, isMenuOpen }: HeaderProps) {
             >
               <ThemeIcon size={20} />
             </Button>
+
+            <WeatherShortcut />
 
             {/* Notifications */}
             <Link href="/peringatan" passHref>

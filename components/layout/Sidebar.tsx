@@ -40,6 +40,7 @@ interface QuickActionItem {
   label: string;
   icon: React.ElementType;
   color?: string;
+  href?: string;
   onClick?: () => void;
 }
 
@@ -108,7 +109,7 @@ const quickActions: QuickActionItem[] = [
     label: 'Cuaca Sekarang',
     icon: Cloud,
     color: 'text-sky-500',
-    onClick: () => console.log('Cuaca clicked'),
+    onClick: () => {},
   },
 ];
 
@@ -117,6 +118,7 @@ interface SidebarProps {
   onClose: () => void;
   isCollapsed: boolean;
   setIsCollapsed: (collapsed: boolean) => void;
+  onOpenWeatherPopup: () => void; // New prop
 }
 
 export function Sidebar({
@@ -124,6 +126,7 @@ export function Sidebar({
   onClose,
   isCollapsed,
   setIsCollapsed,
+  onOpenWeatherPopup, // Destructure new prop
 }: SidebarProps) {
   const router = useRouter();
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -300,7 +303,7 @@ export function Sidebar({
                   variant="outline"
                   size={isCollapsed ? 'icon' : 'sm'}
                   className="w-full justify-start hover:scale-105"
-                  onClick={action.onClick}
+                  onClick={action.id === 'current-weather' ? onOpenWeatherPopup : action.onClick}
                 >
                   <action.icon className={cn('h-4 w-4', action.color)} />
                   {!isCollapsed && <span className="ml-2">{action.label}</span>}
