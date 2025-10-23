@@ -102,6 +102,8 @@
   "devDependencies": {
     "@types/leaflet": "^1.9.20",
     "@types/node": "^24.3.0",
-    "esbuild": "^0.25.9"
+    "esbuild": "^0.25.9",
+    "vitest": "^1.0.0",
+    "@vitest/ui": "^1.0.0"
   }
 }
