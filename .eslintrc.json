@@ -1,5 +1,12 @@
 {
   "root": true,
   "extends": "next/core-web-vitals",
-  "ignorePatterns": [".next/**/*"]
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "ignorePatterns": [".next/**/*"],
+  "rules": {
+    "@typescript-eslint/no-unused-expressions": "off"
+  }
 }

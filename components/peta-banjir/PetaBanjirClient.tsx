@@ -218,7 +218,7 @@ export default function PetaBanjirClient({
     };
 
     return { evacuationIcon, userLocationIcon, getFloodIcon };
-  }, [reports]);
+  }, []);
 
   return (
     <>

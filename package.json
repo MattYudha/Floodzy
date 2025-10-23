@@ -9,6 +9,12 @@
     "@react-spring/three": "9.x",
     "@react-spring/native": "9.x"
   },
+  "pnpm": {
+    "overrides": {
+      "@typescript-eslint/eslint-plugin": "5.x.x",
+      "@typescript-eslint/parser": "5.x.x"
+    }
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -70,7 +76,7 @@
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
-    "eslint": "8.49.0",
+    "eslint": "8.57.0",
     "eslint-config-next": "13.5.1",
     "framer-motion": "^11.2.10",
     "input-otp": "^1.2.4",
@@ -104,6 +110,8 @@
   "devDependencies": {
     "@types/leaflet": "^1.9.20",
     "@types/node": "^24.3.0",
-    "esbuild": "^0.25.9"
+    "esbuild": "^0.25.9",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0"
   }
 }
