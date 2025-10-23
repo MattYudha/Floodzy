@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { 
   Carousel, 
@@ -10,11 +10,11 @@ import {
   CarouselPrevious, 
   type CarouselApi 
 } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
 import { formatDistanceToNow } from 'date-fns';
 import { id } from 'date-fns/locale';
-import { Waves, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import clsx from 'clsx';
+import FloodReportCard from '@/components/peta-banjir/FloodReportCard'; // New import
 
 // Dinamis impor PetaBanjirClient untuk menghindari masalah SSR dengan Leaflet
 const PetaBanjirClient = dynamic(() => import('@/components/peta-banjir/PetaBanjirClient'), {
@@ -28,6 +28,9 @@ interface FloodReport {
   position: [number, number];
   timestamp: string;
   waterLevel: number;
+  locationName: string; // New property
+  trend: 'rising' | 'falling' | 'stable'; // New property
+  severity: 'low' | 'moderate' | 'high'; // New property
 }
 
 interface EvacuationPoint {
@@ -42,31 +45,49 @@ const mockFloodReports: FloodReport[] = [
     id: 'report-1',
     position: [-6.2088, 106.8456],
     timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-    waterLevel: 30,
+    waterLevel: 50,
+    locationName: "Jl. Thamrin, Jakarta Pusat",
+    trend: 'rising',
+    severity: 'moderate',
+    imageUrl: 'https://placehold.co/600x400/FF9800/FFFFFF/png?text=Banjir+Sedang',
   },
   {
     id: 'report-2',
     position: [-6.2188, 106.8556],
     timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-    waterLevel: 50,
+    waterLevel: 120,
+    locationName: "Kelapa Gading, Jakarta Utara",
+    trend: 'rising',
+    severity: 'high',
+    imageUrl: 'https://placehold.co/600x400/F44336/FFFFFF/png?text=Banjir+Tinggi',
   },
   {
     id: 'report-3',
     position: [-6.1988, 106.8256],
     timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
     waterLevel: 20,
+    locationName: "Kebayoran Baru, Jakarta Selatan",
+    trend: 'stable',
+    severity: 'low',
   },
   {
     id: 'report-4',
     position: [-6.2288, 106.8656],
     timestamp: new Date(Date.now() - 15 * 60 * 60 * 1000).toISOString(),
-    waterLevel: 40,
+    waterLevel: 70,
+    locationName: "Tanah Abang, Jakarta Pusat",
+    trend: 'falling',
+    severity: 'high',
+    imageUrl: 'https://placehold.co/600x400/F44336/FFFFFF/png?text=Banjir+Tinggi',
   },
   {
     id: 'report-5',
     position: [-6.1888, 106.8356],
     timestamp: new Date(Date.now() - 23 * 60 * 60 * 1000).toISOString(),
-    waterLevel: 60,
+    waterLevel: 35,
+    locationName: "Cilandak, Jakarta Selatan",
+    trend: 'stable',
+    severity: 'moderate',
   },
 ];
 
@@ -81,9 +102,29 @@ export default function PetaBanjirPage() {
   );
   const [api, setApi] = useState<CarouselApi>();
   const [isCarouselOpen, setIsCarouselOpen] = useState(true);
+  const [isBrowserFullScreen, setIsBrowserFullScreen] = useState(false);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
 
   const reports = mockFloodReports;
   const evacuationPoints = mockEvacuationPoints;
+
+  const handleFullScreenToggle = () => {
+    if (mapContainerRef.current) {
+      if (!document.fullscreenElement) {
+        mapContainerRef.current.requestFullscreen().catch((err) => {
+          console.error(
+            `Error attempting to enable full-screen mode: ${err.message} (${err.name})`,
+            err,
+          );
+        });
+      } else {
+        document.exitFullscreen();
+      }
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 100);
+    }
+  };
 
   useEffect(() => {
     if (!api) return;
@@ -111,18 +152,41 @@ export default function PetaBanjirPage() {
     }
   };
 
+  useEffect(() => {
+    const handleFullScreenChange = () => {
+      setIsBrowserFullScreen(!!document.fullscreenElement);
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 100);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullScreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullScreenChange);
+    };
+  }, []);
+
   return (
-    <div className="w-full h-[calc(100vh-var(--header-height))] flex flex-col md:relative">
+    <div
+      ref={mapContainerRef}
+      className={clsx(
+        "w-full h-[calc(100vh-var(--header-height))] flex flex-col md:relative",
+        isBrowserFullScreen && "overflow-hidden"
+      )}
+    >
       <div className={clsx(
         "w-full transition-all duration-300 ease-in-out",
         isCarouselOpen ? "h-3/5" : "h-[calc(100%-3rem)]",
-        "md:h-full"
+        "md:h-full",
+        isBrowserFullScreen && "h-full" // Ensure it takes full height when in fullscreen
       )}>
         <PetaBanjirClient
           reports={reports}
           evacuationPoints={evacuationPoints}
           onMapClick={handleMapClick}
           selectedReportId={selectedReportId}
+          onToggleFullScreen={handleFullScreenToggle}
+          isBrowserFullScreen={isBrowserFullScreen}
         />
       </div>
       
@@ -130,7 +194,8 @@ export default function PetaBanjirPage() {
         "relative bg-card border-t",
         "transition-all duration-300 ease-in-out",
         isCarouselOpen ? "h-2/5" : "h-12",
-        "md:absolute md:bottom-0 md:left-0 md:right-0 md:z-[1000] md:h-auto md:bg-transparent md:border-none"
+        "md:absolute md:bottom-0 md:left-0 md:right-0 md:z-[1000] md:h-auto md:bg-transparent md:border-none",
+        isBrowserFullScreen && "hidden"
       )}>
         <button 
           onClick={() => setIsCarouselOpen(!isCarouselOpen)}
@@ -151,27 +216,18 @@ export default function PetaBanjirPage() {
           >
             <CarouselContent>
               {reports.map((report, index) => (
-                <CarouselItem key={report.id} className="md:basis-1/2 lg:basis-1/3">
+                <CarouselItem key={report.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
                   <div className="p-1">
-                    <Card 
-                      className={`cursor-pointer transition-all ${selectedReportId === report.id ? 'border-primary shadow-lg' : 'border-border'}`}
+                    <FloodReportCard
+                      id={report.id}
+                      locationName={report.locationName}
+                      waterLevel={report.waterLevel}
+                      timestamp={report.timestamp}
+                      trend={report.trend}
+                      severity={report.severity}
+                      isSelected={selectedReportId === report.id}
                       onClick={() => handleCardClick(report.id, index)}
-                    >
-                      <CardContent className="flex flex-col items-center justify-center p-4 space-y-2">
-                          <div className="flex items-start justify-between w-full">
-                              <div className='flex items-center'>
-                                  <Waves className="w-6 h-6 mr-2 text-blue-500" />
-                                  <span className="text-lg font-bold">{report.waterLevel} cm</span>
-                              </div>
-                              <span className="text-xs text-muted-foreground">
-                                  {formatDistanceToNow(new Date(report.timestamp), { addSuffix: true, locale: id })}
-                              </span>
-                          </div>
-                          <p className="text-sm text-muted-foreground w-full text-left">
-                              Laporan dari sekitar lokasi ini.
-                          </p>
-                      </CardContent>
-                    </Card>
+                    />
                   </div>
                 </CarouselItem>
               ))}

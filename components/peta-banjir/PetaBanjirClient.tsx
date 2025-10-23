@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
 import {
   MapContainer,
@@ -14,8 +14,13 @@ import {
 import L from 'leaflet';
 import ReactDOMServer from 'react-dom/server';
 import clsx from 'clsx';
-import { Waves, User, Maximize, Minimize, Siren } from 'lucide-react';
+import { Waves, User, Maximize, Minimize, Siren, PlusCircle } from 'lucide-react';
 import MapEventsHandler from './MapEventsHandler'; // Menggunakan komponen asli
+import FloodReportCard from './FloodReportCard'; // Import komponen popup kustom
+import FloodReportPopup from './FloodReportPopup'; // Import komponen popup kustom
+import MapInvalidator from './MapInvalidator'; // Import komponen untuk invalidate map size
+import ReportFloodControl from './ReportFloodControl';
+import ReportFloodModal from './ReportFloodModal';
 
 // Tipe data props
 interface FloodReport {
@@ -23,6 +28,9 @@ interface FloodReport {
   position: [number, number];
   timestamp: string;
   waterLevel: number;
+  locationName: string;
+  trend: 'rising' | 'falling' | 'stable';
+  severity: 'low' | 'moderate' | 'high';
 }
 
 interface EvacuationPoint {
@@ -44,6 +52,8 @@ interface PetaBanjirClientProps {
   userLocation?: [number, number] | null;
   onMapClick: (coords: [number, number]) => void;
   selectedReportId?: string | null;
+  onToggleFullScreen: () => void;
+  isBrowserFullScreen: boolean;
 }
 
 // Komponen untuk memusatkan peta ke marker yang dipilih
@@ -64,21 +74,71 @@ export default function PetaBanjirClient({
   userLocation,
   onMapClick,
   selectedReportId,
+  onToggleFullScreen,
+  isBrowserFullScreen,
 }: PetaBanjirClientProps) {
   const jakartaPosition: [number, number] = [-6.2088, 106.8456];
-  const [isFullScreen, setIsFullScreen] = useState(false);
   const [mapCenter, setMapCenter] = useState<[number, number]>(jakartaPosition);
+  const [isReporting, setIsReporting] = useState(false);
+  const [reportLocation, setReportLocation] = useState<L.LatLng | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const markerRefs = useRef<Map<string, L.Marker>>(new Map());
 
   useEffect(() => {
     if (selectedReportId) {
       const report = reports?.find((r) => r.id === selectedReportId);
       if (report) {
         setMapCenter(report.position);
+        // Open the popup for the selected marker
+        const markerInstance = markerRefs.current.get(selectedReportId);
+        if (markerInstance) {
+          markerInstance.openPopup();
+        }
       }
     }
   }, [selectedReportId, reports]);
 
-  const { evacuationIcon, floodIcon, userLocationIcon, selectedFloodIcon } = useMemo(() => {
+  const handleMapClick = useCallback((coords: [number, number]) => {
+    if (isReporting) {
+      setReportLocation(L.latLng(coords[0], coords[1]));
+      setIsModalOpen(true);
+      setIsReporting(false); // Exit reporting mode after selecting location
+    } else {
+      onMapClick(coords);
+    }
+  }, [isReporting, onMapClick]);
+
+  const handleReportSubmit = useCallback((formData: { waterLevel: number; notes: string; image?: File }) => {
+    console.log("Laporan Banjir Baru:", {
+      ...formData,
+      location: reportLocation ? [reportLocation.lat, reportLocation.lng] : null,
+    });
+    // TODO: Implement actual submission logic (e.g., API call)
+    setIsModalOpen(false);
+    setReportLocation(null);
+  }, [reportLocation]);
+
+  const reportMarkerIcon = useMemo(() => {
+    return L.divIcon({
+      className: 'my-custom-pin',
+      iconAnchor: [12, 24],
+      popupAnchor: [0, -24],
+      html: ReactDOMServer.renderToString(
+        <div className="relative flex items-center justify-center">
+          <svg className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></svg>
+          <PlusCircle className="relative inline-flex rounded-full h-6 w-6 text-blue-600 bg-white" />
+        </div>
+      ),
+    });
+  }, []);
+
+  const mostRecentReportId = useMemo(() => {
+    if (!reports || reports.length === 0) return null;
+    const sortedReports = [...reports].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    return sortedReports[0].id;
+  }, [reports]);
+
+  const { evacuationIcon, userLocationIcon, getFloodIcon } = useMemo(() => {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconRetinaUrl:
@@ -102,22 +162,6 @@ export default function PetaBanjirClient({
       popupAnchor: [0, -40],
     });
 
-    const floodIcon = new L.DivIcon({
-      ...baseIconProps,
-      html: ReactDOMServer.renderToString(
-        <Waves className="text-blue-600 bg-white rounded-full p-1" size={24} />,
-      ),
-    });
-    
-    const selectedFloodIcon = new L.DivIcon({
-        ...baseIconProps,
-        iconSize: [32, 32] as L.PointExpression,
-        iconAnchor: [16, 32] as L.PointExpression,
-        html: ReactDOMServer.renderToString(
-          <Siren className="text-red-600 animate-pulse bg-white rounded-full p-1" size={32} />,
-        ),
-      });
-
     const userLocationIcon = new L.DivIcon({
       ...baseIconProps,
       html: ReactDOMServer.renderToString(
@@ -125,52 +169,102 @@ export default function PetaBanjirClient({
       ),
     });
 
-    return { evacuationIcon, floodIcon, userLocationIcon, selectedFloodIcon };
-  }, []);
+    const getFloodIcon = (report: FloodReport, isSelected: boolean, isMostRecent: boolean) => {
+        let iconComponent;
+        let iconColorClass;
+        let iconSize = 24;
+        let iconAnchor = 12;
+        let popupAnchor = -24;
 
-  const toggleFullScreen = useCallback(() => {
-    setIsFullScreen((prev) => !prev);
-    setTimeout(() => {
-      window.dispatchEvent(new Event('resize'));
-    }, 100);
-  }, []);
+        if (isSelected) {
+            iconComponent = <Siren />;
+            iconColorClass = "text-red-600";
+            iconSize = 32;
+            iconAnchor = 16;
+            popupAnchor = -32;
+        } else {
+            switch (report.severity) {
+                case 'low':
+                    iconComponent = <Waves />;
+                    iconColorClass = "text-green-600";
+                    break;
+                case 'moderate':
+                    iconComponent = <Waves />;
+                    iconColorClass = "text-orange-500";
+                    break;
+                case 'high':
+                    iconComponent = <Siren />;
+                    iconColorClass = "text-red-600";
+                    break;
+                default:
+                    iconComponent = <Waves />;
+                    iconColorClass = "text-blue-600";
+            }
+        }
+
+        const animationClass = isMostRecent ? 'animate-pulse' : '';
+
+        return new L.DivIcon({
+            ...baseIconProps,
+            iconSize: [iconSize, iconSize] as L.PointExpression,
+            iconAnchor: [iconAnchor, iconSize] as L.PointExpression,
+            popupAnchor: [0, popupAnchor] as L.PointExpression,
+            html: ReactDOMServer.renderToString(
+                <div className={clsx("bg-white rounded-full p-1", iconColorClass, animationClass)}>
+                    {React.cloneElement(iconComponent, { size: iconSize })}
+                </div>
+            ),
+        });
+    };
+
+    return { evacuationIcon, userLocationIcon, getFloodIcon };
+  }, [reports]);
 
   return (
-    <MapContainer
+    <>
+      <MapContainer
       center={jakartaPosition}
       zoom={12}
       scrollWheelZoom={true}
       zoomControl={false}
-      className={clsx(
-        'w-full h-full z-10 transition-all duration-300',
-        isFullScreen ? 'fixed inset-0 z-[9999]' : 'relative',
-      )}
+      className={
+        'w-full h-full z-10 transition-all duration-300 relative'
+      }
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {/* Menggunakan komponen event handler yang asli */}
-      <MapEventsHandler onMapClick={onMapClick} />
+      <MapEventsHandler onMapClick={handleMapClick} />
       <ChangeView center={mapCenter} zoom={14} />
+      <MapInvalidator isBrowserFullScreen={isBrowserFullScreen} />
 
       <div className="leaflet-top leaflet-right z-[1000] p-2">
         <div className="leaflet-control leaflet-bar bg-white rounded shadow">
           <a
             className="flex items-center justify-center w-8 h-8 cursor-pointer"
             href="#"
-            title={isFullScreen ? 'Keluar Layar Penuh' : 'Tampilan Layar Penuh'}
+            title={'Tampilan Layar Penuh'}
             role="button"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              toggleFullScreen();
+              onToggleFullScreen();
             }}
           >
-            {isFullScreen ? <Minimize size={18} /> : <Maximize size={18} />}
+            {isBrowserFullScreen ? <Minimize size={18} /> : <Maximize size={18} />}
           </a>
         </div>
       </div>
+
+      <ReportFloodControl isReporting={isReporting} onToggleReporting={() => setIsReporting(!isReporting)} />
+
+      {reportLocation && (
+        <Marker position={reportLocation} icon={reportMarkerIcon}>
+          <Popup>Lokasi Laporan Anda</Popup>
+        </Marker>
+      )}
 
       {userLocation && (
         <Marker position={userLocation} icon={userLocationIcon}>
@@ -182,14 +276,19 @@ export default function PetaBanjirClient({
         <Marker
           key={report.id}
           position={report.position}
-          icon={report.id === selectedReportId ? selectedFloodIcon : floodIcon}
+          icon={getFloodIcon(report, report.id === selectedReportId, report.id === mostRecentReportId)}
+          ref={(marker) => {
+            if (marker) {
+              markerRefs.current.set(report.id, marker);
+            } else {
+              markerRefs.current.delete(report.id);
+            }
+          }}
         >
           <Popup>
-            <b>Laporan Banjir</b>
-            <br />
-            Ketinggian: {report.waterLevel} cm
-            <br />
-            Waktu: {new Date(report.timestamp).toLocaleTimeString('id-ID')}
+            <FloodReportPopup
+              report={report}
+            />
           </Popup>
         </Marker>
       ))}
@@ -220,5 +319,12 @@ export default function PetaBanjirClient({
         />
       ))}
     </MapContainer>
+    <ReportFloodModal
+      isOpen={isModalOpen}
+      onOpenChange={setIsModalOpen}
+      onSubmit={handleReportSubmit}
+      location={reportLocation}
+    />
+    </>
   );
 }
