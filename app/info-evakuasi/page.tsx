@@ -58,7 +58,7 @@ export default function InfoEvakuasiPage() {
     import('leaflet').then(leaflet => {
       setL(leaflet);
       setEvacuationIcon(
-        new leaflet.Icon({
+        new leaflet.default.Icon({
           iconUrl: '/assets/evacuation_marker.svg',
           iconSize: [32, 32],
           iconAnchor: [16, 32],

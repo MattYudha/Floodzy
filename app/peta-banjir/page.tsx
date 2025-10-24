@@ -1,26 +1,31 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import { 
-  Carousel, 
-  CarouselContent, 
-  CarouselItem, 
-  CarouselNext, 
-  CarouselPrevious, 
-  type CarouselApi 
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi
 } from "@/components/ui/carousel";
 import { formatDistanceToNow } from 'date-fns';
 import { id } from 'date-fns/locale';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Navigation, Loader2 } from 'lucide-react';
 import clsx from 'clsx';
-import FloodReportCard from '@/components/peta-banjir/FloodReportCard'; // New import
+import FloodReportCard from '@/components/peta-banjir/FloodReportCard';
+import { getHaversineDistance } from '@/lib/mapUtils';
+import { Button } from '@/components/ui/button';
 
 // Dinamis impor PetaBanjirClient untuk menghindari masalah SSR dengan Leaflet
 const PetaBanjirClient = dynamic(() => import('@/components/peta-banjir/PetaBanjirClient'), {
   ssr: false,
   loading: () => <div className="w-full h-full bg-muted animate-pulse" />
 });
+// Dynamic imports for new controls
+const MapSearchControl = dynamic(() => import('@/components/peta-banjir/MapSearchControl'), { ssr: false });
+const MapFilterControl = dynamic(() => import('@/components/peta-banjir/MapFilterControl'), { ssr: false });
 
 // Tipe data harus cocok dengan yang ada di PetaBanjirClient
 interface FloodReport {
@@ -28,16 +33,23 @@ interface FloodReport {
   position: [number, number];
   timestamp: string;
   waterLevel: number;
-  locationName: string; // New property
-  trend: 'rising' | 'falling' | 'stable'; // New property
-  severity: 'low' | 'moderate' | 'high'; // New property
-  imageUrl?: string; // New property
+  locationName: string;
+  trend: 'rising' | 'falling' | 'stable';
+  severity: 'low' | 'moderate' | 'high';
+  imageUrl?: string;
+  isVerified?: boolean; // Added for filter logic
 }
 
 interface EvacuationPoint {
   id: string;
   name: string;
   position: [number, number];
+}
+
+interface FilterState {
+  severity: ('low' | 'moderate' | 'high')[];
+  timeRange: '24h' | '3d' | 'all';
+  status: 'all' | 'verified';
 }
 
 // Mock data dipindahkan ke sini karena kita butuh akses di client component
@@ -51,6 +63,7 @@ const mockFloodReports: FloodReport[] = [
     trend: 'rising',
     severity: 'moderate',
     imageUrl: 'https://placehold.co/600x400/FF9800/FFFFFF/png?text=Banjir+Sedang',
+    isVerified: true,
   },
   {
     id: 'report-2',
@@ -61,6 +74,7 @@ const mockFloodReports: FloodReport[] = [
     trend: 'rising',
     severity: 'high',
     imageUrl: 'https://placehold.co/600x400/F44336/FFFFFF/png?text=Banjir+Tinggi',
+    isVerified: false,
   },
   {
     id: 'report-3',
@@ -70,6 +84,7 @@ const mockFloodReports: FloodReport[] = [
     locationName: "Kebayoran Baru, Jakarta Selatan",
     trend: 'stable',
     severity: 'low',
+    isVerified: true,
   },
   {
     id: 'report-4',
@@ -80,6 +95,7 @@ const mockFloodReports: FloodReport[] = [
     trend: 'falling',
     severity: 'high',
     imageUrl: 'https://placehold.co/600x400/F44336/FFFFFF/png?text=Banjir+Tinggi',
+    isVerified: true,
   },
   {
     id: 'report-5',
@@ -89,6 +105,7 @@ const mockFloodReports: FloodReport[] = [
     locationName: "Cilandak, Jakarta Selatan",
     trend: 'stable',
     severity: 'moderate',
+    isVerified: false,
   },
 ];
 
@@ -105,8 +122,16 @@ export default function PetaBanjirPage() {
   const [isCarouselOpen, setIsCarouselOpen] = useState(true);
   const [isBrowserFullScreen, setIsBrowserFullScreen] = useState(false);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filters, setFilters] = useState<FilterState>({
+    severity: [],
+    timeRange: 'all',
+    status: 'all',
+  });
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(null); // New state
+  const [evacuationRoute, setEvacuationRoute] = useState<{ start: [number, number]; end: [number, number] } | null>(null); // New state
+  const [isRouting, setIsRouting] = useState(false); // New state
 
-  const reports = mockFloodReports;
   const evacuationPoints = mockEvacuationPoints;
 
   const handleFullScreenToggle = () => {
@@ -127,20 +152,75 @@ export default function PetaBanjirPage() {
     }
   };
 
+  const filteredReports = useMemo(() => {
+    let tempReports = mockFloodReports;
+
+    // Apply search query
+    if (searchQuery) {
+      tempReports = tempReports.filter(report =>
+        report.locationName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply severity filter
+    if (filters.severity.length > 0) {
+      tempReports = tempReports.filter(report =>
+        filters.severity.includes(report.severity)
+      );
+    }
+
+    // Apply time range filter
+    const now = new Date();
+    if (filters.timeRange === '24h') {
+      tempReports = tempReports.filter(report =>
+        (now.getTime() - new Date(report.timestamp).getTime()) < 24 * 60 * 60 * 1000
+      );
+    } else if (filters.timeRange === '3d') {
+      tempReports = tempReports.filter(report =>
+        (now.getTime() - new Date(report.timestamp).getTime()) < 3 * 24 * 60 * 60 * 1000
+      );
+    }
+
+    // Apply status filter
+    if (filters.status === 'verified') {
+      tempReports = tempReports.filter(report => report.isVerified);
+    }
+
+    return tempReports;
+  }, [searchQuery, filters]);
+
   useEffect(() => {
+    // If a report was selected, ensure it's still in the filtered list
+    if (selectedReportId && !filteredReports.some(r => r.id === selectedReportId)) {
+      setSelectedReportId(null); // Clear selection if filtered out
+    }
+    // If no report is selected, but there are filtered reports, select the first one
+    if (!selectedReportId && filteredReports.length > 0) {
+      setSelectedReportId(filteredReports[0].id);
+    }
+    // If carousel API exists and there's a selected report, scroll to it
+    if (api && selectedReportId) {
+      const idx = filteredReports.findIndex(r => r.id === selectedReportId);
+      if (idx !== -1) {
+        api.scrollTo(idx);
+      }
+    }
+
     if (!api) return;
- 
+
     const onSelect = () => {
-      const selectedId = reports[api.selectedScrollSnap()].id;
-      setSelectedReportId(selectedId);
+      if (filteredReports.length > 0) {
+        const selectedId = filteredReports[api.selectedScrollSnap()].id;
+        setSelectedReportId(selectedId);
+      }
     };
 
     api.on("select", onSelect);
- 
+
     return () => {
       api.off("select", onSelect);
     };
-  }, [api, reports]);
+  }, [api, filteredReports, selectedReportId]);
 
   const handleMapClick = (coords: [number, number]) => {
     console.log('Map clicked at:', coords);
@@ -149,8 +229,62 @@ export default function PetaBanjirPage() {
   const handleCardClick = (reportId: string, index: number) => {
     setSelectedReportId(reportId);
     if (api) {
-      api.scrollTo(index);
+      const currentReportIndex = filteredReports.findIndex(r => r.id === reportId);
+      if (currentReportIndex !== -1) {
+        api.scrollTo(currentReportIndex);
+      }
     }
+  };
+
+  const handleFindEvacuationRoute = () => {
+    setIsRouting(true);
+    setEvacuationRoute(null); // Hapus rute lama
+    setUserLocation(null); // Hapus lokasi lama
+
+    if (!navigator.geolocation) {
+      console.error("Geolocation tidak didukung oleh browser Anda.");
+      // TODO: Tampilkan toast error
+      setIsRouting(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const userPos: [number, number] = [latitude, longitude];
+        setUserLocation(userPos);
+
+        // Cari posko evakuasi terdekat
+        let nearestPoint = null;
+        let minDistance = Infinity;
+
+        mockEvacuationPoints.forEach(point => {
+          const distance = getHaversineDistance(userPos, point.position);
+          if (distance < minDistance) {
+            minDistance = distance;
+            nearestPoint = point;
+          }
+        });
+
+        if (nearestPoint) {
+          // Set rute untuk di-render oleh PetaBanjirClient
+          setEvacuationRoute({
+            start: userPos,
+            end: nearestPoint.position,
+          });
+          console.log(`Rute evakuasi terdekat ditemukan: ${nearestPoint.name} (${minDistance.toFixed(2)} km)`);
+        } else {
+          console.error("Tidak ada titik evakuasi ditemukan.");
+          // TODO: Tampilkan toast error
+        }
+        setIsRouting(false);
+      },
+      (error) => {
+        console.error("Gagal mendapatkan lokasi:", error);
+        // TODO: Tampilkan toast error (misal: "Izin lokasi ditolak")
+        setIsRouting(false);
+      }
+    );
   };
 
   useEffect(() => {
@@ -171,52 +305,71 @@ export default function PetaBanjirPage() {
     <div
       ref={mapContainerRef}
       className={clsx(
-        "w-full h-[calc(100vh-var(--header-height))] flex flex-col md:relative",
+        "w-full h-screen relative",
         isBrowserFullScreen && "overflow-hidden"
       )}
     >
       <div className={clsx(
-        "w-full transition-all duration-300 ease-in-out",
-        isCarouselOpen ? "h-3/5" : "h-[calc(100%-3rem)]",
-        "md:h-full",
-        isBrowserFullScreen && "h-full" // Ensure it takes full height when in fullscreen
+        "fixed inset-0 z-0"
       )}>
         <PetaBanjirClient
-          reports={reports}
+          reports={filteredReports}
           evacuationPoints={evacuationPoints}
           onMapClick={handleMapClick}
           selectedReportId={selectedReportId}
           onToggleFullScreen={handleFullScreenToggle}
           isBrowserFullScreen={isBrowserFullScreen}
-        />
+          userLocation={userLocation} // New prop
+          evacuationRoute={evacuationRoute} // New prop
+        >
+          {/* Controls rendered as children of PetaBanjirClient which wraps MapContainer */}
+          <MapSearchControl onSearch={setSearchQuery} />
+          <div className="absolute top-24 right-4 z-[1001] flex flex-col space-y-2">
+            <MapFilterControl onApplyFilters={setFilters} initialFilters={filters} />
+            {/* TOMBOL BARU RUTE EVAKUASI */}
+            <Button
+              variant="secondary"
+              size="icon"
+              className="shadow-lg pointer-events-auto"
+              onClick={handleFindEvacuationRoute}
+              disabled={isRouting}
+            >
+              {isRouting ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Navigation className="w-5 h-5" />
+              )}
+            </Button>
+          </div>
+        </PetaBanjirClient>
       </div>
-      
+
       <div className={clsx(
-        "relative bg-card border-t",
+        "fixed bottom-0 left-0 right-0 z-10 p-4 pointer-events-none",
+        "bg-gradient-to-t from-background via-background/80 to-transparent",
         "transition-all duration-300 ease-in-out",
-        isCarouselOpen ? "h-2/5" : "h-12",
-        "md:absolute md:bottom-0 md:left-0 md:right-0 md:z-[1000] md:h-auto md:bg-transparent md:border-none",
+        isCarouselOpen ? "h-auto" : "h-12",
         isBrowserFullScreen && "hidden"
       )}>
-        <button 
+        <button
           onClick={() => setIsCarouselOpen(!isCarouselOpen)}
-          className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 bg-card p-1 rounded-full border shadow-md md:hidden"
+          className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 bg-card p-1 rounded-full border shadow-md md:hidden pointer-events-auto"
           aria-label="Toggle report panel"
         >
           {isCarouselOpen ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
         </button>
 
         <div className={clsx(
-            "p-4 h-full w-full transition-opacity duration-100",
+            "p-4 w-full transition-opacity duration-100 pointer-events-auto",
             isCarouselOpen ? 'opacity-100' : 'opacity-0 invisible'
         )}>
-          <Carousel 
+          <Carousel
             setApi={setApi}
-            opts={{ align: "start", loop: reports.length > 3 }}
+            opts={{ align: "start", loop: filteredReports.length > 3 }}
             className="w-full max-w-4xl mx-auto"
           >
             <CarouselContent>
-              {reports.map((report, index) => (
+              {filteredReports.map((report, index) => (
                 <CarouselItem key={report.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
                   <div className="p-1">
                     <FloodReportCard

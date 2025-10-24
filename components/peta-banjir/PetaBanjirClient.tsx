@@ -10,17 +10,23 @@ import {
   Polyline,
   Circle,
   useMap,
+  LayersControl,
 } from 'react-leaflet';
 import L from 'leaflet';
 import ReactDOMServer from 'react-dom/server';
 import clsx from 'clsx';
 import { Waves, User, Maximize, Minimize, Siren, PlusCircle } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import MapEventsHandler from './MapEventsHandler'; // Menggunakan komponen asli
 import FloodReportCard from './FloodReportCard'; // Import komponen popup kustom
 import FloodReportPopup from './FloodReportPopup'; // Import komponen popup kustom
 import MapInvalidator from './MapInvalidator'; // Import komponen untuk invalidate map size
 import ReportFloodControl from './ReportFloodControl';
 import ReportFloodModal from './ReportFloodModal';
+
+const EvacuationRouting = dynamic(() => import('@/components/peta-banjir/EvacuationRouting'), {
+  ssr: false,
+});
 
 // Tipe data props
 interface FloodReport {
@@ -54,6 +60,8 @@ interface PetaBanjirClientProps {
   selectedReportId?: string | null;
   onToggleFullScreen: () => void;
   isBrowserFullScreen: boolean;
+  children?: React.ReactNode;
+  evacuationRoute?: { start: [number, number]; end: [number, number] } | null; // New prop
 }
 
 // Komponen untuk memusatkan peta ke marker yang dipilih
@@ -76,6 +84,8 @@ export default function PetaBanjirClient({
   selectedReportId,
   onToggleFullScreen,
   isBrowserFullScreen,
+  children,
+  evacuationRoute,
 }: PetaBanjirClientProps) {
   const jakartaPosition: [number, number] = [-6.2088, 106.8456];
   const [mapCenter, setMapCenter] = useState<[number, number]>(jakartaPosition);
@@ -162,11 +172,11 @@ export default function PetaBanjirClient({
       popupAnchor: [0, -40],
     });
 
-    const userLocationIcon = new L.DivIcon({
-      ...baseIconProps,
-      html: ReactDOMServer.renderToString(
-        <User className="text-red-600 bg-white rounded-full p-1" size={24} />,
-      ),
+    const userLocationIcon = L.divIcon({
+      className: 'custom-user-location-icon',
+      html: `<div class="w-4 h-4 rounded-full bg-blue-500 border-2 border-white ring-4 ring-blue-500 ring-opacity-50 shadow-lg"></div>`,
+      iconSize: [16, 16],
+      iconAnchor: [8, 8],
     });
 
     const getFloodIcon = (report: FloodReport, isSelected: boolean, isMostRecent: boolean) => {
@@ -231,10 +241,25 @@ export default function PetaBanjirClient({
         'w-full h-full z-10 transition-all duration-300 relative'
       }
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+      <LayersControl position="topright">
+        {/* 1. Peta Dasar */}
+        <LayersControl.BaseLayer checked name="Peta Dasar (OpenStreetMap)">
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+        </LayersControl.BaseLayer>
+
+        {/* 2. Layer Overlay Baru untuk Radar BMKG */}
+        {/* <LayersControl.Overlay checked name="Radar Cuaca (BMKG)">
+          <TileLayer
+            url="https://nowcast.bmkg.go.id/data/radar/composite/{z}/{x}/{y}.png"
+            attribution="&copy; BMKG"
+            opacity={0.7}
+            zIndex={10} // Pastikan radar di atas peta dasar
+          />
+        </LayersControl.Overlay> */}
+      </LayersControl>
       {/* Menggunakan komponen event handler yang asli */}
       <MapEventsHandler onMapClick={handleMapClick} />
       <ChangeView center={mapCenter} zoom={14} />
@@ -268,8 +293,15 @@ export default function PetaBanjirClient({
 
       {userLocation && (
         <Marker position={userLocation} icon={userLocationIcon}>
-          <Popup>Titik Awal Anda</Popup>
+          <Popup>Lokasi Anda Saat Ini</Popup>
         </Marker>
+      )}
+
+      {evacuationRoute && (
+        <EvacuationRouting
+          start={evacuationRoute.start}
+          end={evacuationRoute.end}
+        />
       )}
 
       {reports?.map((report) => (
@@ -318,6 +350,7 @@ export default function PetaBanjirClient({
           pathOptions={{ color: 'red', fillColor: 'red', fillOpacity: 0.3 }}
         />
       ))}
+      {children}
     </MapContainer>
     <ReportFloodModal
       isOpen={isModalOpen}

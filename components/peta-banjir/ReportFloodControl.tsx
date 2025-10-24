@@ -4,7 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import ReactDOM from 'react-dom';
-import { PlusCircle, XCircle } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import clsx from 'clsx';
 
 interface ReportFloodControlProps {
@@ -48,18 +49,15 @@ export default function ReportFloodControl({
   }
 
   return ReactDOM.createPortal(
-    <div
-      className={clsx(
-        "flex items-center justify-center w-8 h-8 cursor-pointer",
-        isReporting ? "bg-red-500 text-white" : "bg-white text-gray-700",
-        "rounded shadow-md hover:bg-gray-100 transition-colors duration-200"
-      )}
-      title={isReporting ? "Batalkan Mode Lapor" : "Aktifkan Mode Lapor"}
-      role="button"
+    <Button
+      variant={isReporting ? "destructive" : "default"}
+      size="icon"
+      className="shadow-lg pointer-events-auto"
       onClick={onToggleReporting}
+      title={isReporting ? "Batalkan Mode Lapor" : "Aktifkan Mode Lapor"}
     >
-      {isReporting ? <XCircle size={18} /> : <PlusCircle size={18} />}
-    </div>,
+      <Plus className="w-5 h-5" />
+    </Button>,
     controlContainer
   );
 }
