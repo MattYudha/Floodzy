@@ -259,7 +259,7 @@ importers:
         specifier: latest
         version: 6.9.1
       '@types/leaflet':
-        specifier: ^1.9.20
+        specifier: ^1.9.21
         version: 1.9.21
       '@types/leaflet-routing-machine':
         specifier: ^3.2.9
