@@ -82,7 +82,7 @@ import { InfrastructureStatusCard } from '@/components/dashboard/InfrastructureS
 import type { FloodAlert as FloodAlertType, WeatherStation } from '@/types';
 import { SelectedLocation } from '@/types/location';
 import { MapBounds } from '@/types';
-import type { Map as LeafletMap } from 'leaflet';
+
 
 const FloodMap = dynamic(
   () => import('@/components/map/FloodMap').then((mod) => mod.FloodMap),
@@ -141,7 +141,7 @@ export function DashboardClientPage({ initialData }) {
   const [isDashboardMapFullscreen, setIsDashboardMapFullscreen] =
     useState(false);
   const chatScrollRef = useRef<HTMLDivElement>(null);
-  const mobileMapRef = useRef<LeafletMap | null>(null);
+  const mobileMapRef = useRef<any | null>(null);
 
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

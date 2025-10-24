@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import L, { Icon, LatLngExpression } from 'leaflet';
+import L from 'leaflet';
 import {
   RotateCcw,
   Maximize2,
@@ -116,7 +116,7 @@ const createWeatherIcon = (iconCode: string) => {
 
   const encodedSvg = btoa(unescape(encodeURIComponent(svgString)));
 
-  return new Icon({
+  return new (L as any).Icon({
     iconUrl: `data:image/svg+xml;base64,${encodedSvg}`,
     iconSize: [30, 30],
     iconAnchor: [15, 30],
@@ -158,7 +158,7 @@ function MapReset({
   center,
   zoom,
 }: {
-  center: LatLngExpression;
+  center: [number, number];
   zoom: number;
 }) {
   const map = useMap();
@@ -230,7 +230,7 @@ function WeatherLayers({
         }
 
         if (layerUrl) {
-          const weatherLayer = L.tileLayer(layerUrl, {
+          const weatherLayer = (L as any).tileLayer(layerUrl, {
             attribution: 'Weather data © OpenWeatherMap',
             opacity: opacity,
             maxZoom: 18,
@@ -257,7 +257,7 @@ export function WeatherMap({
   onToggleLayer,
 }: WeatherMapProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const mapRef = useRef<L.Map | null>(null);
+  const mapRef = useRef<any | null>(null);
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
@@ -276,17 +276,21 @@ export function WeatherMap({
       style={{ height: isFullscreen ? '100vh' : '100%' }}
     >
       <MapContainer
-        center={center}
-        zoom={zoom}
-        scrollWheelZoom={true}
-        className="w-full h-full"
-        ref={mapRef as any}
-        zoomControl={false}
+        {...{
+          center: center as any,
+          zoom: zoom,
+          scrollWheelZoom: true,
+          className: "w-full h-full",
+          ref: mapRef as any,
+          zoomControl: false,
+        } as any}
       >
         {/* Base tile layer */}
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          {...{
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          } as any}
         />
 
         {/* Weather layers */}
@@ -301,10 +305,12 @@ export function WeatherMap({
         {/* Location marker */}
         {selectedLocation?.lat && selectedLocation?.lon && (
           <Marker
-            position={[selectedLocation.lat, selectedLocation.lon]}
-            icon={createWeatherIcon(
-              currentWeatherData?.current?.weather?.[0]?.icon || '',
-            )}
+            {...{
+              position: [selectedLocation.lat, selectedLocation.lon],
+              icon: createWeatherIcon(
+                currentWeatherData?.current?.weather?.[0]?.icon || '',
+              ),
+            } as any}
           >
             <Popup>
               <Card className="min-w-[250px] p-4 border-0 shadow-none">

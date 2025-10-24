@@ -25,19 +25,19 @@ import { EvacuationLocation } from '@/types'; // Pastikan tipe ini diperbarui di
 import dynamic from 'next/dynamic';
 
 // Dynamic imports for Leaflet components to avoid SSR issues
-const MapContainer = dynamic(
+const MapContainer = dynamic<any>(
   () => import('react-leaflet').then((mod) => mod.MapContainer),
   { ssr: false },
 );
-const TileLayer = dynamic(
+const TileLayer = dynamic<any>(
   () => import('react-leaflet').then((mod) => mod.TileLayer),
   { ssr: false },
 );
-const Marker = dynamic(
+const Marker = dynamic<any>(
   () => import('react-leaflet').then((mod) => mod.Marker),
   { ssr: false },
 );
-const Popup = dynamic(
+const Popup = dynamic<any>(
   () => import('react-leaflet').then((mod) => mod.Popup),
   { ssr: false },
 );
@@ -56,9 +56,14 @@ export default function InfoEvakuasiPage() {
 
   useEffect(() => {
     import('leaflet').then(leaflet => {
-      setL(leaflet);
+      // The leaflet object could be the L namespace directly,
+      // or it could be a module object with a .default property.
+      // Let's handle both cases.
+      const L = (leaflet.default || leaflet) as any;
+
+      setL(L);
       setEvacuationIcon(
-        new leaflet.default.Icon({
+        new L.Icon({
           iconUrl: '/assets/evacuation_marker.svg',
           iconSize: [32, 32],
           iconAnchor: [16, 32],

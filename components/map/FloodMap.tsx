@@ -4,23 +4,18 @@
 import React from 'react'; // Add this line
 
 // Impor React-Leaflet
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  Polygon,
-  useMap,
-  useMapEvents,
-} from 'react-leaflet';
-import L, { Icon, LatLngExpression } from 'leaflet';
+import { useMap, useMapEvents } from 'react-leaflet';
+import dynamic from 'next/dynamic';
+
+const MapContainer = dynamic<any>(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
+const TileLayer = dynamic<any>(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
+const Marker = dynamic<any>(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false });
+const Popup = dynamic<any>(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false });
+const Polygon = dynamic<any>(() => import('react-leaflet').then(mod => mod.Polygon), { ssr: false });
+import L from 'leaflet';
 
 // Explicitly set default icon paths for Leaflet
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: '/leaflet/images/marker-icon-2x.png',
-  iconUrl: '/leaflet/images/marker-icon.png',
-  shadowUrl: '/leaflet/images/marker-shadow.png',
-});
+
 
 // Konfigurasi ikon default Leaflet
 
@@ -118,7 +113,7 @@ const createCustomIcon = (color: string, iconHtml: string) => {
 
   const encodedSvg = btoa(unescape(encodeURIComponent(svgString)));
 
-  return new Icon({
+  return new (L as any).Icon({
     iconUrl: `data:image/svg+xml;base64,${encodedSvg}`,
     iconSize: [25, 25],
     iconAnchor: [12, 25],
@@ -174,8 +169,8 @@ function MapUpdater({ center, zoom }: MapUpdaterProps) {
 
 
 interface MapEventsProps {
-  onLocationSelect: (latlng: LatLngExpression) => void;
-  onReverseGeocode: (latlng: LatLngExpression, locationName: GeocodingResponse) => void;
+  onLocationSelect: (latlng: any) => void;
+  onReverseGeocode: (latlng: any, locationName: GeocodingResponse) => void;
 }
 
 function MapEvents({ onLocationSelect, onReverseGeocode }: MapEventsProps) {
@@ -220,7 +215,7 @@ function MapBoundsUpdater({ onMapBoundsChange }: MapBoundsUpdaterProps) {
 interface FloodMapProps {
   className?: string;
   height?: string;
-  onLocationSelect?: (location: LatLngExpression) => void;
+  onLocationSelect?: (location: any) => void;
   center?: [number, number];
   zoom?: number;
   floodProneData?: OverpassElement[];
@@ -239,12 +234,12 @@ interface FloodMapProps {
   globalWeatherStations?: WeatherStation[];
   isFullscreen: boolean; // Prop for fullscreen state
   onFullscreenToggle: () => void; // Prop for fullscreen toggle function
-  onMapLoad?: (map: L.Map) => void; // NEW: Callback to get map instance
+  onMapLoad?: (map: any) => void; // NEW: Callback to get map instance
   showFullscreenButton?: boolean; // NEW: To hide the fullscreen button
          activeLayer?: string | null; // NEW: Add activeLayer prop
        }
 
-function MapEffect({ onMapLoad, mapRef }: { onMapLoad?: (map: L.Map) => void, mapRef: React.MutableRefObject<L.Map | null> }) {
+function MapEffect({ onMapLoad, mapRef }: { onMapLoad?: (map: any) => void, mapRef: React.MutableRefObject<any | null> }) {
     const map = useMap();
 
     useEffect(() => {
@@ -321,21 +316,17 @@ export const FloodMap = React.memo(function FloodMap({
   const [showCrowdsourcedReports, setShowCrowdsourcedReports] = useState(true); // NEW: State for crowdsourced reports visibility
   const [showOfficialBPBDData, setShowOfficialBPBDData] = useState(true); // NEW: State for official BPBD data visibility
   const [floodZones] = useState<FloodZone[]>(FLOOD_ZONES_MOCK); // Mock data asli
-  const mapRef = useRef<L.Map | null>(null);
+  const mapRef = useRef<any | null>(null);
 
-  useEffect(() => {
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: '/leaflet/images/marker-icon-2x.png',
-      iconUrl: '/leaflet/images/marker-icon.png',
-      shadowUrl: '/leaflet/images/marker-shadow.png',
-    });
-  }, []);
+  
+
+  
 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchedLocation, setSearchedLocation] =
     useState<GeocodingResponse | null>(null);
   const [clickedLocation, setClickedLocation] = useState<{
-    latlng: LatLngExpression;
+    latlng: any;
     name: string;
   } | null>(null);
 
@@ -397,7 +388,7 @@ export const FloodMap = React.memo(function FloodMap({
     }
   };
 
-  const handleMapClick = (latlng: LatLngExpression, locationName: GeocodingResponse) => {
+  const handleMapClick = (latlng: any, locationName: GeocodingResponse) => {
     setClickedLocation({
       latlng,
       name: locationName?.name || 'Lokasi tidak diketahui',
@@ -883,7 +874,7 @@ export const FloodMap = React.memo(function FloodMap({
             // RENDER POLYGON UNTUK ELEMENT DENGAN GEOMETRI (WAY/RELATION)
             if (element.geometry && element.geometry.length > 0) {
               const positions = element.geometry.map(
-                (coord) => [coord.lat, coord.lon] as LatLngExpression,
+                (coord) => [coord.lat, coord.lon] as any,
               );
 
               return (
@@ -1012,7 +1003,7 @@ export const FloodMap = React.memo(function FloodMap({
               // Flattern array jika nested ([[lat,lng],[lat,lng]]) -> [[lat,lng],[lat,lng]]
               const flatCoordinates = alert.polygonCoordinates
                 .flat()
-                .map((coords) => [coords[0], coords[1]] as LatLngExpression);
+                .map((coords) => [coords[0], coords[1]] as any);
 
               return (
                 <Polygon

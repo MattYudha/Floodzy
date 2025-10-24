@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import ReactDOM from 'react-dom';
 import { Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import clsx from 'clsx';
 
 interface ReportFloodControlProps {
@@ -18,17 +18,20 @@ export default function ReportFloodControl({
   onToggleReporting,
 }: ReportFloodControlProps) {
   const map = useMap();
-  const controlRef = useRef<HTMLDivElement>(null);
-  const [controlContainer, setControlContainer] = useState<HTMLElement | null>(null);
+  const controlContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!controlRef.current) return;
+    if (!controlContainerRef.current) return;
 
-    const CustomControl = L.Control.extend({
+    const CustomControl = (L as any).Control.extend({
       onAdd: function () {
-        const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-        L.DomEvent.disableClickPropagation(div);
-        setControlContainer(div);
+        const div = (L as any).DomUtil.create(
+          'div',
+          'leaflet-bar leaflet-control',
+        );
+        // Append the React button container to the Leaflet control's div
+        controlContainerRef.current?.appendChild(div);
+        (L as any).DomEvent.disableClickPropagation(div);
         return div;
       },
       onRemove: function () {
@@ -39,25 +42,32 @@ export default function ReportFloodControl({
     const control = new CustomControl({ position: 'topleft' });
     control.addTo(map);
 
+    // Render the React component into the control container
+    const portalDiv = (L as any).DomUtil.create('div', '');
+    controlContainerRef.current.appendChild(portalDiv);
+    ReactDOM.render(
+      <Button
+        variant={isReporting ? 'destructive' : 'default'}
+        size="icon"
+        className="shadow-lg pointer-events-auto"
+        onClick={onToggleReporting}
+        title={isReporting ? 'Batalkan Mode Lapor' : 'Aktifkan Mode Lapor'}
+      >
+        <Plus className="w-5 h-5" />
+      </Button>,
+      portalDiv,
+    );
+
     return () => {
       control.remove();
+      ReactDOM.unmountComponentAtNode(portalDiv);
     };
-  }, [map]);
+  }, [map, isReporting, onToggleReporting]);
 
-  if (!controlContainer) {
-    return null;
-  }
-
-  return ReactDOM.createPortal(
-    <Button
-      variant={isReporting ? "destructive" : "default"}
-      size="icon"
-      className="shadow-lg pointer-events-auto"
-      onClick={onToggleReporting}
-      title={isReporting ? "Batalkan Mode Lapor" : "Aktifkan Mode Lapor"}
-    >
-      <Plus className="w-5 h-5" />
-    </Button>,
-    controlContainer
+  return (
+    <div
+      ref={controlContainerRef}
+      className="leaflet-top leaflet-left z-[1000] p-2"
+    ></div>
   );
 }

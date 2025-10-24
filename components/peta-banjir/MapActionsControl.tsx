@@ -1,14 +1,11 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { useMap } from 'react-leaflet';
+import React, { useState } from 'react';
 import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-  DialogClose,
-} from '@/components/ui/dialog';
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { Button } from '@/components/ui/Button';
 import {
   SlidersHorizontal,
@@ -16,7 +13,9 @@ import {
   Clock,
   AlertCircle,
   CheckCircle2,
-  X, // Impor ikon X untuk tombol close
+  Navigation,
+  Loader2,
+  Plus,
 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
@@ -28,25 +27,30 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useSidebar } from '@/components/layout/ClientLayoutWrapper';
+import { cn } from '@/lib/utils';
 
-interface MapFilterControlProps {
+interface MapActionsControlProps {
   onApplyFilters: (filters: any) => void;
   initialFilters?: {
     severity: string[];
     timeRange: string;
     status: string;
   };
+  handleFindEvacuationRoute: () => void;
+  isRouting: boolean;
+  onReportStart: () => void;
+  isReporting: boolean;
 }
 
-const MapFilterControl: React.FC<MapFilterControlProps> = ({
+const MapActionsControl: React.FC<MapActionsControlProps> = ({
   onApplyFilters,
   initialFilters,
+  handleFindEvacuationRoute,
+  isRouting,
+  onReportStart,
+  isReporting,
 }) => {
-  const map = useMap();
-  const controlRef = useRef<any | null>(null);
-  const [controlContainer, setControlContainer] = useState<HTMLElement | null>(
-    null,
-  );
   const [filters, setFilters] = useState(
     initialFilters || {
       severity: [],
@@ -56,41 +60,7 @@ const MapFilterControl: React.FC<MapFilterControlProps> = ({
   );
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    if (!map) return;
-
-    const L = (window as any).L;
-    if (!L) {
-      console.error('Leaflet (L) not found on window object.');
-      return;
-    }
-
-    const CustomControl = (L as any).Control.extend({
-      onAdd: function (map: any) {
-        const container = (L as any).DomUtil.create(
-          'div',
-          'leaflet-control-filter leaflet-bar',
-        );
-        (L as any).DomEvent.disableClickPropagation(container);
-        (L as any).DomEvent.disableScrollPropagation(container);
-        setControlContainer(container);
-        return container;
-      },
-      onRemove: function (map: any) {
-        setControlContainer(null);
-      },
-    });
-
-    const control = new CustomControl({ position: 'topright' });
-    controlRef.current = control.addTo(map);
-
-    return () => {
-      if (controlRef.current) {
-        map.removeControl(controlRef.current);
-        controlRef.current = null;
-      }
-    };
-  }, [map]);
+  const { isCollapsed, isDesktop } = useSidebar();
 
   const handleChange = (filterType: string, value: any) => {
     const newFilters = { ...filters, [filterType]: value };
@@ -103,30 +73,15 @@ const MapFilterControl: React.FC<MapFilterControlProps> = ({
     (filters.timeRange !== 'all' ? 1 : 0) +
     (filters.status !== 'all' ? 1 : 0);
 
-  if (!controlContainer) {
-    return null;
-  }
+  const dynamicRightClass = isDesktop
+    ? (isCollapsed ? 'right-[2rem]' : 'right-[14rem]')
+    : 'right-[2rem]';
 
-  const customControlStyle = `
-    .leaflet-control-filter {
-      position: absolute !important;
-      right: 0px;
-      top: calc(50vh - 10px);
-      transform: translateY(-50%);
-      margin-top: 0 !important;
-      margin-bottom: 0 !important;
-    }
-  `;
-
-  return createPortal(
-    <div className="pointer-events-auto">
-      <style>{customControlStyle}</style>
-
-      {/* Gunakan Dialog sebagai pengganti Popover */}
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger asChild>
-          {/* Tombol trigger ini tetap sama */}
-          <div>
+  return (
+    <div className={cn("fixed top-[5rem] z-[9999] pointer-events-none", dynamicRightClass)}>
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <div className="pointer-events-auto">
             <Button
               variant="secondary"
               size="icon"
@@ -141,76 +96,60 @@ const MapFilterControl: React.FC<MapFilterControlProps> = ({
                 group
               "
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 rounded-2xl pointer-events-none" />
               <SlidersHorizontal className="w-5 h-5 relative z-10 text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
               {activeFiltersCount > 0 && (
                 <span
                   className="
-                    absolute -top-1 -right-1 z-20
-                    flex items-center justify-center
-                    h-5 w-5 rounded-full
-                    bg-gradient-to-br from-blue-500 to-cyan-500
-                    text-white text-xs font-bold
-                    shadow-lg
-                    animate-in zoom-in duration-200
-                  "
+                  absolute -top-1 -right-1 z-20
+                  flex items-center justify-center
+                  h-5 w-5 rounded-full
+                  bg-gradient-to-br from-blue-500 to-cyan-500
+                  text-white text-xs font-bold
+                  shadow-lg
+                  animate-in zoom-in duration-200
+                "
                 >
                   {activeFiltersCount}
                 </span>
               )}
             </Button>
           </div>
-        </DialogTrigger>
+        </PopoverTrigger>
 
-        {/* DialogContent akan muncul di tengah dengan latar belakang buram */}
-        <DialogContent
+        <PopoverContent
           className="
-            max-w-xs w-[calc(100vw-2rem)] sm:w-80 p-0 pointer-events-auto
+            max-w-xs w-[calc(80vw-2rem)] sm:w-80 p-0 pointer-events-auto
+            max-h-[80vh] sm:max-h-none
             backdrop-blur-xl bg-white/95 dark:bg-gray-900/95
-            border-none
+            border border-white/20 dark:border-gray-700/30
             shadow-[0_20px_60px_0_rgba(0,0,0,0.2)]
             rounded-2xl
             overflow-hidden
           "
+          align="end"
+          sideOffset={8}
         >
-          {/* Header */}
-          <div className="relative px-6 py-5 border-b border-gray-200/50 dark:border-gray-700/50">
+          {/* Header with gradient */}
+          <div className="relative px-4 py-3 border-b border-gray-200/50 dark:border-gray-700/50 sm:px-6 sm:py-5">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 dark:from-blue-500/10 dark:to-cyan-500/10" />
             <div className="relative flex items-center gap-3">
               <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg">
-                <Filter className="w-5 h-5 text-white" />
+                <Filter className="w-4 h-4 text-white sm:w-5 sm:h-5" />
               </div>
               <div>
-                <h4 className="font-semibold text-lg text-gray-900 dark:text-gray-100">
+                <h4 className="font-semibold text-base sm:text-lg text-gray-900 dark:text-gray-100">
                   Filter Laporan
                 </h4>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                   Saring laporan di peta
                 </p>
               </div>
             </div>
-
-            {/* Tombol Close (X) */}
-            <DialogClose asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="
-                  absolute top-3 right-3
-                  h-8 w-8 rounded-full 
-                  text-gray-500 dark:text-gray-400 
-                  hover:bg-gray-500/10 dark:hover:bg-white/10
-                  focus:ring-0
-                "
-              >
-                <X className="w-5 h-5" />
-              </Button>
-            </DialogClose>
           </div>
 
-          {/* Konten Filter */}
-          <div className="p-6 space-y-6">
-            {/* Tingkat Keparahan */}
+          {/* Content */}
+          <div className="p-6 space-y-6 overflow-y-auto">
+            {/* Severity Filter */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 text-gray-500" />
@@ -229,7 +168,9 @@ const MapFilterControl: React.FC<MapFilterControlProps> = ({
                   value="low"
                   className="
                     data-[state=on]:bg-green-500/10 data-[state=on]:text-green-700 dark:data-[state=on]:text-green-400
-                    data-[state=on]:border-green-500/50 rounded-xl font-medium
+                    data-[state=on]:border-green-500/50
+                    rounded-xl font-medium transition-all
+                    hover:bg-green-500/5
                   "
                 >
                   Rendah
@@ -238,7 +179,9 @@ const MapFilterControl: React.FC<MapFilterControlProps> = ({
                   value="moderate"
                   className="
                     data-[state=on]:bg-yellow-500/10 data-[state=on]:text-yellow-700 dark:data-[state=on]:text-yellow-400
-                    data-[state=on]:border-yellow-500/50 rounded-xl font-medium
+                    data-[state=on]:border-yellow-500/50
+                    rounded-xl font-medium transition-all
+                    hover:bg-yellow-500/5
                   "
                 >
                   Sedang
@@ -247,7 +190,9 @@ const MapFilterControl: React.FC<MapFilterControlProps> = ({
                   value="high"
                   className="
                     data-[state=on]:bg-red-500/10 data-[state=on]:text-red-700 dark:data-[state=on]:text-red-400
-                    data-[state=on]:border-red-500/50 rounded-xl font-medium
+                    data-[state=on]:border-red-500/50
+                    rounded-xl font-medium transition-all
+                    hover:bg-red-500/5
                   "
                 >
                   Tinggi
@@ -255,9 +200,10 @@ const MapFilterControl: React.FC<MapFilterControlProps> = ({
               </ToggleGroup>
             </div>
 
+            {/* Divider */}
             <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
 
-            {/* Rentang Waktu */}
+            {/* Time Range Filter */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-gray-500" />
@@ -286,9 +232,10 @@ const MapFilterControl: React.FC<MapFilterControlProps> = ({
               </Select>
             </div>
 
+            {/* Divider */}
             <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
 
-            {/* Status Laporan */}
+            {/* Status Filter */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-gray-500" />
@@ -321,9 +268,43 @@ const MapFilterControl: React.FC<MapFilterControlProps> = ({
                 </div>
               </RadioGroup>
             </div>
+
+            {/* Divider */}
+            <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
+
+            {/* Action Buttons */}
+            <div className="flex flex-col space-y-3">
+              <Button
+                variant="secondary"
+                className="w-full justify-start pointer-events-auto"
+                onClick={() => {
+                  handleFindEvacuationRoute();
+                  setIsOpen(false); // Close popover after action
+                }}
+                disabled={isRouting}
+              >
+                {isRouting ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Navigation className="w-4 h-4 mr-2" />
+                )}
+                Cari Rute Evakuasi
+              </Button>
+              <Button
+                variant={isReporting ? 'destructive' : 'default'}
+                className="w-full justify-start pointer-events-auto"
+                onClick={() => {
+                  onReportStart();
+                  setIsOpen(false); // Close popover after action
+                }}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                {isReporting ? 'Batalkan Lapor' : 'Lapor Banjir'}
+              </Button>
+            </div>
           </div>
 
-          {/* Footer */}
+          {/* Footer info */}
           {activeFiltersCount > 0 && (
             <div className="px-6 py-4 bg-blue-500/5 dark:bg-blue-500/10 border-t border-gray-200/50 dark:border-gray-700/50">
               <p className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-2">
@@ -332,11 +313,10 @@ const MapFilterControl: React.FC<MapFilterControlProps> = ({
               </p>
             </div>
           )}
-        </DialogContent>
-      </Dialog>
-    </div>,
-    controlContainer,
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 };
 
-export default MapFilterControl;
+export default MapActionsControl;

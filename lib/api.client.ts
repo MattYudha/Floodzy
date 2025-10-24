@@ -150,7 +150,7 @@ export async function fetchPumpStatusData(
 export async function fetchBmkgLatestQuake(): Promise<BmkgGempaData> {
   const url = 'https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json';
   try {
-    const data: BmkgGempaData = await safeFetch(url, { cache: 'no-store' }, 'Gagal mengambil data gempa BMKG. Silakan coba lagi.');
+    const data: BmkgGempaData = await safeFetch(url, { next: { revalidate: 60 } }, 'Gagal mengambil data gempa BMKG. Silakan coba lagi.');
     if (data && (data as any).Infogempa && (data as any).Infogempa.gempa) {
       return (data as any).Infogempa.gempa;
     }
@@ -168,7 +168,7 @@ export async function fetchPetabencanaReports(
   const baseUrl = getBaseUrl(); // MODIFIED to use getBaseUrl
   const apiUrl = `${baseUrl}/api/petabencana-proxy-new?hazardType=${hazardType}&timeframe=${timeframe}`;
   try {
-    const responseData = await safeFetch<any>(apiUrl, { cache: 'no-store' }, 'Gagal mengambil laporan PetaBencana.id. Silakan coba lagi.');
+    const responseData = await safeFetch<any>(apiUrl, { next: { revalidate: 60 } }, 'Gagal mengambil laporan PetaBencana.id. Silakan coba lagi.');
 
     // Access the features array from the result object
     const features = responseData?.result?.features;

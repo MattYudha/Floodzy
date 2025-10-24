@@ -1,19 +1,18 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import { useMapEvents } from 'react-leaflet';
+import dynamic from 'next/dynamic';
+
+const MapContainer = dynamic<any>(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
+const TileLayer = dynamic<any>(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
+const Marker = dynamic<any>(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false });
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { MapPin, LocateFixed } from 'lucide-react';
 
 // Fix for default marker icon issue with Leaflet
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-});
+
 
 interface MapPickerProps {
   currentPosition: [number, number];
@@ -26,7 +25,7 @@ interface MapEventsHandlerProps {
   setPosition: React.Dispatch<React.SetStateAction<[number, number]>>;
   onPositionChange: (position: { lat: number; lng: number }) => void;
   onLocationNameChange: (name: string) => void;
-  setMapInstance: (map: L.Map) => void;
+  setMapInstance: (map: any) => void;
 }
 
 const MapEvents: React.FC<MapEventsHandlerProps> = ({
@@ -62,10 +61,10 @@ const MapEvents: React.FC<MapEventsHandlerProps> = ({
     setMapInstance(map);
   }, [map, setMapInstance]);
 
-  const markerRef = useRef<L.Marker>(null);
+  const markerRef = useRef<any>(null);
 
   const eventHandlers = useCallback(
-    (e: L.DragEndEvent) => {
+    (e: any) => {
       const newPos = e.target.getLatLng();
       setPosition([newPos.lat, newPos.lng]);
       onPositionChange({ lat: newPos.lat, lng: newPos.lng });
@@ -97,7 +96,18 @@ const MapPicker: React.FC<MapPickerProps> = ({
   onLocationNameChange,
 }) => {
   const [position, setPosition] = useState<[number, number]>(currentPosition);
-  const [mapInstance, setMapInstance] = useState<L.Map | null>(null); // New state for map instance
+  const [mapInstance, setMapInstance] = useState<any | null>(null); // New state for map instance
+
+  useEffect(() => {
+    // Fix for default marker icon issue with Leaflet
+    delete ((L as any).Icon.Default.prototype as any)._getIconUrl;
+    (L as any).Icon.Default.mergeOptions({
+      iconRetinaUrl:
+        'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+      iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+    });
+  }, []);
 
   // Update internal position state and map view when currentPosition prop changes
   useEffect(() => {

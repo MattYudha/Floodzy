@@ -2,21 +2,19 @@
 
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  Polyline,
-  Circle,
-  useMap,
-  LayersControl,
-} from 'react-leaflet';
+import { useMap, LayersControl } from 'react-leaflet';
+import dynamic from 'next/dynamic';
+
+const MapContainer = dynamic<any>(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
+const TileLayer = dynamic<any>(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
+const Marker = dynamic<any>(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false });
+const Popup = dynamic<any>(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false });
+const Polyline = dynamic<any>(() => import('react-leaflet').then(mod => mod.Polyline), { ssr: false });
+const Circle = dynamic<any>(() => import('react-leaflet').then(mod => mod.Circle), { ssr: false });
 import L from 'leaflet';
 import ReactDOMServer from 'react-dom/server';
 import clsx from 'clsx';
 import { Waves, User, Maximize, Minimize, Siren, PlusCircle } from 'lucide-react';
-import dynamic from 'next/dynamic';
 import MapEventsHandler from './MapEventsHandler'; // Menggunakan komponen asli
 import FloodReportCard from './FloodReportCard'; // Import komponen popup kustom
 import FloodReportPopup from './FloodReportPopup'; // Import komponen popup kustom
@@ -61,7 +59,9 @@ interface PetaBanjirClientProps {
   onToggleFullScreen: () => void;
   isBrowserFullScreen: boolean;
   children?: React.ReactNode;
-  evacuationRoute?: { start: [number, number]; end: [number, number] } | null; // New prop
+  evacuationRoute?: { start: [number, number]; end: [number, number] } | null;
+  isReporting: boolean; // Added
+  setIsReporting: (value: boolean) => void; // Added
 }
 
 // Komponen untuk memusatkan peta ke marker yang dipilih
@@ -86,13 +86,14 @@ export default function PetaBanjirClient({
   isBrowserFullScreen,
   children,
   evacuationRoute,
+  isReporting, // Added
+  setIsReporting, // Added
 }: PetaBanjirClientProps) {
   const jakartaPosition: [number, number] = [-6.2088, 106.8456];
   const [mapCenter, setMapCenter] = useState<[number, number]>(jakartaPosition);
-  const [isReporting, setIsReporting] = useState(false);
-  const [reportLocation, setReportLocation] = useState<L.LatLng | null>(null);
+  const [reportLocation, setReportLocation] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const markerRefs = useRef<Map<string, L.Marker>>(new Map());
+  const markerRefs = useRef<Map<string, any>>(new Map());
 
   useEffect(() => {
     if (selectedReportId) {
@@ -110,7 +111,7 @@ export default function PetaBanjirClient({
 
   const handleMapClick = useCallback((coords: [number, number]) => {
     if (isReporting) {
-      setReportLocation(L.latLng(coords[0], coords[1]));
+      setReportLocation((L as any).latLng(coords[0], coords[1]));
       setIsModalOpen(true);
       setIsReporting(false); // Exit reporting mode after selecting location
     } else {
@@ -129,7 +130,7 @@ export default function PetaBanjirClient({
   }, [reportLocation]);
 
   const reportMarkerIcon = useMemo(() => {
-    return L.divIcon({
+    return (L as any).divIcon({
       className: 'my-custom-pin',
       iconAnchor: [12, 24],
       popupAnchor: [0, -24],
@@ -149,8 +150,8 @@ export default function PetaBanjirClient({
   }, [reports]);
 
   const { evacuationIcon, userLocationIcon, getFloodIcon } = useMemo(() => {
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
-    L.Icon.Default.mergeOptions({
+    delete ((L as any).Icon.Default.prototype as any)._getIconUrl;
+    (L as any).Icon.Default.mergeOptions({
       iconRetinaUrl:
         'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
       iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -160,19 +161,19 @@ export default function PetaBanjirClient({
 
     const baseIconProps = {
       className: 'bg-transparent border-none',
-      iconSize: [24, 24] as L.PointExpression,
-      iconAnchor: [12, 24] as L.PointExpression,
-      popupAnchor: [0, -24] as L.PointExpression,
+      iconSize: [24, 24] as any,
+      iconAnchor: [12, 24] as any,
+      popupAnchor: [0, -24] as any,
     };
 
-    const evacuationIcon = new L.Icon({
+    const evacuationIcon = new (L as any).Icon({
       iconUrl: '/assets/evacuation_marker.svg',
       iconSize: [40, 40],
       iconAnchor: [20, 40],
       popupAnchor: [0, -40],
     });
 
-    const userLocationIcon = L.divIcon({
+    const userLocationIcon = (L as any).divIcon({
       className: 'custom-user-location-icon',
       html: `<div class="w-4 h-4 rounded-full bg-blue-500 border-2 border-white ring-4 ring-blue-500 ring-opacity-50 shadow-lg"></div>`,
       iconSize: [16, 16],
@@ -214,11 +215,11 @@ export default function PetaBanjirClient({
 
         const animationClass = isMostRecent ? 'animate-pulse' : '';
 
-        return new L.DivIcon({
+        return new (L as any).DivIcon({
             ...baseIconProps,
-            iconSize: [iconSize, iconSize] as L.PointExpression,
-            iconAnchor: [iconAnchor, iconSize] as L.PointExpression,
-            popupAnchor: [0, popupAnchor] as L.PointExpression,
+            iconSize: [iconSize, iconSize] as any,
+            iconAnchor: [iconAnchor, iconSize] as any,
+            popupAnchor: [0, popupAnchor] as any,
             html: ReactDOMServer.renderToString(
                 <div className={clsx("bg-white rounded-full p-1", iconColorClass, animationClass)}>
                     {React.cloneElement(iconComponent, { size: iconSize })}
@@ -241,7 +242,7 @@ export default function PetaBanjirClient({
         'w-full h-full z-10 transition-all duration-300 relative'
       }
     >
-      <LayersControl position="topright">
+      <LayersControl>
         {/* 1. Peta Dasar */}
         <LayersControl.BaseLayer checked name="Peta Dasar (OpenStreetMap)">
           <TileLayer

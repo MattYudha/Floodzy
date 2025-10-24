@@ -148,7 +148,7 @@ const MapUpdater = ({
   center,
   zoom,
 }: {
-  center: L.LatLngExpression;
+  center: any;
   zoom: number;
 }) => {
   const map = useMap();

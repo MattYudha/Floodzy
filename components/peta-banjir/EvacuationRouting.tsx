@@ -1,10 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
-import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
-import 'leaflet-routing-machine';
-
-
 
 interface EvacuationRoutingProps {
   start: [number, number];
@@ -13,43 +9,50 @@ interface EvacuationRoutingProps {
 
 const EvacuationRouting: React.FC<EvacuationRoutingProps> = ({ start, end }) => {
   const map = useMap();
-  const routingControlRef = useRef<any>(null); // Ref untuk menyimpan instance kontrol
+  const routingControlRef = useRef<any>(null);
 
   useEffect(() => {
     if (!map || !start || !end) return;
 
-    // Hapus rute lama jika ada
-    if (routingControlRef.current) {
-      map.removeControl(routingControlRef.current);
-      routingControlRef.current = null;
-    }
+    // Import CSS and JS dynamically
+    // @ts-ignore
+    import('leaflet-routing-machine/dist/leaflet-routing-machine.css');
+    // @ts-ignore
+    import('leaflet-routing-machine').then(() => {
+        // Once loaded, create and add the control
+        if (map) { // Check if map is still available
+            // Hapus rute lama jika ada
+            if (routingControlRef.current) {
+                map.removeControl(routingControlRef.current);
+            }
 
-    // Buat instance kontrol routing
-    const routingControl = L.Routing.control({
-      waypoints: [L.latLng(start[0], start[1]), L.latLng(end[0], end[1])],
-      routeWhileDragging: false,
-      addWaypoints: false, // Tidak izinkan pengguna menambah/mengubah titik
-      draggableWaypoints: false,
-      show: false, // Sembunyikan panel instruksi belokan (kita hanya ingin garisnya)
-      lineOptions: {
-        styles: [
-          { color: '#007BFF', opacity: 0.8, weight: 6 }, // Gaya garis rute
-        ],
-      },
-    }).addTo(map);
+            const routingControl = L.Routing.control({
+                waypoints: [(L as any).latLng(start[0], start[1]), (L as any).latLng(end[0], end[1])],
+                routeWhileDragging: false,
+                addWaypoints: false,
+                draggableWaypoints: false,
+                show: false,
+                lineOptions: {
+                    styles: [
+                        { color: '#007BFF', opacity: 0.8, weight: 6 },
+                    ],
+                },
+            }).addTo(map);
 
-    // Simpan instance ke ref
-    routingControlRef.current = routingControl;
+            routingControlRef.current = routingControl;
+        }
+    });
 
-    // Cleanup saat komponen unmount
+    // Cleanup function
     return () => {
       if (routingControlRef.current) {
         map.removeControl(routingControlRef.current);
+        routingControlRef.current = null;
       }
     };
-  }, [map, start, end]); // Dijalankan ulang jika map, start, atau end berubah
+  }, [map, start, end]);
 
-  return null; // Komponen ini tidak me-render DOM, hanya memanipulasi map
+  return null;
 };
 
 export default EvacuationRouting;
