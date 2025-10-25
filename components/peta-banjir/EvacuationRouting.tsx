@@ -45,9 +45,15 @@ const EvacuationRouting: React.FC<EvacuationRoutingProps> = ({ start, end }) => 
 
     // Cleanup function
     return () => {
-      if (routingControlRef.current) {
-        map.removeControl(routingControlRef.current);
-        routingControlRef.current = null;
+      const currentRoutingControl = routingControlRef.current;
+      if (currentRoutingControl) {
+        setTimeout(() => {
+          if (map && map.removeControl) { // Check if map is still valid
+            currentRoutingControl.setWaypoints([]); // Clear waypoints again just in case
+            map.removeControl(currentRoutingControl);
+          }
+          routingControlRef.current = null;
+        }, 0);
       }
     };
   }, [map, start, end]);

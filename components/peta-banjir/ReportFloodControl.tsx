@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import clsx from 'clsx';
@@ -19,6 +19,7 @@ export default function ReportFloodControl({
 }: ReportFloodControlProps) {
   const map = useMap();
   const controlContainerRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<any>(null); // To store the root instance
 
   useEffect(() => {
     if (!controlContainerRef.current) return;
@@ -45,7 +46,11 @@ export default function ReportFloodControl({
     // Render the React component into the control container
     const portalDiv = (L as any).DomUtil.create('div', '');
     controlContainerRef.current.appendChild(portalDiv);
-    ReactDOM.render(
+    // Create root if it doesn't exist
+    if (!rootRef.current) {
+      rootRef.current = createRoot(portalDiv);
+    }
+    rootRef.current.render(
       <Button
         variant={isReporting ? 'destructive' : 'default'}
         size="icon"
@@ -55,12 +60,18 @@ export default function ReportFloodControl({
       >
         <Plus className="w-5 h-5" />
       </Button>,
-      portalDiv,
     );
 
     return () => {
       control.remove();
-      ReactDOM.unmountComponentAtNode(portalDiv);
+      // Defer unmounting to avoid synchronous unmount during render
+      const currentRoot = rootRef.current;
+      if (currentRoot) {
+        setTimeout(() => {
+          currentRoot.unmount();
+          rootRef.current = null;
+        }, 0);
+      }
     };
   }, [map, isReporting, onToggleReporting]);
 

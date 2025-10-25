@@ -145,7 +145,8 @@ export default function PetaBanjirPage() {
     end: [number, number];
   } | null>(null); // New state
   const [isRouting, setIsRouting] = useState(false); // New state
-  const [isReporting, setIsReporting] = useState(false); // New state
+  const [isReporting, setIsReporting] = useState(false); // Added
+  const [shouldOpenReportModal, setShouldOpenReportModal] = useState(false);
 
   const evacuationPoints = mockEvacuationPoints;
 
@@ -347,9 +348,11 @@ export default function PetaBanjirPage() {
           evacuationRoute={evacuationRoute}
           isReporting={isReporting} // Pass isReporting
           setIsReporting={setIsReporting} // Pass setIsReporting
+          shouldOpenReportModal={shouldOpenReportModal} // New prop
+          setShouldOpenReportModal={setShouldOpenReportModal} // New prop
         >
           {/* Search Control */}
-          <div className="absolute top-[4rem] left-1/2 -translate-x-1/2 z-[1001] w-[75vw] max-w-sm px-4 md:w-full md:max-w-md">
+          <div className="absolute top-[1rem] left-[calc(50%+0.5rem)] -translate-x-1/2 z-[1001] w-[75vw] max-w-sm px-4 md:w-full md:max-w-md">
             <MapSearchControl onSearch={setSearchQuery} />
           </div>
 
@@ -359,7 +362,10 @@ export default function PetaBanjirPage() {
             initialFilters={filters}
             handleFindEvacuationRoute={handleFindEvacuationRoute}
             isRouting={isRouting}
-            onReportStart={() => setIsReporting(true)}
+            onReportStart={() => {
+              setIsReporting(true);
+              setShouldOpenReportModal(true);
+            }}
             isReporting={isReporting}
           />
         </PetaBanjirClient>
@@ -386,7 +392,7 @@ export default function PetaBanjirPage() {
 
         <div
           className={clsx(
-            'p-4 w-full transition-opacity duration-100 pointer-events-auto',
+            'w-full transition-opacity duration-100 pointer-events-auto',
             isCarouselOpen ? 'opacity-100' : 'opacity-0 invisible',
           )}
         >

@@ -84,7 +84,7 @@ interface OfficialBPBDData {
 
 import { cn } from '@/lib/utils';
 import { OverpassElement } from '@/lib/api';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import {
   getCoordsByLocationName,
   getLocationNameByCoords,

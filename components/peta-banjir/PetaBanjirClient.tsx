@@ -5,7 +5,14 @@ import 'leaflet/dist/leaflet.css';
 import { useMap, LayersControl } from 'react-leaflet';
 import dynamic from 'next/dynamic';
 
-const MapContainer = dynamic<any>(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
+const MapContainer = dynamic<any>(() => import('react-leaflet').then(mod => {
+  const MapContainerComponent = mod.MapContainer;
+  const ForwardedMapContainer = React.forwardRef((props, ref) => (
+    <MapContainerComponent {...props} ref={ref} />
+  ));
+  ForwardedMapContainer.displayName = 'ForwardedMapContainer';
+  return ForwardedMapContainer;
+}), { ssr: false });
 const TileLayer = dynamic<any>(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
 const Marker = dynamic<any>(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false });
 const Popup = dynamic<any>(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false });
@@ -19,7 +26,8 @@ import MapEventsHandler from './MapEventsHandler'; // Menggunakan komponen asli
 import FloodReportCard from './FloodReportCard'; // Import komponen popup kustom
 import FloodReportPopup from './FloodReportPopup'; // Import komponen popup kustom
 import MapInvalidator from './MapInvalidator'; // Import komponen untuk invalidate map size
-import ReportFloodControl from './ReportFloodControl';
+
+
 import ReportFloodModal from './ReportFloodModal';
 
 const EvacuationRouting = dynamic(() => import('@/components/peta-banjir/EvacuationRouting'), {
@@ -62,6 +70,8 @@ interface PetaBanjirClientProps {
   evacuationRoute?: { start: [number, number]; end: [number, number] } | null;
   isReporting: boolean; // Added
   setIsReporting: (value: boolean) => void; // Added
+  shouldOpenReportModal: boolean; // New prop
+  setShouldOpenReportModal: (value: boolean) => void; // New prop
 }
 
 // Komponen untuk memusatkan peta ke marker yang dipilih
@@ -88,12 +98,26 @@ export default function PetaBanjirClient({
   evacuationRoute,
   isReporting, // Added
   setIsReporting, // Added
+  shouldOpenReportModal, // New prop
+  setShouldOpenReportModal, // New prop
 }: PetaBanjirClientProps) {
   const jakartaPosition: [number, number] = [-6.2088, 106.8456];
   const [mapCenter, setMapCenter] = useState<[number, number]>(jakartaPosition);
   const [reportLocation, setReportLocation] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const markerRefs = useRef<Map<string, any>>(new Map());
+  const [mounted, setMounted] = useState(false); // New state for client-side mount
+
+  useEffect(() => {
+    setMounted(true); // Set mounted to true after initial render on client
+  }, []);
+
+  useEffect(() => {
+    if (shouldOpenReportModal && !isModalOpen) {
+      setIsModalOpen(true);
+      setShouldOpenReportModal(false); // Reset the prop
+    }
+  }, [shouldOpenReportModal, isModalOpen, setIsModalOpen, setShouldOpenReportModal]);
 
   useEffect(() => {
     if (selectedReportId) {
@@ -117,7 +141,7 @@ export default function PetaBanjirClient({
     } else {
       onMapClick(coords);
     }
-  }, [isReporting, onMapClick]);
+  }, [isReporting, onMapClick, setIsReporting]); // Menambahkan setIsReporting ke dependency array
 
   const handleReportSubmit = useCallback((formData: { waterLevel: number; notes: string; image?: File }) => {
     console.log("Laporan Banjir Baru:", {
@@ -181,51 +205,51 @@ export default function PetaBanjirClient({
     });
 
     const getFloodIcon = (report: FloodReport, isSelected: boolean, isMostRecent: boolean) => {
-        let iconComponent;
-        let iconColorClass;
-        let iconSize = 24;
-        let iconAnchor = 12;
-        let popupAnchor = -24;
+      let iconComponent;
+      let iconColorClass;
+      let iconSize = 24;
+      let iconAnchor = 12;
+      let popupAnchor = -24;
 
-        if (isSelected) {
+      if (isSelected) {
+        iconComponent = <Siren />;
+        iconColorClass = "text-red-600";
+        iconSize = 32;
+        iconAnchor = 16;
+        popupAnchor = -32;
+      } else {
+        switch (report.severity) {
+          case 'low':
+            iconComponent = <Waves />;
+            iconColorClass = "text-green-600";
+            break;
+          case 'moderate':
+            iconComponent = <Waves />;
+            iconColorClass = "text-orange-500";
+            break;
+          case 'high':
             iconComponent = <Siren />;
             iconColorClass = "text-red-600";
-            iconSize = 32;
-            iconAnchor = 16;
-            popupAnchor = -32;
-        } else {
-            switch (report.severity) {
-                case 'low':
-                    iconComponent = <Waves />;
-                    iconColorClass = "text-green-600";
-                    break;
-                case 'moderate':
-                    iconComponent = <Waves />;
-                    iconColorClass = "text-orange-500";
-                    break;
-                case 'high':
-                    iconComponent = <Siren />;
-                    iconColorClass = "text-red-600";
-                    break;
-                default:
-                    iconComponent = <Waves />;
-                    iconColorClass = "text-blue-600";
-            }
+            break;
+          default:
+            iconComponent = <Waves />;
+            iconColorClass = "text-blue-600";
         }
+      }
 
-        const animationClass = isMostRecent ? 'animate-pulse' : '';
+      const animationClass = isMostRecent ? 'animate-pulse' : '';
 
-        return new (L as any).DivIcon({
-            ...baseIconProps,
-            iconSize: [iconSize, iconSize] as any,
-            iconAnchor: [iconAnchor, iconSize] as any,
-            popupAnchor: [0, popupAnchor] as any,
-            html: ReactDOMServer.renderToString(
-                <div className={clsx("bg-white rounded-full p-1", iconColorClass, animationClass)}>
-                    {React.cloneElement(iconComponent, { size: iconSize })}
-                </div>
-            ),
-        });
+      return new (L as any).DivIcon({
+        ...baseIconProps,
+        iconSize: [iconSize, iconSize] as any,
+        iconAnchor: [iconAnchor, iconSize] as any,
+        popupAnchor: [0, popupAnchor] as any,
+        html: ReactDOMServer.renderToString(
+          <div className={clsx("bg-white rounded-full p-1", iconColorClass, animationClass)}>
+            {React.cloneElement(iconComponent, { size: iconSize - 8 })} {/* Adjusted size for padding */}
+          </div>
+        ),
+      });
     };
 
     return { evacuationIcon, userLocationIcon, getFloodIcon };
@@ -233,132 +257,133 @@ export default function PetaBanjirClient({
 
   return (
     <>
-      <MapContainer
-      center={jakartaPosition}
-      zoom={12}
-      scrollWheelZoom={true}
-      zoomControl={false}
-      className={
-        'w-full h-full z-10 transition-all duration-300 relative'
-      }
-    >
-      <LayersControl>
-        {/* 1. Peta Dasar */}
-        <LayersControl.BaseLayer checked name="Peta Dasar (OpenStreetMap)">
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
-        </LayersControl.BaseLayer>
-
-        {/* 2. Layer Overlay Baru untuk Radar BMKG */}
-        {/* <LayersControl.Overlay checked name="Radar Cuaca (BMKG)">
-          <TileLayer
-            url="https://nowcast.bmkg.go.id/data/radar/composite/{z}/{x}/{y}.png"
-            attribution="&copy; BMKG"
-            opacity={0.7}
-            zIndex={10} // Pastikan radar di atas peta dasar
-          />
-        </LayersControl.Overlay> */}
-      </LayersControl>
-      {/* Menggunakan komponen event handler yang asli */}
-      <MapEventsHandler onMapClick={handleMapClick} />
-      <ChangeView center={mapCenter} zoom={14} />
-      <MapInvalidator isBrowserFullScreen={isBrowserFullScreen} />
-
-      <div className="leaflet-top leaflet-right z-[1000] p-2">
-        <div className="leaflet-control leaflet-bar bg-white rounded shadow">
-          <a
-            className="flex items-center justify-center w-8 h-8 cursor-pointer"
-            href="#"
-            title={'Tampilan Layar Penuh'}
-            role="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onToggleFullScreen();
-            }}
-          >
-            {isBrowserFullScreen ? <Minimize size={18} /> : <Maximize size={18} />}
-          </a>
-        </div>
-      </div>
-
-      <ReportFloodControl isReporting={isReporting} onToggleReporting={() => setIsReporting(!isReporting)} />
-
-      {reportLocation && (
-        <Marker position={reportLocation} icon={reportMarkerIcon}>
-          <Popup>Lokasi Laporan Anda</Popup>
-        </Marker>
-      )}
-
-      {userLocation && (
-        <Marker position={userLocation} icon={userLocationIcon}>
-          <Popup>Lokasi Anda Saat Ini</Popup>
-        </Marker>
-      )}
-
-      {evacuationRoute && (
-        <EvacuationRouting
-          start={evacuationRoute.start}
-          end={evacuationRoute.end}
-        />
-      )}
-
-      {reports?.map((report) => (
-        <Marker
-          key={report.id}
-          position={report.position}
-          icon={getFloodIcon(report, report.id === selectedReportId, report.id === mostRecentReportId)}
-          ref={(marker) => {
-            if (marker) {
-              markerRefs.current.set(report.id, marker);
-            } else {
-              markerRefs.current.delete(report.id);
-            }
-          }}
+      {mounted && (
+        <MapContainer
+          center={jakartaPosition}
+          zoom={12}
+          scrollWheelZoom={true}
+          zoomControl={false}
+          className={
+            'w-full h-full z-10 transition-all duration-300 relative'
+          }
         >
-          <Popup>
-            <FloodReportPopup
-              report={report}
+          <LayersControl>
+            {/* 1. Peta Dasar */}
+            <LayersControl.BaseLayer checked name="Peta Dasar (OpenStreetMap)">
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+            </LayersControl.BaseLayer>
+
+            {/* 2. Layer Overlay Baru untuk Radar BMKG */}
+            {/* <LayersControl.Overlay checked name="Radar Cuaca (BMKG)">
+              <TileLayer
+                url="https://nowcast.bmkg.go.id/data/radar/composite/{z}/{x}/{y}.png"
+                attribution="&copy; BMKG"
+                opacity={0.7}
+                zIndex={10} // Pastikan radar di atas peta dasar
+              />
+            </LayersControl.Overlay> */}
+          </LayersControl>
+          {/* Menggunakan komponen event handler yang asli */}
+          <MapEventsHandler onMapClick={handleMapClick} />
+          <ChangeView center={mapCenter} zoom={14} />
+          <MapInvalidator isBrowserFullScreen={isBrowserFullScreen} />
+
+
+          <div className="leaflet-top leaflet-right z-[1000] p-2">
+            <div className="leaflet-control leaflet-bar bg-white rounded shadow">
+              <a
+                className="flex items-center justify-center w-8 h-8 cursor-pointer"
+                href="#"
+                title={'Tampilan Layar Penuh'}
+                role="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onToggleFullScreen();
+                }}
+              >
+                {isBrowserFullScreen ? <Minimize size={18} /> : <Maximize size={18} />}
+              </a>
+            </div>
+          </div>
+
+          {reportLocation && (
+            <Marker position={reportLocation} icon={reportMarkerIcon}>
+              <Popup>Lokasi Laporan Anda</Popup>
+            </Marker>
+          )}
+
+          {userLocation && (
+            <Marker position={userLocation} icon={userLocationIcon}>
+              <Popup>Lokasi Anda Saat Ini</Popup>
+            </Marker>
+          )}
+
+          {evacuationRoute && (
+            <EvacuationRouting
+              start={evacuationRoute.start}
+              end={evacuationRoute.end}
             />
-          </Popup>
-        </Marker>
-      ))}
+          )}
 
-      {evacuationPoints?.map((point) => (
-        <Marker key={point.id} position={point.position} icon={evacuationIcon}>
-          <Popup>
-            <b>Posko Evakuasi</b>
-            <br />
-            {point.name}
-          </Popup>
-        </Marker>
-      ))}
+          {reports?.map((report) => (
+            <Marker
+              key={report.id}
+              position={report.position}
+              icon={getFloodIcon(report, report.id === selectedReportId, report.id === mostRecentReportId)}
+              ref={(marker) => {
+                if (marker) {
+                  markerRefs.current.set(report.id, marker);
+                } else {
+                  markerRefs.current.delete(report.id);
+                }
+              }}
+            >
+              <Popup>
+                <FloodReportPopup
+                  report={report}
+                />
+              </Popup>
+            </Marker>
+          ))}
 
-      {routeCoordinates && (
-        <Polyline
-          pathOptions={{ color: 'blue', weight: 5 }}
-          positions={routeCoordinates}
-        />
+          {evacuationPoints?.map((point) => (
+            <Marker key={point.id} position={point.position} icon={evacuationIcon}>
+              <Popup>
+                <b>Posko Evakuasi</b>
+                <br />
+                {point.name}
+              </Popup>
+            </Marker>
+          ))}
+
+          {routeCoordinates && (
+            <Polyline
+              pathOptions={{ color: 'blue', weight: 5 }}
+              positions={routeCoordinates}
+            />
+          )}
+
+          {impactZones?.map((zone, index) => (
+            <Circle
+              key={index}
+              center={zone.center}
+              radius={zone.radius}
+              pathOptions={{ color: 'red', fillColor: 'red', fillOpacity: 0.3 }}
+            />
+          ))}
+          {children}
+        </MapContainer>
       )}
-
-      {impactZones?.map((zone, index) => (
-        <Circle
-          key={index}
-          center={zone.center}
-          radius={zone.radius}
-          pathOptions={{ color: 'red', fillColor: 'red', fillOpacity: 0.3 }}
-        />
-      ))}
-      {children}
-    </MapContainer>
-    <ReportFloodModal
-      isOpen={isModalOpen}
-      onOpenChange={setIsModalOpen}
-      onSubmit={handleReportSubmit}
-      location={reportLocation}
-    />
+      <ReportFloodModal
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        onSubmit={handleReportSubmit}
+        location={reportLocation}
+      />
     </>
   );
-}
+} // <-- INI ADALAH PERBAIKAN: Kurung kurawal penutup yang hilang
