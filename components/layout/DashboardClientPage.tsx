@@ -83,7 +83,6 @@ import type { FloodAlert as FloodAlertType, WeatherStation } from '@/types';
 import { SelectedLocation } from '@/types/location';
 import { MapBounds } from '@/types';
 
-
 const FloodMap = dynamic(
   () => import('@/components/map/FloodMap').then((mod) => mod.FloodMap),
   {
@@ -316,7 +315,10 @@ export function DashboardClientPage({ initialData }) {
     setIsChatLoading(true);
     setChatError(null);
 
-    const newHistory = [...chatHistory, { role: 'user', parts: [{ text: message }] }];
+    const newHistory = [
+      ...chatHistory,
+      { role: 'user', parts: [{ text: message }] },
+    ];
     setChatHistory(newHistory);
     setChatInput('');
 
@@ -327,7 +329,12 @@ export function DashboardClientPage({ initialData }) {
       const body = {
         question: message,
         history: chatHistory,
-        location: (selectedLocation && selectedLocation.latitude && selectedLocation.longitude) ? selectedLocation : null,
+        location:
+          selectedLocation &&
+          selectedLocation.latitude &&
+          selectedLocation.longitude
+            ? selectedLocation
+            : null,
       };
 
       // First API call
@@ -346,52 +353,95 @@ export function DashboardClientPage({ initialData }) {
       if (data.action === 'REQUEST_LOCATION') {
         needsLocation = true;
         // Add a message to the user that we need their location
-        setChatHistory(prev => [...prev, { role: 'model', parts: [{ text: "Tentu, untuk itu saya memerlukan lokasi Anda. Mohon izinkan akses lokasi." }] }]);
-        
+        setChatHistory((prev) => [
+          ...prev,
+          {
+            role: 'model',
+            parts: [
+              {
+                text: 'Tentu, untuk itu saya memerlukan lokasi Anda. Mohon izinkan akses lokasi.',
+              },
+            ],
+          },
+        ]);
+
         // Get location
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             const { latitude, longitude } = position.coords;
-            
+
             // Add a system message with the location
-            const locationPart = { functionResponse: { name: 'userLocation', response: { latitude, longitude } } };
-            const historyWithLocation = [...currentHistory, { role: 'function', parts: [locationPart] }];
-            
+            const locationPart = {
+              functionResponse: {
+                name: 'userLocation',
+                response: { latitude, longitude },
+              },
+            };
+            const historyWithLocation = [
+              ...currentHistory,
+              { role: 'function', parts: [locationPart] },
+            ];
+
             setChatHistory(historyWithLocation);
 
             // Second API call with location
-            const responseWithLocation = await fetch(`${getBaseUrl()}/api/chatbot`, {
-              method: 'POST',
-              body: JSON.stringify({ history: historyWithLocation }),
-            });
+            const responseWithLocation = await fetch(
+              `${getBaseUrl()}/api/chatbot`,
+              {
+                method: 'POST',
+                body: JSON.stringify({ history: historyWithLocation }),
+              },
+            );
 
             if (!responseWithLocation.ok) {
-              throw new Error('Gagal mendapatkan respon setelah mengirim lokasi.');
+              throw new Error(
+                'Gagal mendapatkan respon setelah mengirim lokasi.',
+              );
             }
 
             const dataWithLocation = await responseWithLocation.json();
-            setChatHistory(prev => [...prev, { role: 'model', parts: [{ text: dataWithLocation.answer }] }]);
+            setChatHistory((prev) => [
+              ...prev,
+              { role: 'model', parts: [{ text: dataWithLocation.answer }] },
+            ]);
           },
           (error) => {
-            console.error("Geolocation error:", error);
-            setChatHistory(prev => [...prev, { role: 'model', parts: [{ text: "Maaf, saya tidak bisa mendapatkan lokasi Anda. Pastikan Anda telah memberikan izin." }] }]);
+            console.error('Geolocation error:', error);
+            setChatHistory((prev) => [
+              ...prev,
+              {
+                role: 'model',
+                parts: [
+                  {
+                    text: 'Maaf, saya tidak bisa mendapatkan lokasi Anda. Pastikan Anda telah memberikan izin.',
+                  },
+                ],
+              },
+            ]);
             setIsChatLoading(false);
-          }
+          },
         );
       } else if (data.answer) {
-        setChatHistory(prev => [...prev, { role: 'model', parts: [{ text: data.answer }] }]);
+        setChatHistory((prev) => [
+          ...prev,
+          { role: 'model', parts: [{ text: data.answer }] },
+        ]);
       } else if (data.notification) {
-          toast[data.notification.type || 'info'](data.notification.message, {
-            duration: data.notification.duration || 5000,
-          });
-          // If there's a notification, we might not get an answer, so stop loading.
-          setIsChatLoading(false);
+        toast[data.notification.type || 'info'](data.notification.message, {
+          duration: data.notification.duration || 5000,
+        });
+        // If there's a notification, we might not get an answer, so stop loading.
+        setIsChatLoading(false);
       }
-
-
     } catch (error: any) {
       setChatError(error.message);
-      setChatHistory(prev => [...prev, { role: 'model', parts: [{ text: "Maaf, terjadi kesalahan. Coba lagi nanti." }] }]);
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          role: 'model',
+          parts: [{ text: 'Maaf, terjadi kesalahan. Coba lagi nanti.' }],
+        },
+      ]);
     } finally {
       // Only set loading to false if we are not waiting for geolocation
       if (!needsLocation) {
@@ -436,22 +486,26 @@ export function DashboardClientPage({ initialData }) {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 max-w-xs sm:max-w-md mx-auto">
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="w-full sm:w-auto"
-                >
-                  <MapPin className="mr-2 h-5 w-5" />
-                  Lihat Peta Banjir
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="text-white border-white/50 hover:bg-white/10 w-full sm:w-auto"
-                >
-                  <Bell className="mr-2 h-5 w-5" />
-                  Peringatan Terkini
-                </Button>
+                <Link href="#pilih-lokasi">
+                  <Button
+                    size="lg"
+                    variant="secondary"
+                    className="w-full sm:w-auto"
+                  >
+                    <MapPin className="mr-2 h-5 w-5" />
+                    Lihat Peta Banjir
+                  </Button>
+                </Link>
+                <Link href="/peringatan">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="text-white border-white/50 hover:bg-white/10 w-full sm:w-auto"
+                  >
+                    <Bell className="mr-2 h-5 w-5" />
+                    Peringatan Terkini
+                  </Button>
+                </Link>
               </div>
             </motion.div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mt-12 md:mt-16 items-start">
@@ -491,7 +545,7 @@ export function DashboardClientPage({ initialData }) {
           </div>
         </section>
 
-        <section className="container mx-auto px-4 py-8 space-y-4">
+        <section id="pilih-lokasi" className="container mx-auto px-4 py-8 space-y-4">
           <Card className="bg-slate-900/80 border-slate-800/50 backdrop-blur-lg rounded-xl shadow-xl overflow-hidden">
             <CardContent className="p-4">
               <RegionDropdown
@@ -514,7 +568,10 @@ export function DashboardClientPage({ initialData }) {
             <DashboardStats {...initialData} />
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div
+            id="peta-banjir"
+            className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+          >
             {isMobile ? (
               <motion.div
                 initial={{ opacity: 0, x: -20 }}

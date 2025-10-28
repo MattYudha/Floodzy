@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, createContext, useContext } from 'react';
+// Impor usePathname
+import { usePathname } from 'next/navigation';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
@@ -13,7 +15,9 @@ interface SidebarContextType {
   isDesktop: boolean;
 }
 
-export const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
+export const SidebarContext = createContext<SidebarContextType | undefined>(
+  undefined,
+);
 
 export const useSidebar = () => {
   const context = useContext(SidebarContext);
@@ -23,14 +27,13 @@ export const useSidebar = () => {
   return context;
 };
 
-
 export default function ClientLayoutWrapper({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false); // Default 'false' (terbuka)
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
   const [showSplash, setShowSplash] = useState(true);
@@ -58,12 +61,16 @@ export default function ClientLayoutWrapper({
     };
   }, []);
 
+  // --- LOGIKA DIPERBAIKI DI SINI ---
   useEffect(() => {
     if (isDesktop) {
+      // Di Desktop: Selalu paksa sidebar terbuka dan expanded
       setIsSidebarOpen(true);
+      setIsCollapsed(false);
     } else {
+      // Di Mobile: Selalu paksa sidebar tertutup, TAPI TETAP EXPANDED
       setIsSidebarOpen(false);
-      setIsCollapsed(true);
+      setIsCollapsed(false); // <-- INI PERUBAHANNYA (dari true ke false)
     }
   }, [isDesktop]);
 
@@ -73,11 +80,19 @@ export default function ClientLayoutWrapper({
 
   const toggleCollapsedState = () => {
     setIsCollapsed(!isCollapsed);
+    // Di mobile, jika user menutup (collapse), kita juga tutup overlay-nya
+    if (!isDesktop) {
+      setIsSidebarOpen(false);
+    }
   };
 
   if (showSplash) {
     return <SplashScreen isFadingOut={isFadingOut} />;
   }
+
+  // Logika 'isMapPage'
+  const pathname = usePathname();
+  const isMapPage = pathname === '/peta-banjir';
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -85,20 +100,30 @@ export default function ClientLayoutWrapper({
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         isCollapsed={isCollapsed}
-        setIsCollapsed={toggleCollapsedState}
+        setIsCollapsed={toggleCollapsedState} // Menggunakan fungsi toggle yang sudah diperbarui
         onOpenWeatherPopup={() => setIsWeatherPopupOpen(true)}
       />
 
       <SidebarContext.Provider value={{ isCollapsed, isDesktop }}>
         <div
           className={`flex flex-col flex-1 transition-all duration-300
-          ${isDesktop ? (isCollapsed ? 'ml-16' : 'ml-64') : 'ml-0'}
-        `}
+           ${isDesktop ? (isCollapsed ? 'ml-16' : 'ml-64') : 'ml-0'}
+          `}
         >
-          <Header onMenuToggle={toggleMobileSidebar} isMenuOpen={isSidebarOpen} />
-          <main className="flex-1 p-4">{children}</main>
-
-          
+          <Header
+            onMenuToggle={toggleMobileSidebar}
+            isMenuOpen={isSidebarOpen}
+          />
+          {/* <main> sekarang kondisional */}
+          <main
+            className={
+              isMapPage
+                ? 'flex-1 overflow-auto h-full w-full' // <-- Style untuk Peta (fullscreen)
+                : 'flex-1 p-4' // <-- Style untuk Dashboard dll (normal)
+            }
+          >
+            {children}
+          </main>
 
           {/* Popup Cuaca */}
           {isWeatherPopupOpen && (

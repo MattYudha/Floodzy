@@ -31,7 +31,10 @@ const MapSearchControl = dynamic(
   () => import('@/components/peta-banjir/MapSearchControl'),
   { ssr: false },
 );
-const MapActionsControl = dynamic(() => import('@/components/peta-banjir/MapActionsControl'), { ssr: false });
+const MapActionsControl = dynamic(
+  () => import('@/components/peta-banjir/MapActionsControl'),
+  { ssr: false },
+);
 
 // Tipe data harus cocok dengan yang ada di PetaBanjirClient
 interface FloodReport {
@@ -371,13 +374,15 @@ export default function PetaBanjirPage() {
         </PetaBanjirClient>
       </div>
 
-      <div className={clsx(
-        "fixed bottom-0 left-0 right-0 z-10 pointer-events-none",
-        "bg-gradient-to-t from-background via-background/80 to-transparent",
-        "transition-all duration-300 ease-in-out",
-        isCarouselOpen ? "h-auto" : "h-12",
-        isBrowserFullScreen && "hidden"
-      )}>
+      <div
+        className={clsx(
+          'fixed bottom-0 left-0 right-0 z-10 pointer-events-none',
+          'bg-gradient-to-t from-background via-background/80 to-transparent',
+          'transition-all duration-300 ease-in-out',
+          isCarouselOpen ? 'h-auto' : 'h-12',
+          isBrowserFullScreen && 'hidden',
+        )}
+      >
         <button
           onClick={() => setIsCarouselOpen(!isCarouselOpen)}
           className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 bg-card p-1 rounded-full border shadow-md md:hidden pointer-events-auto"
@@ -403,7 +408,10 @@ export default function PetaBanjirPage() {
           >
             <CarouselContent>
               {filteredReports.map((report, index) => (
-                <CarouselItem key={report.id} className="basis-1/2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+                <CarouselItem
+                  key={report.id}
+                  className="basis-1/2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+                >
                   <div className="p-1">
                     <FloodReportCard
                       id={report.id}
