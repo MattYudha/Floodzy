@@ -493,7 +493,7 @@ export function DashboardClientPage({ initialData }) {
                     className="w-full sm:w-auto"
                   >
                     <MapPin className="mr-2 h-5 w-5" />
-                    Lihat Peta Banjir
+                    Pilih Lokasi Banjir
                   </Button>
                 </Link>
                 <Link href="/peringatan">
@@ -545,7 +545,10 @@ export function DashboardClientPage({ initialData }) {
           </div>
         </section>
 
-        <section id="pilih-lokasi" className="container mx-auto px-4 py-8 space-y-4">
+        <section
+          id="pilih-lokasi"
+          className="container mx-auto px-4 py-8 space-y-4"
+        >
           <Card className="bg-slate-900/80 border-slate-800/50 backdrop-blur-lg rounded-xl shadow-xl overflow-hidden">
             <CardContent className="p-4">
               <RegionDropdown
