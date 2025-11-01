@@ -46,7 +46,7 @@ Floodzy menyediakan serangkaian fitur lengkap untuk pemantauan bencana yang komp
 
 ### 🚨 Peringatan& Analisis
 
-- Peringatan bencana dengan sumber data terintegrasi.
+- Peringatan bencana dengan sumber data saling terintegrasi.
 - Analisis bencana otomatis menggunakan Gemini API.
 - Ringkasan berita bencana.
 
