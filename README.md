@@ -355,10 +355,10 @@ npm run lint: Mengecek kualitas kode dengan ESLint.
 </div>
 
 
-**Lighthouse Score:** 95+  
-**FCP:** < 1.5s  
-**TTI:** < 3s
-**AUC:** 0,992
+**⚡ Lighthouse Score:** 95+  
+**🚀 FCP (First Contentful Paint):** < 1.5s  
+**⏱️ TTI (Time to Interactive):** < 3s  
+**📈 AUC (Model Accuracy):** 0.992
 
 
 
