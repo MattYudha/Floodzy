@@ -70,10 +70,10 @@ const allMockAlerts: Alert[] = [
 const fetchNewsAndReports = async (): Promise<NewsReport[]> => {
   const now = new Date();
   return [
-    { id: 'news-1', title: 'Banjir Jakarta: Ketinggian Air Terus Meningkat', content: '...', source: 'Detik News', url: '#', timestamp: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString() },
-    { id: 'news-2', title: 'Gempa Bumi Magnitudo 5.2 Guncang Malang', content: '...', source: 'Kompas.com', url: '#', timestamp: new Date(now.getTime() - 5 * 60 * 60 * 1000).toISOString() },
-    { id: 'news-3', title: 'Peringatan Dini Cuaca Ekstrem di Sumatera Barat', content: '...', source: 'Antara News', url: '#', timestamp: new Date(now.getTime() - 10 * 60 * 60 * 1000).toISOString() },
-    { id: 'news-4', title: 'Debit Air Sungai Ciliwung Mencapai Siaga 3', content: '...', source: 'Tempo', url: '#', timestamp: new Date(now.getTime() - 1 * 60 * 60 * 1000).toISOString() },
+    { id: 'news-1', title: 'Banjir Jakarta: Ketinggian Air Terus Meningkat', content: '...', source: 'Detik News', url: 'https://news.detik.com/', timestamp: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString() },
+    { id: 'news-2', title: 'Gempa Bumi Magnitudo 5.2 Guncang Malang', content: '...', source: 'Kompas.com', url: 'https://www.kompas.com/', timestamp: new Date(now.getTime() - 5 * 60 * 60 * 1000).toISOString() },
+    { id: 'news-3', title: 'Peringatan Dini Cuaca Ekstrem di Sumatera Barat', content: '...', source: 'Antara News', url: 'https://www.antaranews.com/', timestamp: new Date(now.getTime() - 10 * 60 * 60 * 1000).toISOString() },
+    { id: 'news-4', title: 'Debit Air Sungai Ciliwung Mencapai Siaga 3', content: '...', source: 'Tempo', url: 'https://www.tempo.co/', timestamp: new Date(now.getTime() - 1 * 60 * 60 * 1000).toISOString() },
   ];
 };
 

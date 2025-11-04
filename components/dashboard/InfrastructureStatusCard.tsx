@@ -150,11 +150,11 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
 
   // State for Water Level section
   const [waterLevelSearchTerm, setWaterLevelSearchTerm] = useState('');
-  const [isWaterLevelExpanded, setIsWaterLevelExpanded] = useState(false);
+  const [isWaterLevelExpanded, setIsWaterLevelExpanded] = useState(true);
 
   // State for Pump Status section
   const [pumpSearchTerm, setPumpSearchTerm] = useState('');
-  const [isPumpExpanded, setIsPumpExpanded] = useState(false);
+  const [isPumpExpanded, setIsPumpExpanded] = useState(true);
 
   // Filtered data for Water Level
   const filteredWaterLevelPosts = waterLevelPosts.filter(post =>
