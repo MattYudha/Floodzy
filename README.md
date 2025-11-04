@@ -1,4 +1,4 @@
-# 🌊 Floodzy - Real-time Pendeteksi/Prediksi  dan Potensi Banjir & Monitoring Cuaca di Indonesia
+# 🌊 Floodzy - Real-time Pendeteksi/Prediksi Potensi Banjir & Monitoring Cuaca di Indonesia
 
 <div align="center">
   <img src="public/assets/ChatGPT Image 4 Sep 2025, 08.50.45.png" alt="Floodzy Logo" width="200"/>
@@ -19,8 +19,7 @@
 
 ## 🚀 Overview
 
-Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang memanfaatkan teknologi modern seperti **Next.js**,** ShacnUI**, **TypeScript**,**React**, **Tailwind CSS**, dan **Supabase**.  
-Platform ini menyediakan data ketinggian air, status pompa, prakiraan cuaca, analisis bencana, dan peta interaktif untuk mendukung mitigasi bencana di Indonesia dan data nya bisa untuk seluruh wilayah indonesia sampai ke kecamatan dengan detail dan terstruktur.
+Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang memanfaatkan teknologi modern seperti **Next.js**, **ShadcnUI**, **TypeScript**, **React**, **Tailwind CSS**, dan **Supabase**. Platform ini menyediakan data ketinggian air, status pompa, prakiraan cuaca, analisis bencana, dan peta interaktif untuk mendukung mitigasi bencana di Indonesia. Data yang disajikan mencakup seluruh wilayah Indonesia hingga tingkat kecamatan dengan detail dan terstruktur.
 
 ---
 
@@ -29,345 +28,102 @@ Platform ini menyediakan data ketinggian air, status pompa, prakiraan cuaca, ana
 Floodzy menyediakan serangkaian fitur lengkap untuk pemantauan bencana yang komprehensif:
 
 - **🗺️ Peta Bencana Interaktif**: Visualisasi data banjir, cuaca, dan sensor secara real-time menggunakan Leaflet, lengkap dengan marker, layer, dan legenda yang interaktif.
+  <div align="center">
+    <img src="https://drive.google.com/thumbnail?id=1fGo6J4es_JFH7eIXztyDYh3TKCg9WCer" alt="Peta Bencana Interaktif" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
+  </div>
+
 - **📊 Dashboard Statistik & Analisis**: Halaman dashboard (`/statistika`) yang menampilkan statistik historis bencana, grafik curah hujan, dan laporan banjir dalam bentuk visual yang mudah dipahami dan data realtime.
+  <div align="center">
+    <img src="https://drive.google.com/thumbnail?id=1Z-ONZGvKl7riQOARz1Lqm3IQJZJuIgci" alt="Dashboard Statistik & Analisis" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
+  </div>
+
 - **🤖 Analisis Bencana Berbasis AI**: Integrasi dengan Gemini API untuk memberikan analisis otomatis terhadap data bencana, peringatan dini, dan ringkasan berita terkini.
+  <div align="center">
+    <img src="https://drive.google.com/thumbnail?id=1vh0Lq0UezQ4lw8oHMCv13ZbMnb_-OSAJ" alt="Analisis Bencana Berbasis AI" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
+  </div>
+
 - **🚨 Peringatan Dini Multi-Sumber**: Mengagregasi data peringatan dari berbagai sumber terpercaya untuk memberikan notifikasi bencana yang akurat.
+  <div align="center">
+    <img src="https://drive.google.com/thumbnail?id=1CrBlERMTVB5o8NlheViY1jxkxWrBsIbs" alt="Peringatan Dini Multi-Sumber" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
+  </div>
+
 - **🌦️ Prakiraan & Riwayat Cuaca**: Menyajikan data cuaca real-time (suhu, kelembapan, angin) dari OpenWeatherMap dan riwayat cuaca untuk analisis tren.
+  <div align="center">
+    <img src="https://drive.google.com/thumbnail?id=1SGVyChTnBIIG62nUXxEAFRupmP7cjSmp" alt="Prakiraan & Riwayat Cuaca" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
+  </div>
+
 - **🌬️ Pemantauan Kualitas Udara**: Fitur untuk memantau tingkat polusi udara di wilayah terpilih, memberikan informasi kesehatan lingkungan yang krusial.
-- **🌍 Informasi Gempa Bumi**: Menampilkan data gempa bumi terkini langsung dari BMKG untuk meningkatkan kesiapsiagaan terhadap bencana geologi maupun mencana banjir secara realtime .
+  <div align="center">
+    <img src="https://drive.google.com/thumbnail?id=1LE2UlyOrQDjqh-riWj09-3B8hjD9nL4X" alt="Pemantauan Kualitas Udara" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
+  </div>
+
+- **🌍 Informasi Gempa Bumi**: Menampilkan data gempa bumi terkini langsung dari BMKG untuk meningkatkan kesiapsiagaan terhadap bencana geologi maupun bencana banjir secara realtime.
+  <div align="center">
+    <img src="https://drive.google.com/thumbnail?id=1YbOs2aPQNskv_5rB2xrqGXLXxHhk8bjs" alt="Informasi Gempa Bumi" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
+  </div>
+
 - **📱 Dukungan Progressive Web App (PWA)**: Floodzy dapat diinstal di perangkat mobile layaknya aplikasi native, serta mendukung fungsionalitas offline untuk akses di kondisi darurat.
+  <div align="center">
+    <img src="https://drive.google.com/thumbnail?id=1e1gYjYEo8vlc-Aa1UezjypglABkTYtiQ" alt="Dukungan Progressive Web App (PWA)" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
+  </div>
+
 - **💬 Laporan Pengguna & Chatbot**: Memungkinkan pengguna melaporkan kejadian banjir secara langsung dan menyediakan chatbot interaktif untuk menjawab pertanyaan seputar cuaca dan bencana.
+  <div align="center">
+    <img src="https://drive.google.com/thumbnail?id=1fvamK7WQD5vNaPxA9Nf09T8zelbxk3Me" alt="Laporan Pengguna & Chatbot" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
+  </div>
 
 ### 🌡️ Cuaca & Data Banjir Di Indonesia 
+<div align="center">
+  <img src="https://drive.google.com/thumbnail?id=1N1r0adgwvHxjyhBP1ZV-XLlcCQ4oFUYQ" alt="Cuaca & Data Banjir" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
+</div>
 
 - Data cuaca real-time (temperatur, kelembapan, kecepatan angin).
 - Integrasi OpenWeatherMap.
 - Riwayat cuaca & banjir.
 
-### 🚨 Peringatan& Analisis
+### 🚨 Peringatan & Analisis
+<div align="center">
+  <img src="https://drive.google.com/thumbnail?id=1H4k4ylseAh6ePZ3ppiPrtSYF2IebiP4l" alt="Peringatan & Analisis" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
+</div>
 
 - Peringatan bencana dengan sumber data terintegrasi.
 - Analisis bencana otomatis menggunakan Gemini API.
 - Ringkasan berita bencana.
 
 ### 📍 Wilayah & Titik Evakuasi
+<div align="center">
+  <img src="https://drive.google.com/thumbnail?id=1dNG7jdIcfTQWoK3bTUP0qH1cushyfJQT" alt="Wilayah & Titik Evakuasi" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
+</div>
 
-- Pilihan wilayah hingga tingkat provinbsi/kota/kecamatan.
+- Pilihan wilayah hingga tingkat provinsi/kota/kecamatan.
 - Informasi jalur & titik evakuasi.
 
 ### 💬 Interaksi User
+<div align="center">
+  <img src="https://drive.google.com/thumbnail?id=1CvF2Hu0XJLwWFf2AbCWms4pZUMdiuPBn" alt="Interaksi User" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
+</div>
 
 - Laporan banjir langsung dari pengguna.
 - Chatbot informasi banjir & cuaca.
 
 ### 🛠 Developer Friendly
+<div align="center">
+  <img src="https://drive.google.com/thumbnail?id=1VqNCH2Z5YNYjeQg8DGXCWNmRa_dOlona" alt="Developer Friendly" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
+</div>
 
 - API publik (`/api`) untuk integrasi data.
 - Custom hooks untuk pengelolaan state & UI.
 
+---
+
 ## 📁 Struktur Project
-
-
 
 ## API Hardening: Rate Limiting & Caching
 
 Untuk menjaga stabilitas API dan mencegah penyalahgunaan, Floodzy API menerapkan mekanisme rate limiting dan caching.
 
-Rate Limiting: API dibatasi hingga 60 permintaan per menit per alamat IP. Jika melebihi batas ini, akan muncul respons 429 Too Many Requests.
+**Rate Limiting**: API dibatasi hingga 60 permintaan per menit per alamat IP. Jika melebihi batas ini, akan muncul respons `429 Too Many Requests`.
 
-Caching: Respons API disimpan dalam cache untuk mengurangi beban server dan mempercepat waktu respon. Nilai default cache TTL (Time-To-Live) adalah 60 detik.
+**Caching**: Respons API disimpan dalam cache untuk mengurangi beban server dan mempercepat waktu respon. Nilai default cache TTL (Time-To-Live) adalah 60 detik.
 
-Kedua fitur ini dijalankan menggunakan Upstash Redis. Pastikan variabel lingkungan berikut sudah disetel di file .env.local:
-```
-
-UPSTASH_REDIS_REST_URL=YOUR_UPSTASH_REDIS_REST_URL
-UPSTASH_REDIS_REST_TOKEN=YOUR_UPSTASH_REDIS_REST_TOKEN
-
-````
-
-Anda dapat menimpa (override) nilai default cache TTL untuk rute tertentu dengan memberikan opsi ttl pada fungsi caching di dalam route handler.
-Sebagai contoh:
-
-```typescript
-await setCache(cacheKey, data, { ttl: 300 });
-````
-
-## Observability 
-
-Floodzy terintegrasi dengan Sentry untuk pemantauan error dan pelacakan performa, serta menerapkan structured logging pada rute API untuk meningkatkan observabilitas.
-
-Konfigurasi Sentry Di Project Floodzy
-
-Sentry membantu kita dalam pelacakan error secara real-time dan pemantauan performa. Untuk mengaktifkan Sentry, atur variabel lingkungan berikut di file .env.local (untuk pengembangan lokal) dan juga di environment deployment Anda (misalnya Vercel) pada tahap preview dan production:
-
-```
-SENTRY_DSN="https://<your-dsn>.ingest.sentry.io/<project-id>"
-SENTRY_TRACES_SAMPLE_RATE="0.1"
-SENTRY_PROFILES_SAMPLE_RATE="0.0"
-SENTRY_ENVIRONMENT="development" # or "production", "preview"
-
-
-- `SENTRY_DSN`: Your project's DSN from Sentry.
-- `SENTRY_TRACES_SAMPLE_RATE`: Percentage of transactions to sample for performance monitoring (e.g., 0.1 for 10%).
-- `SENTRY_PROFILES_SAMPLE_RATE`: Percentage of transactions to sample for profiling (e.g., 0.0 for disabled).
-- `SENTRY_ENVIRONMENT`: The environment name (e.g., `development`, `production`, `preview`).
-
-Anda dapat melihat error yang tertangkap dan jejak performa di dashboard Sentry, masing-masing pada tab "Issues" dan "Performance".
-
-### Struktur API Loging
-
-API routes (`/api/*`) now produce structured JSON logs to provide better insights into request processing. Each API response includes an `X-Request-Id` header, which can be used to correlate logs for a single request.
-
-Contoh entri log (Anda dapat menggunakan perintah grep untuk mencari X-Request-Id di log Vercel Anda):
-```
-
-````
-```json
-{
-  "level": "info",
-  "ts": "2025-08-27T12:34:56.789Z",
-  "route": "/api/petabencana",
-  "method": "GET",
-  "status": 200,
-  "ip": "192.168.1.1",
-  "cache": "HIT",
-  "rlRemaining": 59,
-  "durationMs": 15,
-  "requestId": "some-uuid-1234"
-}
-````
-
-Key fields in the logs:
-
-- `route`: The API endpoint path.
-- `method`: HTTP method (e.g., `GET`, `POST`).
-- `status`: HTTP response status code.
-- `ip`: Client IP address.
-- `cache`: Cache status (`HIT`, `MISS`, `BYPASS`).
-- `rlRemaining`: Remaining requests in the rate limit window.
-- `durationMs`: Request duration in milliseconds.
-- `error`: Error message if an error occurred.
-- `requestId`: Unique ID for the request (`X-Request-Id` header).
-
-  ```plaintext
-
-  ```
-
-## 🌟 Roadmap
-
-- [x] 🌊 **Monitoring Banjir Dasar** – Peta interaktif & data ketinggian air.
-- [x] 🌦 **Integrasi Cuaca & Peta** – Data cuaca real-time, prakiraan, dan visualisasi.
-- [x] 📱 **Aplikasi Mobile** – Versi Android & iOS untuk pemantauan di genggaman.
-- [x] 🤖 **Prediksi AI Banjir** – Analisis risiko banjir berbasis Machine Learning.
-- [x] 📡 **Integrasi IoT Sensor** – Data real-time dari sensor fisik lapangan.
-- [x] 🗣 **Laporan Komunitas** – Sistem pelaporan banjir berbasis partisipasi warga.
-
-````
-
-```plaintext
-### 🌐 Endpoints API
-
-| Endpoint                | Deskripsi                                      | Parameter              |
-| ----------------------- | ---------------------------------------------- | ---------------------- |
-| `/api/analysis`         | Analisis data bencana berbasis AI              | -                      |
-| `/api/alerts-data`      | Data peringatan bencana                        | -                      |
-| `/api/chatbot`          | Chatbot informasi banjir & cuaca               | `message` (POST)       |
-| `/api/evakuasi`         | Titik evakuasi terdekat                        | `regionId`             |
-| `/api/gemini-alerts`    | Peringatan otomatis berbasis Gemini AI         | -                      |
-| `/api/gemini-analysis`  | Analisis mendalam banjir berbasis AI           | -                      |
-| `/api/laporan`          | Laporan banjir pengguna                        | `location`, `status`   |
-| `/api/pump-status-proxy`| Status pompa banjir                            | `pumpId`               |
-| `/api/regions`          | Daftar wilayah monitoring                      | -                      |
-| `/api/water-level-proxy`| Ketinggian air                                 | `stationId`            |
-| `/api/weather`          | Cuaca terkini                                  | `lat`, `lon`           |
-| `/api/weather-history`  | Riwayat cuaca                                  | `regionId`             |
-
-
-
-````
-
-## ⚡ Custom Hooks
-
-🌍 useRegionData → Data wilayah & monitoring Di wilayah indonesia
-
-🚰 usePumpStatusData → Status pompa banjir
-
-🌊 useWaterLevelData → Data ketinggian air
-
-🌫️ useAirPollutionData → Data kualitas udara
-
-🌐 useBmkgQuakeData → Data gempa dari BMKG
-
-🚨 useDisasterData → Data bencana umum
-
-🎨 UI & Experience
-
-🌓 useTheme → Manajemen tema UI
-
-🔔 useToast → Notifikasi toast
-
-🛠️ Utilities
-
-⏳ useDebounce → Input debouncing
-
-````plaintext
-## 🚀 Panduan Memulai (Getting Started)
-
-Ikuti langkah-langkah ini untukclone dan  menjalankan Floodzy di lingkungan pengembangan lokal Anda.
-
-### 1. Prasyarat
-
--   Node.js (v18 atau lebih baru)
--   npm / yarn / pnpm
--   Supabase CLI (untuk setup database lokal)
-
-### 2. Instalasi
-
-1.  **Clone repositori ini:**
-    ```bash
-    git clone [https://github.com/mattyudha/floodzy.git](https://github.com/mattyudha/floodzy.git)
-    cd floodzy
-    ```
-
-2.  **Install dependensi:**
-    ```bash
-    npm install
-    ```
-
-### 3. Konfigurasi Lingkungan
-
-1.  **Buat file `.env.local`** dari contoh yang ada:
-    ```bash
-    cp .env.example .env.local
-    ```
-
-2.  **Isi semua variabel lingkungan** di dalam file `.env.local`. Pastikan semua variabel terisi, karena banyak fitur yang bergantung pada kunci API ini.
-    ```env
-    # Supabase (Wajib)
-    NEXT_PUBLIC_SUPABASE_URL=...
-    NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-    SUPABASE_SERVICE_ROLE_KEY=...
-
-    # API Pihak Ketiga (Wajib)
-    OPENWEATHER_API_KEY=...
-    NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=...
-    GEMINI_API_KEY=...
-
-    # Upstash Redis for Caching & Rate Limiting (Wajib)
-    UPSTASH_REDIS_REST_URL=...
-    UPSTASH_REDIS_REST_TOKEN=...
-
-    # Sentry for Error Monitoring (Opsional)
-    SENTRY_DSN=...
-    SENTRY_ENVIRONMENT="development"
-    ```
-
-### 4. Setup Database (Supabase)
-
-1.  **Login ke Supabase CLI:**
-    ```bash
-    npx supabase login
-    ```
-
-2.  **Mulai Supabase di lokal:**
-    ```bash
-    npx supabase start
-    ```
-
-3.  **Terapkan migrasi database.** Skema tabel dan fungsi akan dibuat secara otomatis.
-    ```bash
-    npx supabase db reset
-    ```
-    *Catatan: Perintah ini juga akan menjalankan `seed.sql` untuk mengisi data awal.*
-
-### 5. Jalankan Aplikasi
-
-
-1.  **Jalankan server pengembangan:**
-    ```bash
-    npm run dev
-    ```
-
-2.  Buka **http://localhost:3000** di browser Anda.
-
-### Perintah Lainnya
-
--   `npm run build`: Membuat build produksi.
--   `npm run test`: Menjalankan pengujian dengan Vitest.
--   `npm run lint`: Mengecek kualitas kode dengan ESLint.
-
-```plaintext
-Buat file .env.local:
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-SUPABASE_SERVICE_ROLE_KEY=...
-OPENWEATHER_API_KEY=...
-NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=...
-
-````
-
-```plaintext
-📊 Performa
-
-Lighthouse Score: 95+
-
-FCP: < 1.5s
-
-TTI: < 3s
-
-🛡️ Security
-
-Supabase Row Level Security (RLS)
-
-Validasi input di server
-
-API key aman di environment variables
-```
-
-```plaintext
-## 🛠️ Arsitektur & Teknologi
-
-Floodzy dibangun di atas tumpukan teknologi modern yang dirancang untuk skalabilitas, performa, dan kemudahan pengembangan.
-
--   **Frontend**: Dibangun dengan **Next.js 13+ (App Router)** dan **TypeScript**. Antarmuka pengguna (UI) menggunakan **Tailwind CSS** dan komponen-komponen dari **shadcn/ui** yang *reusable* dan aksesibel.
--   **State Management**: Menggunakan **React Query (`@tanstack/react-query`)** untuk manajemen *server state*, termasuk caching, re-fetching, dan sinkronisasi data, sehingga memastikan UI selalu up-to-date dengan data terbaru.
--   **Backend**: Memanfaatkan **Next.js API Routes** sebagai backend, didukung oleh **Supabase** untuk database PostgreSQL, otentikasi, dan *Row Level Security* (RLS).
--   **Testing**: Proyek ini dilengkapi dengan *smoke tests* menggunakan **Vitest** untuk memastikan fungsionalitas inti berjalan sesuai harapan.
--   **CI/CD**: Proses *Continuous Integration* diotomatisasi menggunakan **GitHub Actions**, yang menjalankan proses linting dan testing setiap kali ada perubahan kode untuk menjaga kualitas kode.
-```
-
-```plaintext
-🎉 Acknowledgments
-
--> OpenWeatherMap
-
--> Supabase
-
--> Leaflet
-
--> BMKG
-
--> Kementerian PUPR
-```
-
-MIT License
-
-Copyright (c) 2025 Matt
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Kedua fitur ini dijalankan menggunakan Upstash Redis. Pastikan variabel lingkungan berikut sudah disetel di file `.env.local`:
