@@ -24,18 +24,17 @@ Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang meman
 ---
 ```
 🌟 Roadmap
-[x] 🌊 Monitoring Banjir Dasar – Peta interaktif & data ketinggian air.
+[1] 🌊 Monitoring Banjir Dasar – Peta interaktif & data ketinggian air.
 
-[x] 🌦 Integrasi Cuaca & Peta – Data cuaca real-time, prakiraan, dan visualisasi.
+[2] 🌦 Integrasi Cuaca & Peta – Data cuaca real-time, prakiraan, dan visualisasi.
 
-[x] 📱 Aplikasi Mobile – Versi Android & iOS untuk pemantauan di genggaman.
+[3] 📱 Aplikasi Mobile – Versi Android & iOS untuk pemantauan di genggaman.
 
-[x] 🤖 Prediksi AI Banjir – Analisis risiko banjir berbasis Machine Learning.
+[4] 🤖 Prediksi AI Banjir – Analisis risiko banjir berbasis Machine Learning.
 
-[x] 📡 Integrasi IoT Sensor – Data real-time dari sensor fisik lapangan.
+[5] 📡 Integrasi IoT Sensor – Data real-time dari sensor fisik lapangan.
 
-[x] 🗣 Laporan Komunitas – Sistem pelaporan banjir berbasis partisipasi warga.
-### ✨ Fitur
+[6] 🗣 Laporan Komunitas – Sistem pelaporan banjir berbasis partisipasi warga.
 ```
 
 
