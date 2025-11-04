@@ -344,11 +344,12 @@ npm run test: Menjalankan pengujian dengan Vitest.
 
 npm run lint: Mengecek kualitas kode dengan ESLint.
 
+```
 ### 📊 Performa
 
 <div align="center">
   <img 
-    src="https://drive.google.com/uc?export=view&id=13R_SfEzDLfs7AfjwwSCjs10Dmq-TgYjx" 
+    src="https://drive.google.com/file/d/141ihZZuGfCdzUT3iC3NmqobkcPImNWnH/view?usp=sharing" 
     alt="Lighthouse Score" 
     style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
 </div>
@@ -356,6 +357,9 @@ npm run lint: Mengecek kualitas kode dengan ESLint.
 **Lighthouse Score:** 95+  
 **FCP:** < 1.5s  
 **TTI:** < 3s
+**AUC:** 0,992
+
+```
 
 🛡️ Security
 Supabase Row Level Security (RLS)
