@@ -46,90 +46,165 @@ Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang meman
   <tr>
     <td width="50%">
       <h4>🗺️ Peta Bencana Interaktif</h4>
-      <p>Visualisasi data banjir, cuaca, dan sensor secara real-time menggunakan <b>Leaflet</b>, lengkap dengan marker, layer, dan legenda interaktif.</p>
+      <p>Visualisasi data banjir, cuaca, dan sensor secara real-time menggunakan <b>Leaflet</b>, lengkap dengan marker, layer, dan legenda yang interaktif.</p>
     </td>
     <td align="center">
-      <img src="https://drive.google.com/uc?export=view&id=1fGo6J4es_JFH7eIXztyDYh3TKCg9WCer" alt="Peta Bencana Interaktif" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+      <img src="https://drive.google.com/uc?export=view&id=1fGo6J4es_JFH7eIXztyDYh3TKCg9WCer" alt="Peta Bencana Interaktif" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
     </td>
   </tr>
 
   <tr>
     <td width="50%">
       <h4>📊 Dashboard Awal Floodzy (Landing Section)</h4>
-      <p>Menampilkan dashboard utama Floodzy dengan ringkasan data dan statistik bencana secara real-time.</p>
+      <p>Menampilkan dashboard awal Floodzy (Hero Section) dengan tampilan ringkas, statistik, dan navigasi utama menuju fitur pemantauan bencana.</p>
     </td>
     <td align="center">
-      <img src="https://drive.google.com/uc?export=view&id=1Z-ONZGvKl7riQOARz1Lqm3IQJZJuIgci" alt="Dashboard Floodzy" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+      <img src="https://drive.google.com/uc?export=view&id=1Z-ONZGvKl7riQOARz1Lqm3IQJZJuIgci" alt="Dashboard Awal" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
     </td>
   </tr>
 
   <tr>
     <td width="50%">
       <h4>🤖 Peta Banjir & Lokasi Evakuasi</h4>
-      <p>User dapat memilih lokasi banjir dan menentukan titik evakuasi terdekat secara otomatis.</p>
+      <p>Pengguna dapat memilih lokasi banjir di peta dan secara otomatis menemukan titik evakuasi terdekat berdasarkan lokasi mereka.</p>
     </td>
     <td align="center">
-      <img src="https://drive.google.com/uc?export=view&id=1vh0Lq0UezQ4lw8oHMCv13ZbMnb_-OSAJ" alt="Peta Banjir & Evakuasi" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+      <img src="https://drive.google.com/uc?export=view&id=1vh0Lq0UezQ4lw8oHMCv13ZbMnb_-OSAJ" alt="Peta Banjir dan Evakuasi" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
     </td>
   </tr>
 
   <tr>
     <td width="50%">
       <h4>🌦️ Prakiraan & Riwayat Cuaca</h4>
-      <p>Data cuaca real-time (suhu, kelembapan, angin) dari <b>OpenWeatherMap</b> dan riwayat cuaca untuk analisis tren.</p>
+      <p>Menyajikan data cuaca real-time (suhu, kelembapan, kecepatan angin) dari <b>OpenWeatherMap</b> dan riwayat cuaca untuk analisis tren bencana.</p>
     </td>
     <td align="center">
-      <img src="https://drive.google.com/uc?export=view&id=1CrBlERMTVB5o8NlheViY1jxkxWrBsIbs" alt="Prakiraan & Cuaca" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+      <img src="https://drive.google.com/uc?export=view&id=1CrBlERMTVB5o8NlheViY1jxkxWrBsIbs" alt="Prakiraan & Riwayat Cuaca" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
     </td>
   </tr>
 
   <tr>
     <td width="50%">
       <h4>🚨 Peringatan Dini Multi-Sumber</h4>
-      <p>Menggabungkan berbagai sumber terpercaya untuk memberikan notifikasi bencana yang akurat dan cepat.</p>
+      <p>Mengumpulkan data peringatan dari berbagai sumber terpercaya untuk memberikan notifikasi bencana yang cepat dan akurat.</p>
     </td>
     <td align="center">
-      <img src="https://drive.google.com/uc?export=view&id=1SGVyChTnBIIG62nUXxEAFRupmP7cjSmp" alt="Peringatan Dini" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+      <img src="https://drive.google.com/uc?export=view&id=1SGVyChTnBIIG62nUXxEAFRupmP7cjSmp" alt="Peringatan Dini Multi-Sumber" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
     </td>
   </tr>
 
   <tr>
     <td width="50%">
       <h4>🌬️ Pemantauan Kualitas Udara</h4>
-      <p>Menampilkan tingkat polusi udara di wilayah tertentu, membantu pengguna menjaga kesehatan lingkungan.</p>
+      <p>Menampilkan tingkat polusi udara di wilayah pilihan untuk memberikan informasi penting mengenai kesehatan lingkungan.</p>
     </td>
     <td align="center">
-      <img src="https://drive.google.com/uc?export=view&id=1LE2UlyOrQDjqh-riWj09-3B8hjD9nL4X" alt="Kualitas Udara" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+      <img src="https://drive.google.com/uc?export=view&id=1LE2UlyOrQDjqh-riWj09-3B8hjD9nL4X" alt="Pemantauan Kualitas Udara" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
     </td>
   </tr>
 
   <tr>
     <td width="50%">
       <h4>🌍 Informasi Gempa Bumi</h4>
-      <p>Data gempa terkini dari <b>BMKG</b> untuk meningkatkan kesiapsiagaan terhadap bencana geologi.</p>
+      <p>Menampilkan data gempa terkini langsung dari <b>BMKG</b> untuk kesiapsiagaan bencana geologi maupun banjir secara real-time.</p>
     </td>
     <td align="center">
-      <img src="https://drive.google.com/uc?export=view&id=1YbOs2aPQNskv_5rB2xrqGXLXxHhk8bjs" alt="Gempa Bumi" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+      <img src="https://drive.google.com/uc?export=view&id=1YbOs2aPQNskv_5rB2xrqGXLXxHhk8bjs" alt="Informasi Gempa Bumi" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
     </td>
   </tr>
 
   <tr>
     <td width="50%">
       <h4>📈 Dashboard Statistik & Analisis</h4>
-      <p>Menampilkan grafik curah hujan, laporan banjir, dan data historis secara visual dan interaktif.</p>
+      <p>Halaman <code>/statistika</code> menampilkan statistik historis bencana, grafik curah hujan, dan laporan banjir dalam format visual yang mudah dipahami.</p>
     </td>
     <td align="center">
-      <img src="https://drive.google.com/uc?export=view&id=1e1gYjYEo8vlc-Aa1UezjypglABkTYtiQ" alt="Dashboard Statistik" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+      <img src="https://drive.google.com/uc?export=view&id=1e1gYjYEo8vlc-Aa1UezjypglABkTYtiQ" alt="Dashboard Statistik & Analisis" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
     </td>
   </tr>
 
   <tr>
     <td width="50%">
       <h4>💬 Analisis Data Sensor</h4>
-      <p>Melakukan analisis prediktif terhadap data sensor untuk memperkirakan potensi banjir di masa depan.</p>
+      <p>Menganalisis data sensor untuk memperkirakan kemungkinan banjir di masa depan secara akurat menggunakan pembacaan data real-time.</p>
     </td>
     <td align="center">
-      <img src="https://drive.google.com/uc?export=view&id=1fvamK7WQD5vNaPxA9Nf09T8zelbxk3Me" alt="Analisis Sensor" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+      <img src="https://drive.google.com/uc?export=view&id=1fvamK7WQD5vNaPxA9Nf09T8zelbxk3Me" alt="Analisis Data Sensor" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
+    </td>
+  </tr>
+
+  <tr>
+    <td width="50%">
+      <h4>🌡️ Statistik Data Banjir di Indonesia</h4>
+      <p>Menampilkan tren dan data historis banjir di Indonesia, meliputi suhu, kelembapan, dan kecepatan angin untuk analisis korelatif.</p>
+      <ul>
+        <li>Data cuaca real-time</li>
+        <li>Integrasi OpenWeatherMap</li>
+        <li>Riwayat cuaca dan banjir</li>
+      </ul>
+    </td>
+    <td align="center">
+      <img src="https://drive.google.com/uc?export=view&id=1N1r0adgwvHxjyhBP1ZV-XLlcCQ4oFUYQ" alt="Statistik Data Banjir" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
+    </td>
+  </tr>
+
+  <tr>
+    <td width="50%">
+      <h4>🚨 Peringatan & Analisis</h4>
+      <p>Memberikan peringatan bencana dari sumber data terintegrasi dan analisis otomatis menggunakan <b>Gemini API</b>.</p>
+      <ul>
+        <li>Integrasi data lintas sumber</li>
+        <li>Analisis otomatis AI</li>
+        <li>Ringkasan berita bencana</li>
+      </ul>
+    </td>
+    <td align="center">
+      <img src="https://drive.google.com/uc?export=view&id=1H4k4ylseAh6ePZ3ppiPrtSYF2IebiP4l" alt="Peringatan & Analisis" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
+    </td>
+  </tr>
+
+  <tr>
+    <td width="50%">
+      <h4>📍 Cuaca Sekarang</h4>
+      <p>Menampilkan cuaca terkini berdasarkan izin lokasi pengguna secara otomatis melalui popup interaktif.</p>
+      <ul>
+        <li>Lokasi otomatis (GPS)</li>
+        <li>Data suhu, kelembapan, dan kecepatan angin</li>
+        <li>Popup UI interaktif</li>
+      </ul>
+    </td>
+    <td align="center">
+      <img src="https://drive.google.com/uc?export=view&id=1dNG7jdIcfTQWoK3bTUP0qH1cushyfJQT" alt="Cuaca Sekarang" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
+    </td>
+  </tr>
+
+  <tr>
+    <td width="50%">
+      <h4>💬 Satelit Mode</h4>
+      <p>Mode satelit memungkinkan pengguna melihat peta dengan visual detail untuk memantau lokasi dan tingkat banjir secara lebih jelas.</p>
+      <ul>
+        <li>Tampilan peta satelit</li>
+        <li>Visual lokasi banjir</li>
+        <li>Chatbot interaktif</li>
+      </ul>
+    </td>
+    <td align="center">
+      <img src="https://drive.google.com/uc?export=view&id=1CvF2Hu0XJLwWFf2AbCWms4pZUMdiuPBn" alt="Satelit Mode" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
+    </td>
+  </tr>
+
+  <tr>
+    <td width="50%">
+      <h4>🛠 Pantauan Infrastruktur Kritis</h4>
+      <p>Menampilkan data real-time infrastruktur seperti ketinggian air dan status pompa banjir melalui scrollbar interaktif.</p>
+      <ul>
+        <li>Status pompa banjir</li>
+        <li>Ketinggian air</li>
+        <li>Real-time monitoring</li>
+      </ul>
+    </td>
+    <td align="center">
+      <img src="https://drive.google.com/uc?export=view&id=1VqNCH2Z5YNYjeQg8DGXCWNmRa_dOlona" alt="Pantauan Infrastruktur Kritis" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
     </td>
   </tr>
 </table>
