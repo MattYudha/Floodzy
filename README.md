@@ -23,7 +23,22 @@ Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang meman
 
 ---
 
+🌟 Roadmap
+[x] 🌊 Monitoring Banjir Dasar – Peta interaktif & data ketinggian air.
+
+[x] 🌦 Integrasi Cuaca & Peta – Data cuaca real-time, prakiraan, dan visualisasi.
+
+[x] 📱 Aplikasi Mobile – Versi Android & iOS untuk pemantauan di genggaman.
+
+[x] 🤖 Prediksi AI Banjir – Analisis risiko banjir berbasis Machine Learning.
+
+[x] 📡 Integrasi IoT Sensor – Data real-time dari sensor fisik lapangan.
+
+[x] 🗣 Laporan Komunitas – Sistem pelaporan banjir berbasis partisipasi warga.
 ### ✨ Fitur
+
+
+
 
 Floodzy menyediakan serangkaian fitur lengkap untuk pemantauan bencana yang komprehensif:
 
@@ -116,6 +131,29 @@ Floodzy menyediakan serangkaian fitur lengkap untuk pemantauan bencana yang komp
 
 ---
 
+⚡ Custom Hooks
+🌍 useRegionData → Data wilayah & monitoring Di wilayah indonesia
+
+🚰 usePumpStatusData → Status pompa banjir
+
+🌊 useWaterLevelData → Data ketinggian air
+
+🌫️ useAirPollutionData → Data kualitas udara
+
+🌐 useBmkgQuakeData → Data gempa dari BMKG
+
+🚨 useDisasterData → Data bencana umum
+
+🎨 UI & Experience
+
+🌓 useTheme → Manajemen tema UI
+
+🔔 useToast → Notifikasi toast
+
+🛠️ Utilities
+
+⏳ useDebounce → Input debouncing
+
 ## 📁 Struktur Project
 
 ## API Hardening: Rate Limiting & Caching
@@ -127,3 +165,232 @@ Untuk menjaga stabilitas API dan mencegah penyalahgunaan, Floodzy API menerapkan
 **Caching**: Respons API disimpan dalam cache untuk mengurangi beban server dan mempercepat waktu respon. Nilai default cache TTL (Time-To-Live) adalah 60 detik.
 
 Kedua fitur ini dijalankan menggunakan Upstash Redis. Pastikan variabel lingkungan berikut sudah disetel di file `.env.local`:
+
+```
+UPSTASH_REDIS_REST_URL=YOUR_UPSTASH_REDIS_REST_URL
+UPSTASH_REDIS_REST_TOKEN=YOUR_UPSTASH_REDIS_REST_TOKEN
+
+```
+
+Anda dapat menimpa (override) nilai default cache TTL untuk rute tertentu dengan memberikan opsi `ttl` pada fungsi caching di dalam route handler. Sebagai contoh:
+
+typescript
+await setCache(cacheKey, data, { ttl: 300 });
+
+
+Observability
+Floodzy terintegrasi dengan Sentry untuk pemantauan error dan pelacakan performa, serta menerapkan structured logging pada rute API untuk meningkatkan observabilitas.
+
+Konfigurasi Sentry Di Project Floodzy
+Sentry membantu kita dalam pelacakan error secara real-time dan pemantauan performa. Untuk mengaktifkan Sentry, atur variabel lingkungan berikut di file .env.local (untuk pengembangan lokal) dan juga di environment deployment Anda (misalnya Vercel) pada tahap preview dan production:
+```
+
+SENTRY_DSN="https://<your-dsn>.ingest.sentry.io/<project-id>"
+SENTRY_TRACES_SAMPLE_RATE="0.1"
+SENTRY_PROFILES_SAMPLE_RATE="0.0"
+SENTRY_ENVIRONMENT="development" # or "production", "preview"
+
+```
+
+SENTRY_DSN: Your project's DSN from Sentry.
+
+SENTRY_TRACES_SAMPLE_RATE: Percentage of transactions to sample for performance monitoring (e.g., 0.1 for 10%).
+
+SENTRY_PROFILES_SAMPLE_RATE: Percentage of transactions to sample for profiling (e.g., 0.0 for disabled).
+
+SENTRY_ENVIRONMENT: The environment name (e.g., development, production, preview).
+
+Anda dapat melihat error yang tertangkap dan jejak performa di dashboard Sentry, masing-masing pada tab "Issues" dan "Performance".
+
+Struktur API Logging
+API routes (/api/*) now produce structured JSON logs to provide better insights into request processing. Each API response includes an X-Request-Id header, which can be used to correlate logs for a single request.
+
+Contoh entri log (Anda dapat menggunakan perintah grep untuk mencari X-Request-Id di log Vercel Anda):
+
+```
+{
+  "level": "info",
+  "ts": "2025-08-27T12:34:56.789Z",
+  "route": "/api/petabencana",
+  "method": "GET",
+  "status": 200,
+  "ip": "192.168.1.1",
+  "cache": "HIT",
+  "rlRemaining": 59,
+  "durationMs": 15,
+  "requestId": "some-uuid-1234"
+}
+```
+
+Key fields in the logs:
+
+route: The API endpoint path.
+
+method: HTTP method (e.g., GET, POST).
+
+status: HTTP response status code.
+
+ip: Client IP address.
+
+cache: Cache status (HIT, MISS, BYPASS).
+
+rlRemaining: Remaining requests in the rate limit window.
+
+durationMs: Request duration in milliseconds.
+
+error: Error message if an error occurred.
+
+requestId: Unique ID for the request (X-Request-Id header).
+
+```
+### 🌊 API Endpoints — Floodzy Backend
+
+| Endpoint                | Deskripsi                                     | Parameter              |
+|-------------------------|-----------------------------------------------|------------------------|
+| `/api/analysis`         | Analisis data bencana berbasis AI             | -                      |
+| `/api/alerts-data`      | Data peringatan bencana                       | -                      |
+| `/api/chatbot`          | Chatbot informasi banjir & cuaca              | `message` (POST)       |
+| `/api/evakuasi`         | Titik evakuasi terdekat                       | `regionId`             |
+| `/api/gemini-alerts`    | Peringatan otomatis berbasis Gemini AI        | -                      |
+| `/api/gemini-analysis`  | Analisis mendalam banjir berbasis AI          | -                      |
+| `/api/laporan`          | Laporan banjir pengguna                       | `location`, `status`   |
+| `/api/pump-status-proxy`| Status pompa banjir                           | `pumpId`               |
+| `/api/regions`          | Daftar wilayah monitoring                     | -                      |
+| `/api/water-level-proxy`| Ketinggian air                                | `stationId`            |
+| `/api/weather`          | Cuaca terkini                                 | `lat`, `lon`           |
+| `/api/weather-history`  | Riwayat cuaca                                 | `regionId`             |
+
+```
+
+🚀 Panduan Memulai (Getting Started)
+Ikuti langkah-langkah ini untuk clone dan menjalankan Floodzy di lingkungan pengembangan lokal Anda.
+
+1. Prasyarat
+Node.js (v18 atau lebih baru)
+
+npm / yarn / pnpm
+
+Supabase CLI (untuk setup database lokal)
+
+2. Instalasi
+Clone repositori ini:
+
+```
+git clone [https://github.com/mattyudha/floodzy.git](https://github.com/mattyudha/floodzy.git)
+cd floodzy
+```
+
+Install dependensi:
+
+```
+npm install
+```
+3. Konfigurasi Lingkungan
+Buat file .env.local dari contoh yang ada:
+```
+cp .env.example .env.local
+```
+
+Isi semua variabel lingkungan di dalam file .env.local. Pastikan semua variabel terisi, karena banyak fitur yang bergantung pada kunci API ini.
+```
+# Supabase (Wajib)
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+
+# API Pihak Ketiga (Wajib)
+OPENWEATHER_API_KEY=...
+NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=...
+GEMINI_API_KEY=...
+
+# Upstash Redis for Caching & Rate Limiting (Wajib)
+UPSTASH_REDIS_REST_URL=...
+UPSTASH_REDIS_REST_TOKEN=...
+
+# Sentry for Error Monitoring (Opsional)
+SENTRY_DSN=...
+SENTRY_ENVIRONMENT="development"
+
+```
+Setup Database (Supabase)
+Login ke Supabase CLI:
+
+```
+npx supabase login
+```
+Mulai Supabase di lokal:
+```
+npx supabase start
+```
+
+Terapkan migrasi database. Skema tabel dan fungsi akan dibuat secara otomatis.
+
+```
+npx supabase db reset
+```
+
+Jalankan Aplikasi
+Jalankan server pengembangan:
+
+```
+npm run dev
+```
+Buka http://localhost:3000 di browser Anda.
+
+Perintah Lainnya
+npm run build: Membuat build produksi.
+
+npm run test: Menjalankan pengujian dengan Vitest.
+
+npm run lint: Mengecek kualitas kode dengan ESLint.
+
+📊 Performa
+<div align="center"> <img src="https://www.google.com/search?q=https://drive.google.com/thumbnail%3Fid%3D13R_SfEzDLfs7AfjwwSCjs10Dmq-TgYjx" alt="Lighthouse Score" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;"> </div>
+
+Lighthouse Score: 95+
+
+FCP: < 1.5s
+
+TTI: < 3s
+
+🛡️ Security
+Supabase Row Level Security (RLS)
+
+Validasi input di server
+
+API key aman di environment variables
+
+🛠️ Arsitektur & Teknologi
+Floodzy dibangun di atas tumpukan teknologi modern yang dirancang untuk skalabilitas, performa, dan kemudahan pengembangan.
+
+Frontend: Dibangun dengan Next.js 13+ (App Router) dan TypeScript. Antarmuka pengguna (UI) menggunakan Tailwind CSS dan komponen-komponen dari shadcn/ui yang reusable dan aksesibel.
+
+State Management: Menggunakan React Query (@tanstack/react-query) untuk manajemen server state, termasuk caching, re-fetching, dan sinkronisasi data, sehingga memastikan UI selalu up-to-date dengan data terbaru.
+
+Backend: Memanfaatkan Next.js API Routes sebagai backend, didukung oleh Supabase untuk database PostgreSQL, otentikasi, dan Row Level Security (RLS).
+
+Testing: Proyek ini dilengkapi dengan smoke tests menggunakan Vitest untuk memastikan fungsionalitas inti berjalan sesuai harapan.
+
+CI/CD: Proses Continuous Integration diotomatisasi menggunakan GitHub Actions, yang menjalankan proses linting dan testing setiap kali ada perubahan kode untuk menjaga kualitas kode.
+
+🎉 Acknowledgments
+OpenWeatherMap
+
+Supabase
+
+Leaflet
+
+BMKG
+
+Kementerian PUPR
+
+License
+MIT License
+
+Copyright (c) 2025 Matt
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
