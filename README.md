@@ -351,16 +351,7 @@ npm run lint: Mengecek kualitas kode dengan ESLint.
   <img 
     src="https://drive.google.com/uc?export=view&id=141ihZZuGfCdzUT3iC3NmqobkcPImNWnH" 
     alt="Lighthouse Score" 
-    style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-</div>
-
-### ⚙️ Performa
-
-<div align="center">
-  <img 
-    src="https://drive.google.com/uc?export=view&id=141ihZZuGfCdzUT3iC3NmqobkcPImNWnH" 
-    alt="Lighthouse Score" 
-    style="border: 2px solid #38B2AC; border-radius: 8px; margin: 16px 0; max-width: 100%;">
+  style="border: 2px solid #38B2AC; border-radius: 8px; margin: 16px 0; width: 70%; max-width: 480px;">
 </div>
 
 **⚡ Lighthouse Score:** 95+  
