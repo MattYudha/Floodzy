@@ -354,48 +354,59 @@ npm run lint: Mengecek kualitas kode dengan ESLint.
     style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
 </div>
 
+### ⚙️ Performa
+
+<div align="center">
+  <img 
+    src="https://drive.google.com/uc?export=view&id=141ihZZuGfCdzUT3iC3NmqobkcPImNWnH" 
+    alt="Lighthouse Score" 
+    style="border: 2px solid #38B2AC; border-radius: 8px; margin: 16px 0; max-width: 100%;">
+</div>
+
 **⚡ Lighthouse Score:** 95+  
 **🚀 FCP:** < 1.5s  
 **⏱️ TTI:** < 3s  
-**📈 AUC:** 0.992
+**📈 AUC:** 0.992  
 
 
+---
+
+### 🛡️ Security
+
+- Supabase **Row Level Security (RLS)**
+- Validasi input di sisi **server**
+- **API key** disimpan aman di *environment variables*  
 
 
+---
+
+### 🛠️ Arsitektur & Teknologi
+
+Floodzy dibangun di atas tumpukan teknologi modern yang dirancang untuk **skalabilitas**, **performa**, dan **kemudahan pengembangan**.
+
+- **Frontend:** Next.js 13+ (App Router) & TypeScript  
+  UI menggunakan Tailwind CSS dan komponen *reusable* dari `shadcn/ui`.
+
+- **State Management:** React Query (`@tanstack/react-query`)  
+  Untuk caching, re-fetching, dan sinkronisasi data agar UI selalu *real-time*.
+
+- **Backend:** Next.js API Routes + Supabase  
+  Database PostgreSQL, otentikasi, dan keamanan via **Row Level Security (RLS)**.
+
+- **Testing:** Menggunakan **Vitest** untuk *smoke tests* memastikan fungsionalitas inti tetap stabil.
+
+- **CI/CD:** Dikelola dengan **GitHub Actions** — otomatis linting & testing setiap kali ada commit.
 
 
+---
 
-🛡️ Security
-Supabase Row Level Security (RLS)
+### 🎉 Acknowledgments
 
-Validasi input di server
-
-API key aman di environment variables
-
-🛠️ Arsitektur & Teknologi
-Floodzy dibangun di atas tumpukan teknologi modern yang dirancang untuk skalabilitas, performa, dan kemudahan pengembangan.
-
-Frontend: Dibangun dengan Next.js 13+ (App Router) dan TypeScript. Antarmuka pengguna (UI) menggunakan Tailwind CSS dan komponen-komponen dari shadcn/ui yang reusable dan aksesibel.
-
-State Management: Menggunakan React Query (@tanstack/react-query) untuk manajemen server state, termasuk caching, re-fetching, dan sinkronisasi data, sehingga memastikan UI selalu up-to-date dengan data terbaru.
-
-Backend: Memanfaatkan Next.js API Routes sebagai backend, didukung oleh Supabase untuk database PostgreSQL, otentikasi, dan Row Level Security (RLS).
-
-Testing: Proyek ini dilengkapi dengan smoke tests menggunakan Vitest untuk memastikan fungsionalitas inti berjalan sesuai harapan.
-
-CI/CD: Proses Continuous Integration diotomatisasi menggunakan GitHub Actions, yang menjalankan proses linting dan testing setiap kali ada perubahan kode untuk menjaga kualitas kode.
-
-🎉 Acknowledgments
-
-1 OpenWeatherMap
-
-2 Supabase
-
-3 Leaflet
-
-4 BMKG
-
-5 Kementerian PUPR
+1. [OpenWeatherMap](https://openweathermap.org/)  
+2. [Supabase](https://supabase.com/)  
+3. [Leaflet](https://leafletjs.com/)  
+4. [BMKG](https://www.bmkg.go.id/)  
+5. [Kementerian PUPR](https://pu.go.id/)  
 
 
 
