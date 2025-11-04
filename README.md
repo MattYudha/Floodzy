@@ -361,6 +361,10 @@ npm run lint: Mengecek kualitas kode dengan ESLint.
 
 
 
+
+
+
+
 🛡️ Security
 Supabase Row Level Security (RLS)
 
@@ -382,15 +386,21 @@ Testing: Proyek ini dilengkapi dengan smoke tests menggunakan Vitest untuk memas
 CI/CD: Proses Continuous Integration diotomatisasi menggunakan GitHub Actions, yang menjalankan proses linting dan testing setiap kali ada perubahan kode untuk menjaga kualitas kode.
 
 🎉 Acknowledgments
-OpenWeatherMap
 
-Supabase
+1 OpenWeatherMap
 
-Leaflet
+2 Supabase
 
-BMKG
+3 Leaflet
 
-Kementerian PUPR
+4 BMKG
+
+5 Kementerian PUPR
+
+
+
+
+
 
 License
 MIT License
