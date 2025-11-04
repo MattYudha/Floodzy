@@ -32,7 +32,7 @@ Floodzy menyediakan serangkaian fitur lengkap untuk pemantauan bencana yang komp
     <img src="https://drive.google.com/thumbnail?id=1fGo6J4es_JFH7eIXztyDYh3TKCg9WCer" alt="Peta Bencana Interaktif" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
   </div>
 
-- **📊 Dashboard Awal Hero Floodzy (`/statistika`) yang menampilkan Dashboard awal Floodzy
+- **📊 Dashboard Awal Hero Floodzy Hero ( Landing Section )  yang menampilkan Dashboard awal Floodzy
   <div align="center">
     <img src="https://drive.google.com/thumbnail?id=1Z-ONZGvKl7riQOARz1Lqm3IQJZJuIgci" alt="Dashboard Statistik & Analisis" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
   </div>
