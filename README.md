@@ -22,7 +22,7 @@
 Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang memanfaatkan teknologi modern seperti **Next.js**, **ShadcnUI**, **TypeScript**, **React**, **Tailwind CSS**, dan **Supabase**. Platform ini menyediakan data ketinggian air, status pompa, prakiraan cuaca, analisis bencana, dan peta interaktif untuk mendukung mitigasi bencana di Indonesia. Data yang disajikan mencakup seluruh wilayah Indonesia hingga tingkat kecamatan dengan detail dan terstruktur.
 
 ---
-
+```
 🌟 Roadmap
 [x] 🌊 Monitoring Banjir Dasar – Peta interaktif & data ketinggian air.
 
@@ -36,95 +36,105 @@ Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang meman
 
 [x] 🗣 Laporan Komunitas – Sistem pelaporan banjir berbasis partisipasi warga.
 ### ✨ Fitur
+```
 
 
 
+<h3 align="center">🌊 Fitur Utama Floodzy</h3>
+<p>Floodzy menyediakan serangkaian fitur lengkap untuk pemantauan bencana yang komprehensif.</p>
 
-Floodzy menyediakan serangkaian fitur lengkap untuk pemantauan bencana yang komprehensif:
+<table>
+  <tr>
+    <td width="50%">
+      <h4>🗺️ Peta Bencana Interaktif</h4>
+      <p>Visualisasi data banjir, cuaca, dan sensor secara real-time menggunakan <b>Leaflet</b>, lengkap dengan marker, layer, dan legenda interaktif.</p>
+    </td>
+    <td align="center">
+      <img src="https://drive.google.com/uc?export=view&id=1fGo6J4es_JFH7eIXztyDYh3TKCg9WCer" alt="Peta Bencana Interaktif" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+    </td>
+  </tr>
 
-- **🗺️ Peta Bencana Interaktif**: Visualisasi data banjir, cuaca, dan sensor secara real-time menggunakan Leaflet, lengkap dengan marker, layer, dan legenda yang interaktif.
-  <div align="center">
-    <img src="https://drive.google.com/thumbnail?id=1fGo6J4es_JFH7eIXztyDYh3TKCg9WCer" alt="Peta Bencana Interaktif" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-  </div>
+  <tr>
+    <td width="50%">
+      <h4>📊 Dashboard Awal Floodzy (Landing Section)</h4>
+      <p>Menampilkan dashboard utama Floodzy dengan ringkasan data dan statistik bencana secara real-time.</p>
+    </td>
+    <td align="center">
+      <img src="https://drive.google.com/uc?export=view&id=1Z-ONZGvKl7riQOARz1Lqm3IQJZJuIgci" alt="Dashboard Floodzy" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+    </td>
+  </tr>
 
-- **📊 Dashboard Awal Hero Floodzy Hero ( Landing Section )  yang menampilkan Dashboard awal Floodzy
-  <div align="center">
-    <img src="https://drive.google.com/thumbnail?id=1Z-ONZGvKl7riQOARz1Lqm3IQJZJuIgci" alt="Dashboard Statistik & Analisis" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-  </div>
+  <tr>
+    <td width="50%">
+      <h4>🤖 Peta Banjir & Lokasi Evakuasi</h4>
+      <p>User dapat memilih lokasi banjir dan menentukan titik evakuasi terdekat secara otomatis.</p>
+    </td>
+    <td align="center">
+      <img src="https://drive.google.com/uc?export=view&id=1vh0Lq0UezQ4lw8oHMCv13ZbMnb_-OSAJ" alt="Peta Banjir & Evakuasi" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+    </td>
+  </tr>
 
-- **🤖 Map Peta Banjir yang mana user dapat memilih lokasi Peta Banjir dan bisa menentukan lokasi efakuasi terdekar dari lokasi user 
-  <div align="center">
-    <img src="https://drive.google.com/thumbnail?id=1vh0Lq0UezQ4lw8oHMCv13ZbMnb_-OSAJ" alt="Analisis Bencana Berbasis AI" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-  </div>
+  <tr>
+    <td width="50%">
+      <h4>🌦️ Prakiraan & Riwayat Cuaca</h4>
+      <p>Data cuaca real-time (suhu, kelembapan, angin) dari <b>OpenWeatherMap</b> dan riwayat cuaca untuk analisis tren.</p>
+    </td>
+    <td align="center">
+      <img src="https://drive.google.com/uc?export=view&id=1CrBlERMTVB5o8NlheViY1jxkxWrBsIbs" alt="Prakiraan & Cuaca" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+    </td>
+  </tr>
 
-- 🌦️ Prakiraan & Riwayat Cuaca: Menyajikan data cuaca real-time (suhu, kelembapan, angin) dari OpenWeatherMap dan riwayat cuaca untuk analisis tren.
-  <div align="center">
-    <img src="https://drive.google.com/thumbnail?id=1CrBlERMTVB5o8NlheViY1jxkxWrBsIbs" alt="Peringatan Dini Multi-Sumber" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-  </div>
+  <tr>
+    <td width="50%">
+      <h4>🚨 Peringatan Dini Multi-Sumber</h4>
+      <p>Menggabungkan berbagai sumber terpercaya untuk memberikan notifikasi bencana yang akurat dan cepat.</p>
+    </td>
+    <td align="center">
+      <img src="https://drive.google.com/uc?export=view&id=1SGVyChTnBIIG62nUXxEAFRupmP7cjSmp" alt="Peringatan Dini" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+    </td>
+  </tr>
 
-- 🚨 Peringatan Dini Multi-Sumber: Mengagregasi data peringatan dari berbagai sumber terpercaya untuk memberikan notifikasi bencana yang akurat.
-  <div align="center">
-    <img src="https://drive.google.com/thumbnail?id=1SGVyChTnBIIG62nUXxEAFRupmP7cjSmp" alt="Prakiraan & Riwayat Cuaca" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-  </div>
+  <tr>
+    <td width="50%">
+      <h4>🌬️ Pemantauan Kualitas Udara</h4>
+      <p>Menampilkan tingkat polusi udara di wilayah tertentu, membantu pengguna menjaga kesehatan lingkungan.</p>
+    </td>
+    <td align="center">
+      <img src="https://drive.google.com/uc?export=view&id=1LE2UlyOrQDjqh-riWj09-3B8hjD9nL4X" alt="Kualitas Udara" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+    </td>
+  </tr>
 
-- **🌬️ Pemantauan Kualitas Udara**: Fitur untuk memantau tingkat polusi udara di wilayah terpilih, memberikan informasi kesehatan lingkungan yang krusial.
-  <div align="center">
-    <img src="https://drive.google.com/thumbnail?id=1LE2UlyOrQDjqh-riWj09-3B8hjD9nL4X" alt="Pemantauan Kualitas Udara" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-  </div>
+  <tr>
+    <td width="50%">
+      <h4>🌍 Informasi Gempa Bumi</h4>
+      <p>Data gempa terkini dari <b>BMKG</b> untuk meningkatkan kesiapsiagaan terhadap bencana geologi.</p>
+    </td>
+    <td align="center">
+      <img src="https://drive.google.com/uc?export=view&id=1YbOs2aPQNskv_5rB2xrqGXLXxHhk8bjs" alt="Gempa Bumi" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+    </td>
+  </tr>
 
-- **🌍 Informasi Gempa Bumi**: Menampilkan data gempa bumi terkini langsung dari BMKG untuk meningkatkan kesiapsiagaan terhadap bencana geologi maupun bencana banjir secara realtime.
-  <div align="center">
-    <img src="https://drive.google.com/thumbnail?id=1YbOs2aPQNskv_5rB2xrqGXLXxHhk8bjs" alt="Informasi Gempa Bumi" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-  </div>
+  <tr>
+    <td width="50%">
+      <h4>📈 Dashboard Statistik & Analisis</h4>
+      <p>Menampilkan grafik curah hujan, laporan banjir, dan data historis secara visual dan interaktif.</p>
+    </td>
+    <td align="center">
+      <img src="https://drive.google.com/uc?export=view&id=1e1gYjYEo8vlc-Aa1UezjypglABkTYtiQ" alt="Dashboard Statistik" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+    </td>
+  </tr>
 
-- **📊 Dashboard Statistik & Analisis**: Halaman dashboard (`/statistika`) yang menampilkan statistik historis bencana, grafik curah hujan, dan laporan banjir dalam bentuk visual yang mudah dipahami dan data realtime.
-  <div align="center">
-    <img src="https://drive.google.com/thumbnail?id=1e1gYjYEo8vlc-Aa1UezjypglABkTYtiQ" alt="Dukungan Progressive Web App (PWA)" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-  </div>
+  <tr>
+    <td width="50%">
+      <h4>💬 Analisis Data Sensor</h4>
+      <p>Melakukan analisis prediktif terhadap data sensor untuk memperkirakan potensi banjir di masa depan.</p>
+    </td>
+    <td align="center">
+      <img src="https://drive.google.com/uc?export=view&id=1fvamK7WQD5vNaPxA9Nf09T8zelbxk3Me" alt="Analisis Sensor" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:600px;">
+    </td>
+  </tr>
+</table>
 
-- **💬 Imfo Data Sensor disini kita bisa menganalisis data sensor untuk menentukan dan memperkirakan kemungkinaan terjadinya banjir kedepanya
-  <div align="center">
-    <img src="https://drive.google.com/thumbnail?id=1fvamK7WQD5vNaPxA9Nf09T8zelbxk3Me" alt="Laporan Pengguna & Chatbot" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-  </div>
-
-### 🌡️ Statistik Data Banjir Di Indonesia disini adalah informasi statistic tren banjir yang terjadi di indoneisa
-<div align="center">
-  <img src="https://drive.google.com/thumbnail?id=1N1r0adgwvHxjyhBP1ZV-XLlcCQ4oFUYQ" alt="Cuaca & Data Banjir" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-</div>
-
-- Data cuaca real-time (temperatur, kelembapan, kecepatan angin).
-- Integrasi OpenWeatherMap.
-- Riwayat cuaca & banjir.
-
-### 🚨 Peringatan & Analisis
-<div align="center">
-  <img src="https://drive.google.com/thumbnail?id=1H4k4ylseAh6ePZ3ppiPrtSYF2IebiP4l" alt="Peringatan & Analisis" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-</div>
-
-- Peringatan bencana dengan sumber data terintegrasi.
-- Analisis bencana otomatis menggunakan Gemini API.
-- Ringkasan berita bencana.
-
-### 📍 Cuaca Sekarang disini user dapat melihat cuaca sekarang hanya dengan sekali click page Cuaca sekarang popup akan muncul dan langsung meminta izin lokasi user untuk menampilkan cuaca sekarang di lokasi user 
-<div align="center">
-  <img src="https://drive.google.com/thumbnail?id=1dNG7jdIcfTQWoK3bTUP0qH1cushyfJQT" alt="Wilayah & Titik Evakuasi" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-</div>
-
-- Pilihan wilayah hingga tingkat provinsi/kota/kecamatan.
-- Informasi jalur & titik evakuasi.
-
-### 💬 Satelit Mode disini user dapat melihat peta dengan saelit mode agar semakin jelas tempat dan letak banjir yang terjadi
-<div align="center">
-  <img src="https://drive.google.com/thumbnail?id=1CvF2Hu0XJLwWFf2AbCWms4pZUMdiuPBn" alt="Interaksi User" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-</div>
-
-- Laporan banjir langsung dari pengguna.
-- Chatbot informasi banjir & cuaca.
-
-### 🛠 Pantauan Infrastruktur Kritis disini fungsi dari pantauan infrastruktur adalah scrollbar yang fungsi nya untuk melihat detail data real-time Status tinggi air & Status Pompa Banjir
-<div align="center">
-  <img src="https://drive.google.com/thumbnail?id=1VqNCH2Z5YNYjeQg8DGXCWNmRa_dOlona" alt="Developer Friendly" style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
-</div>
 
 - API publik (`/api`) untuk integrasi data.
 - Custom hooks untuk pengelolaan state & UI.
