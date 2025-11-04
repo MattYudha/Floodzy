@@ -349,16 +349,15 @@ npm run lint: Mengecek kualitas kode dengan ESLint.
 
 <div align="center">
   <img 
-    src="https://drive.google.com/file/d/141ihZZuGfCdzUT3iC3NmqobkcPImNWnH/view?usp=sharing" 
+    src="https://drive.google.com/uc?export=view&id=141ihZZuGfCdzUT3iC3NmqobkcPImNWnH" 
     alt="Lighthouse Score" 
     style="border: 2px solid #38B2AC; border-radius: 8px; margin: 10px 0; max-width: 100%;">
 </div>
 
-
 **⚡ Lighthouse Score:** 95+  
-**🚀 FCP (First Contentful Paint):** < 1.5s  
-**⏱️ TTI (Time to Interactive):** < 3s  
-**📈 AUC (Model Accuracy):** 0.992
+**🚀 FCP:** < 1.5s  
+**⏱️ TTI:** < 3s  
+**📈 AUC:** 0.992
 
 
 
