@@ -256,7 +256,7 @@ UPSTASH_REDIS_REST_TOKEN=YOUR_UPSTASH_REDIS_REST_TOKEN
 
 ```
 
-Anda dapat menimpa (override) nilai default cache TTL untuk rute tertentu dengan memberikan opsi `ttl` pada fungsi caching di dalam route handler. Sebagai contoh:
+Anda dapat menimpa (override) nilai dari  default cache TTL untuk rute tertentu dengan memberikan opsi `ttl` pada fungsi caching di dalam route handler. Sebagai contoh:
 
 typescript
 await setCache(cacheKey, data, { ttl: 300 });
