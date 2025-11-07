@@ -46,7 +46,7 @@ Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang meman
   <tr>
     <td width="50%">
       <h4>🗺️ Peta Bencana Interaktif</h4>
-      <p>Visualisasi data banjir, cuaca, dan sensor secara real-time menggunakan <b>Leaflet</b>, lengkap dengan marker, layer, dan legenda yang interaktif.</p>
+      <p>Visualisasi data banjir, cuaca, dan sensor secara real-time menggunakan <b>Leaflet</b>, lengkap dengan marker, layer, dan legenda dan map yang interaktif.</p>
     </td>
     <td align="center">
       <img src="https://drive.google.com/uc?export=view&id=1fGo6J4es_JFH7eIXztyDYh3TKCg9WCer" alt="Peta Bencana Interaktif" style="border:2px solid #38B2AC; border-radius:12px; width:90%; max-width:700px;">
