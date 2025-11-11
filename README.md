@@ -1,4 +1,4 @@
-# 🌊 Floodzy - Real-time Pendeteksi/Prediksi Potensi Banjir & Monitoring Cuaca di Indonesia
+# 🌊 Floodzy - Real time Pendeteksi/Prediksi Potensi Banjir & Monitoring Cuaca di Indonesia
 
 <div align="center">
   <img src="public/assets/ChatGPT Image 4 Sep 2025, 08.50.45.png" alt="Floodzy Logo" width="200"/>
