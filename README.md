@@ -28,7 +28,7 @@ Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang meman
 
 [2] 🌦 Integrasi Cuaca & Peta – Data cuaca real-time, prakiraan, dan visualisasi.
 
-[3] 📱 Aplikasi Mobile – Versi Android & iOS untuk pemantauan di genggaman.
+[3] 📱 Aplikasi Websites Responsive Mobile – Versi Android & iOS untuk pemantauan di genggaman.
 
 [4] 🤖 Prediksi AI Banjir – Analisis risiko banjir berbasis Machine Learning.
 
