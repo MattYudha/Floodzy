@@ -136,7 +136,7 @@ Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang meman
   <tr>
     <td width="50%">
       <h4>🌡️ Statistik Data Banjir di Indonesia</h4>
-      <p>Menampilkan tren dan data historis banjir di Indonesia, meliputi suhu, kelembapan, dan kecepatan angin untuk analisis korelatif.</p>
+      <p>Menampilkan tren dan data historis banjir di Indonesia, meliputi suhu, kelembapan,tinggi debit air dan kecepatan angin untuk analisis korelatif.</p>
       <ul>
         <li>Data cuaca real-time</li>
         <li>Integrasi OpenWeatherMap</li>
