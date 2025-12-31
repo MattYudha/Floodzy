@@ -228,7 +228,7 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
             {/* Left Column: Water Level */}
             <Collapsible open={isWaterLevelExpanded} onOpenChange={setIsWaterLevelExpanded}>
               <CollapsibleTrigger asChild>
-                <div className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 cursor-pointer transition-colors border border-slate-200 dark:border-slate-700">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700/80 cursor-pointer transition-colors border border-slate-300 dark:border-slate-700 shadow-sm">
                   <div className="flex items-center space-x-3">
                     <Waves className="h-6 w-6 text-sky-500 dark:text-sky-400" />
                     <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Lihat Status Tinggi Air</h3>
@@ -322,7 +322,7 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
             {/* Right Column: Pump Status */}
             <Collapsible open={isPumpExpanded} onOpenChange={setIsPumpExpanded}>
               <CollapsibleTrigger asChild>
-                <div className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 cursor-pointer transition-colors border border-slate-200 dark:border-slate-700">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700/80 cursor-pointer transition-colors border border-slate-300 dark:border-slate-700 shadow-sm">
                   <div className="flex items-center space-x-3">
                     <Zap className="h-6 w-6 text-amber-500 dark:text-amber-400" />
                     <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Lihat Status Pompa Banjir</h3>

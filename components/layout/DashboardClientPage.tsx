@@ -458,12 +458,20 @@ export function DashboardClientPage({ initialData }) {
         <section className="relative overflow-hidden text-white">
           <div className="absolute inset-0">
             <Image
+              src="/assets/banjirmobile.png"
+              alt="Latar belakang banjir"
+              fill
+              priority
+              quality={80}
+              className="object-cover md:hidden"
+            />
+            <Image
               src="/assets/banjir.png"
               alt="Latar belakang banjir"
               fill
               priority
               quality={80}
-              className="object-cover"
+              className="object-cover hidden md:block"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent z-10" />
             {/* Additional Light Mode Overlay for readability if image is dark */}
@@ -503,7 +511,7 @@ export function DashboardClientPage({ initialData }) {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="text-white border-white/50 hover:bg-white/10 w-full sm:w-auto"
+                    className="bg-transparent text-white border-white/50 hover:bg-white/10 w-full sm:w-auto"
                   >
                     <Bell className="mr-2 h-5 w-5" />
                     Peringatan Terkini
@@ -763,10 +771,26 @@ export function DashboardClientPage({ initialData }) {
       <Drawer open={isMapDrawerOpen} onOpenChange={setMapDrawerOpen}>
         <DrawerContent className="h-screen">
           <DrawerHeader className="text-left">
-            <DrawerTitle>Peta Interaktif</DrawerTitle>
-            <DrawerDescription>
-              Gunakan dua jari untuk navigasi. Geser ke bawah untuk menutup.
-            </DrawerDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <DrawerTitle>Peta Interaktif</DrawerTitle>
+                <DrawerDescription>
+                  Gunakan dua jari untuk navigasi.
+                </DrawerDescription>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={refreshDisasterData}
+                disabled={isLoadingDisaster}
+                className="h-8"
+              >
+                <RotateCcw
+                  className={`h-3.5 w-3.5 mr-2 ${isLoadingDisaster ? 'animate-spin' : ''}`}
+                />
+                {isLoadingDisaster ? 'Memuat...' : 'Perbarui'}
+              </Button>
+            </div>
           </DrawerHeader>
           <div className="flex-1 p-0 overflow-hidden" data-vaul-no-drag="true">
             <FloodMap

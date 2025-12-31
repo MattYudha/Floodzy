@@ -95,7 +95,7 @@ function RegionSelectField({
           <CommandInput
             placeholder={`Cari ${placeholder.toLowerCase()}...`}
             className="h-9 border-0 bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-0"
-            autoFocus={!isDesktop}
+            autoFocus={isDesktop}
           />
         </div>
 
@@ -527,21 +527,21 @@ export function RegionDropdown({
                   </h4>
                 </div>
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-gray-400">Provinsi</span>
-                    <span className="text-slate-900 dark:text-white font-medium">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 border-b border-green-200/50 dark:border-green-800/50 pb-2 last:border-0 last:pb-0">
+                    <span className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 font-medium">Provinsi</span>
+                    <span className="text-sm sm:text-sm text-slate-900 dark:text-white font-bold text-left sm:text-right break-words w-full sm:w-auto">
                       {displayProvinceName}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-gray-400">Kabupaten/Kota</span>
-                    <span className="text-slate-900 dark:text-white font-medium">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 border-b border-green-200/50 dark:border-green-800/50 pb-2 last:border-0 last:pb-0">
+                    <span className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 font-medium">Kabupaten/Kota</span>
+                    <span className="text-sm sm:text-sm text-slate-900 dark:text-white font-bold text-left sm:text-right break-words w-full sm:w-auto">
                       {displayRegencyName}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-gray-400">Kecamatan</span>
-                    <span className="text-slate-900 dark:text-white font-medium">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
+                    <span className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 font-medium">Kecamatan</span>
+                    <span className="text-sm sm:text-sm text-slate-900 dark:text-white font-bold text-left sm:text-right break-words w-full sm:w-auto">
                       {displayDistrictName}
                     </span>
                   </div>

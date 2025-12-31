@@ -109,7 +109,7 @@ const quickActions: QuickActionItem[] = [
     label: 'Cuaca Sekarang',
     icon: Cloud,
     color: 'text-sky-500',
-    onClick: () => {},
+    onClick: () => { },
   },
 ];
 
@@ -179,7 +179,7 @@ export function Sidebar({
         variants={sidebarVariants}
         transition={{ type: 'spring', damping: 20, stiffness: 300 }}
         className={cn(
-          'fixed left-0 top-16 h-[calc(100vh-4rem)] z-50 flex flex-col',
+          'fixed left-0 top-0 h-screen z-[60] flex flex-col',
           'bg-white/95 text-slate-900',
           'dark:bg-slate-900/95 dark:text-slate-100',
           'backdrop-blur supports-[backdrop-filter]:bg-white/80',

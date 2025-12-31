@@ -60,7 +60,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Switch } from '@/components/ui/switch';
-import { RegionDropdown } from '@/components/region-selector/RegionDropdown';
+
 import { SelectedLocation } from '@/types/location';
 
 // --- Helper Functions (Tidak ada perubahan) ---
@@ -770,20 +770,7 @@ export default function PrakiraanCuacaPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl shadow-2xl">
-              <CardHeader>
-                <CardTitle className="text-slate-900 dark:text-white flex items-center space-x-2">
-                  <MapPin className="w-5 h-5 text-green-500 dark:text-green-400" />
-                  <span>Lokasi Cepat</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <RegionDropdown
-                  onSelectDistrict={handleRegionSelect}
-                  selectedLocation={selectedLocation}
-                />
-              </CardContent>
-            </Card>
+
 
             <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl shadow-2xl">
               <CardHeader>

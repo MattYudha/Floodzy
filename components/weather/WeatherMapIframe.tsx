@@ -261,6 +261,11 @@ export function WeatherMapIframe({
               font-size: 10px;
               padding: 4px 6px 6px;
             }
+
+            /* Hide location info and divider on mobile to prevent clutter/overlap */
+            .location-info, .divider {
+              display: none;
+            }
           }
         </style>
       </head>
