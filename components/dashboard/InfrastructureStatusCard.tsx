@@ -82,50 +82,50 @@ const DetailPopup = ({ item, onClose }: { item: WaterLevelPost | PumpData, onClo
     lastUpdated = getTimeAgo(new Date((item as PumpData).updated_at || new Date().getTime())); // Use updated_at for PumpData
   }
 
-  const details = isWaterLevel 
+  const details = isWaterLevel
     ? [
-        { label: "Tinggi Air", value: `${item.water_level} ${item.unit}`, icon: <Waves className="w-4 h-4 text-slate-400" /> },
-        { label: "Status", value: item.status, icon: <ShieldCheck className="w-4 h-4 text-slate-400" /> },
-        { label: "ID Sensor", value: item.id, icon: <Info className="w-4 h-4 text-slate-400" /> },
-      ]
+      { label: "Tinggi Air", value: `${item.water_level} ${item.unit}`, icon: <Waves className="w-4 h-4 text-slate-400" /> },
+      { label: "Status", value: item.status, icon: <ShieldCheck className="w-4 h-4 text-slate-400" /> },
+      { label: "ID Sensor", value: item.id, icon: <Info className="w-4 h-4 text-slate-400" /> },
+    ]
     : [
-        { label: "Lokasi", value: (item as PumpData).lokasi || 'N/A', icon: <MapPin className="w-4 h-4 text-slate-400" /> },
-        { label: "Status Pompa", value: (item as PumpData).kondisi_bangunan, icon: <ShieldCheck className="w-4 h-4 text-slate-400" /> },
-        { label: "Kapasitas", value: `${(item as PumpData).kapasitas_liter_per_detik} L/detik`, icon: <Droplets className="w-4 h-4 text-slate-400" /> },
-        { label: "ID Pompa", value: (item as PumpData).id, icon: <Info className="w-4 h-4 text-slate-400" /> },
-      ];
+      { label: "Lokasi", value: (item as PumpData).lokasi || 'N/A', icon: <MapPin className="w-4 h-4 text-slate-400" /> },
+      { label: "Status Pompa", value: (item as PumpData).kondisi_bangunan, icon: <ShieldCheck className="w-4 h-4 text-slate-400" /> },
+      { label: "Kapasitas", value: `${(item as PumpData).kapasitas_liter_per_detik} L/detik`, icon: <Droplets className="w-4 h-4 text-slate-400" /> },
+      { label: "ID Pompa", value: (item as PumpData).id, icon: <Info className="w-4 h-4 text-slate-400" /> },
+    ];
 
   return (
     <div className="p-6">
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div className="flex items-center gap-4">
-          <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${isWaterLevel ? 'bg-sky-500/20' : 'bg-amber-500/20'}`}>
-            {isWaterLevel ? <Waves className="h-8 w-8 text-sky-400" /> : <Zap className="h-8 w-8 text-amber-400" />}
+          <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${isWaterLevel ? 'bg-sky-500/10 dark:bg-sky-500/20' : 'bg-amber-500/10 dark:bg-amber-500/20'}`}>
+            {isWaterLevel ? <Waves className="h-8 w-8 text-sky-500 dark:text-sky-400" /> : <Zap className="h-8 w-8 text-amber-500 dark:text-amber-400" />}
           </div>
           <div>
-            <p className="text-sm text-slate-400">{isWaterLevel ? 'Pos Pantau TMA' : 'Rumah Pompa'}</p>
-            <h2 className="text-2xl font-bold text-white">{title}</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{isWaterLevel ? 'Pos Pantau TMA' : 'Rumah Pompa'}</p>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{title}</h2>
           </div>
         </div>
-        <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors p-1 rounded-full hover:bg-slate-700/80">
+        <button onClick={onClose} className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700/80">
           <XCircle className="w-6 h-6" />
         </button>
       </div>
 
       {/* Main Details Card */}
-      <Card className="bg-slate-700/30 border-slate-700">
+      <Card className="bg-slate-100 dark:bg-slate-700/30 border-slate-200 dark:border-slate-700">
         <CardContent className="p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-2">
             {details.map(({ label, value, icon }) => (
-              <div key={label} className="flex items-start gap-3 p-2 rounded-md hover:bg-slate-700/50 transition-colors">
-                <div className="text-slate-400 mt-1">{icon}</div>
+              <div key={label} className="flex items-start gap-3 p-2 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700/50 transition-colors">
+                <div className="text-slate-600 dark:text-slate-400 mt-1">{icon}</div>
                 <div>
-                  <p className="text-xs text-slate-400">{label}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
                   {label === 'Status' || label === 'Status Pompa' ? (
-                     <Badge variant={getBadgeVariant(value)} className="mt-1">{value}</Badge>
+                    <Badge variant={getBadgeVariant(value)} className="mt-1">{value}</Badge>
                   ) : (
-                     <p className="text-base font-semibold text-white">{value}</p>
+                    <p className="text-base font-semibold text-slate-900 dark:text-white">{value}</p>
                   )}
                 </div>
               </div>
@@ -135,7 +135,7 @@ const DetailPopup = ({ item, onClose }: { item: WaterLevelPost | PumpData, onClo
       </Card>
 
       {/* Footer Info */}
-      <div className="mt-6 text-center text-xs text-slate-500">
+      <div className="mt-6 text-center text-xs text-slate-500 dark:text-slate-500">
         <p>Update Terakhir: {lastUpdated}</p>
       </div>
     </div>
@@ -204,238 +204,238 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
 
   return (
     <>
-    <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm shadow-2xl overflow-hidden">
-      <CardHeader className="pb-4 border-b border-slate-700/50">
-        <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 shadow-lg">
-              <Activity className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-white">Pantauan Infrastruktur Kritis</h2>
-              <p className="text-sm text-slate-400 mt-1">Klik untuk melihat detail data real-time</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-sm text-green-400 font-medium">Live Data</span>
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          
-          {/* Left Column: Water Level */}
-          <Collapsible open={isWaterLevelExpanded} onOpenChange={setIsWaterLevelExpanded}>
-            <CollapsibleTrigger asChild>
-              <div className="flex items-center justify-between p-4 rounded-lg bg-slate-800 hover:bg-slate-700/80 cursor-pointer transition-colors border border-slate-700">
-                <div className="flex items-center space-x-3">
-                  <Waves className="h-6 w-6 text-sky-400" />
-                  <h3 className="text-lg font-semibold text-white">Lihat Status Tinggi Air</h3>
-                </div>
-                <ChevronsUpDown className="h-5 w-5 text-slate-400" />
+      <Card className="bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700/50 backdrop-blur-sm shadow-sm dark:shadow-2xl overflow-hidden transition-all duration-300">
+        <CardHeader className="pb-4 border-b border-slate-200 dark:border-slate-700/50">
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 shadow-lg shadow-blue-500/20">
+                <Activity className="h-6 w-6 text-white" />
               </div>
-            </CollapsibleTrigger>
-            <AnimatePresence>
-              {isWaterLevelExpanded && (
-                <motion.div
-                  key="water-level-content"
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  variants={collapsibleContentVariants}
-                  className="overflow-hidden"
-                >
-                  <CollapsibleContent className="pt-4">
-                    <div className="mt-4 flex flex-col">
-                      <div className="relative mb-4">
-                        <Input
-                          type="text"
-                          placeholder="Cari pos air..."
-                          value={waterLevelSearchTerm}
-                          onChange={(e) => setWaterLevelSearchTerm(e.target.value)}
-                          className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-900/80 border-slate-700/50 text-sm text-white placeholder:text-slate-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
-                        />
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                      </div>
-                      <div className="grid grid-cols-4 gap-4 px-2 pb-2 text-sm font-semibold text-slate-400 border-b border-slate-700/50">
-                        <div className="whitespace-nowrap">Pos</div>
-                        <div className="whitespace-nowrap">Tinggi</div>
-                        <div className="whitespace-nowrap">Status</div>
-                        <div className="whitespace-nowrap">Update</div>
-                      </div>
-                      <div
-                        ref={waterLevelParentRef}
-                        className="w-full h-[250px] overflow-y-auto custom-scrollbar rounded-lg border border-slate-700/50"
-                      >
-                        <div
-                          style={{
-                            height: `${waterLevelRowVirtualizer.getTotalSize()}px`,
-                            width: '100%',
-                            position: 'relative',
-                          }}
-                        >
-                          {waterLevelRowVirtualizer.getVirtualItems().map((virtualItem) => {
-                            const post = filteredWaterLevelPosts[virtualItem.index];
-                            return (
-                              <div
-                                key={virtualItem.key}
-                                style={{
-                                  position: 'absolute',
-                                  top: 0,
-                                  left: 0,
-                                  width: '100%',
-                                  height: `${virtualItem.size}px`,
-                                  transform: `translateY(${virtualItem.start}px)`,
-                                }}
-                                className="grid grid-cols-4 items-center gap-4 p-2 border-b border-slate-700/50 hover:bg-slate-700/50 transition-colors cursor-pointer"
-                                onClick={() => handleItemClick(post)}
-                              >
-                                <span className="font-medium text-white whitespace-nowrap truncate">{post.name}</span>
-                                <span className="text-white whitespace-nowrap truncate">{post.water_level} {post.unit}</span>
-                                <div className="whitespace-nowrap">
-                                  <Badge variant={getBadgeVariant(post.status)} className="flex items-center gap-1">
-                                    {getStatusIcon(post.status)} {post.status}
-                                  </Badge>
-                                </div>
-                                <span className="text-slate-400 text-sm whitespace-nowrap truncate">{getTimeAgo(post.timestamp)}</span>
-                              </div>
-                            );
-                          })}
-                          {filteredWaterLevelPosts.length === 0 && (
-                            <div className="grid grid-cols-4 text-center text-slate-400 py-4">
-                              <div className="col-span-4 flex flex-col items-center justify-center">
-                                <Search className="h-6 w-6 mb-2" />
-                                Tidak ada data pos air yang ditemukan.
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </CollapsibleContent>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </Collapsible>
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Pantauan Infrastruktur Kritis</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Klik untuk melihat detail data real-time</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-sm text-green-600 dark:text-green-400 font-medium">Live Data</span>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-          {/* Right Column: Pump Status */}
-          <Collapsible open={isPumpExpanded} onOpenChange={setIsPumpExpanded}>
-            <CollapsibleTrigger asChild>
-              <div className="flex items-center justify-between p-4 rounded-lg bg-slate-800 hover:bg-slate-700/80 cursor-pointer transition-colors border border-slate-700">
-                <div className="flex items-center space-x-3">
-                  <Zap className="h-6 w-6 text-amber-400" />
-                  <h3 className="text-lg font-semibold text-white">Lihat Status Pompa Banjir</h3>
+            {/* Left Column: Water Level */}
+            <Collapsible open={isWaterLevelExpanded} onOpenChange={setIsWaterLevelExpanded}>
+              <CollapsibleTrigger asChild>
+                <div className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 cursor-pointer transition-colors border border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center space-x-3">
+                    <Waves className="h-6 w-6 text-sky-500 dark:text-sky-400" />
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Lihat Status Tinggi Air</h3>
+                  </div>
+                  <ChevronsUpDown className="h-5 w-5 text-slate-500 dark:text-slate-400" />
                 </div>
-                <ChevronsUpDown className="h-5 w-5 text-slate-400" />
-              </div>
-            </CollapsibleTrigger>
-            <AnimatePresence>
-              {isPumpExpanded && (
-                <motion.div
-                  key="pump-status-content"
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  variants={collapsibleContentVariants}
-                  className="overflow-hidden"
-                >
-                  <CollapsibleContent className="pt-4">
-                    <div className="mt-4 flex flex-col">
-                      <div className="relative mb-4">
-                        <Input
-                          type="text"
-                          placeholder="Cari pompa..."
-                          value={pumpSearchTerm}
-                          onChange={(e) => setPumpSearchTerm(e.target.value)}
-                          className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-900/80 border-slate-700/50 text-sm text-white placeholder:text-slate-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
-                        />
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                      </div>
-                      <div className="grid grid-cols-3 gap-4 px-2 pb-2 text-sm font-semibold text-slate-400 border-b border-slate-700/50">
-                        <div className="whitespace-nowrap">Nama Pompa</div>
-                        <div className="whitespace-nowrap">Lokasi</div>
-                        <div className="whitespace-nowrap">Status</div>
-                      </div>
-                      <div
-                        ref={pumpParentRef}
-                        className="w-full h-[250px] overflow-y-auto custom-scrollbar rounded-lg border border-slate-700/50"
-                      >
+              </CollapsibleTrigger>
+              <AnimatePresence>
+                {isWaterLevelExpanded && (
+                  <motion.div
+                    key="water-level-content"
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    variants={collapsibleContentVariants}
+                    className="overflow-hidden"
+                  >
+                    <CollapsibleContent className="pt-4">
+                      <div className="mt-4 flex flex-col">
+                        <div className="relative mb-4">
+                          <Input
+                            type="text"
+                            placeholder="Cari pos air..."
+                            value={waterLevelSearchTerm}
+                            onChange={(e) => setWaterLevelSearchTerm(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 rounded-lg bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-700/50 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                          />
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        </div>
+                        <div className="grid grid-cols-4 gap-4 px-2 pb-2 text-sm font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700/50">
+                          <div className="whitespace-nowrap">Pos</div>
+                          <div className="whitespace-nowrap">Tinggi</div>
+                          <div className="whitespace-nowrap">Status</div>
+                          <div className="whitespace-nowrap">Update</div>
+                        </div>
                         <div
-                          style={{
-                            height: `${pumpRowVirtualizer.getTotalSize()}px`,
-                            width: '100%',
-                            position: 'relative',
-                          }}
+                          ref={waterLevelParentRef}
+                          className="w-full h-[250px] overflow-y-auto custom-scrollbar rounded-lg border border-slate-200 dark:border-slate-700/50"
                         >
-                          {pumpRowVirtualizer.getVirtualItems().map((virtualItem) => {
-                            const pump = filteredPumpData[virtualItem.index];
-                            return (
-                              <div
-                                key={virtualItem.key}
-                                style={{
-                                  position: 'absolute',
-                                  top: 0,
-                                  left: 0,
-                                  width: '100%',
-                                  height: `${virtualItem.size}px`,
-                                  transform: `translateY(${virtualItem.start}px)`,
-                                }}
-                                className="grid grid-cols-3 items-center gap-4 p-2 border-b border-slate-700/50 hover:bg-slate-700/50 transition-colors cursor-pointer"
-                                onClick={() => handleItemClick(pump)}
-                              >
-                                <span className="font-medium text-white whitespace-nowrap truncate">{pump.nama_infrastruktur}</span>
-                                <span className="text-slate-400 text-sm whitespace-nowrap truncate">{pump.lokasi || 'N/A'}</span>
-                                <div className="whitespace-nowrap">
-                                  <Badge variant={getBadgeVariant(pump.kondisi_bangunan)} className="flex items-center gap-1">
-                                    {getStatusIcon(pump.kondisi_bangunan)} {pump.kondisi_bangunan || 'Tidak Diketahui'}
-                                  </Badge>
+                          <div
+                            style={{
+                              height: `${waterLevelRowVirtualizer.getTotalSize()}px`,
+                              width: '100%',
+                              position: 'relative',
+                            }}
+                          >
+                            {waterLevelRowVirtualizer.getVirtualItems().map((virtualItem) => {
+                              const post = filteredWaterLevelPosts[virtualItem.index];
+                              return (
+                                <div
+                                  key={virtualItem.key}
+                                  style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    width: '100%',
+                                    height: `${virtualItem.size}px`,
+                                    transform: `translateY(${virtualItem.start}px)`,
+                                  }}
+                                  className="grid grid-cols-4 items-center gap-4 p-2 border-b border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer"
+                                  onClick={() => handleItemClick(post)}
+                                >
+                                  <span className="font-medium text-slate-900 dark:text-white whitespace-nowrap truncate">{post.name}</span>
+                                  <span className="text-slate-700 dark:text-white whitespace-nowrap truncate">{post.water_level} {post.unit}</span>
+                                  <div className="whitespace-nowrap">
+                                    <Badge variant={getBadgeVariant(post.status)} className="flex items-center gap-1">
+                                      {getStatusIcon(post.status)} {post.status}
+                                    </Badge>
+                                  </div>
+                                  <span className="text-slate-500 dark:text-slate-400 text-sm whitespace-nowrap truncate">{getTimeAgo(post.timestamp)}</span>
+                                </div>
+                              );
+                            })}
+                            {filteredWaterLevelPosts.length === 0 && (
+                              <div className="grid grid-cols-4 text-center text-slate-500 dark:text-slate-400 py-4">
+                                <div className="col-span-4 flex flex-col items-center justify-center">
+                                  <Search className="h-6 w-6 mb-2" />
+                                  Tidak ada data pos air yang ditemukan.
                                 </div>
                               </div>
-                            );
-                          })}
-                          {filteredPumpData.length === 0 && (
-                            <div className="grid grid-cols-3 text-center text-slate-400 py-4">
-                              <div className="col-span-3 flex flex-col items-center justify-center">
-                                <Search className="h-6 w-6 mb-2" />
-                                Tidak ada data pompa yang ditemukan.
-                              </div>
-                            </div>
-                          )}
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </CollapsibleContent>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </Collapsible>
+                    </CollapsibleContent>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Collapsible>
 
-        </div>
+            {/* Right Column: Pump Status */}
+            <Collapsible open={isPumpExpanded} onOpenChange={setIsPumpExpanded}>
+              <CollapsibleTrigger asChild>
+                <div className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 cursor-pointer transition-colors border border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center space-x-3">
+                    <Zap className="h-6 w-6 text-amber-500 dark:text-amber-400" />
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Lihat Status Pompa Banjir</h3>
+                  </div>
+                  <ChevronsUpDown className="h-5 w-5 text-slate-500 dark:text-slate-400" />
+                </div>
+              </CollapsibleTrigger>
+              <AnimatePresence>
+                {isPumpExpanded && (
+                  <motion.div
+                    key="pump-status-content"
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    variants={collapsibleContentVariants}
+                    className="overflow-hidden"
+                  >
+                    <CollapsibleContent className="pt-4">
+                      <div className="mt-4 flex flex-col">
+                        <div className="relative mb-4">
+                          <Input
+                            type="text"
+                            placeholder="Cari pompa..."
+                            value={pumpSearchTerm}
+                            onChange={(e) => setPumpSearchTerm(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 rounded-lg bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-700/50 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                          />
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        </div>
+                        <div className="grid grid-cols-3 gap-4 px-2 pb-2 text-sm font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700/50">
+                          <div className="whitespace-nowrap">Nama Pompa</div>
+                          <div className="whitespace-nowrap">Lokasi</div>
+                          <div className="whitespace-nowrap">Status</div>
+                        </div>
+                        <div
+                          ref={pumpParentRef}
+                          className="w-full h-[250px] overflow-y-auto custom-scrollbar rounded-lg border border-slate-200 dark:border-slate-700/50"
+                        >
+                          <div
+                            style={{
+                              height: `${pumpRowVirtualizer.getTotalSize()}px`,
+                              width: '100%',
+                              position: 'relative',
+                            }}
+                          >
+                            {pumpRowVirtualizer.getVirtualItems().map((virtualItem) => {
+                              const pump = filteredPumpData[virtualItem.index];
+                              return (
+                                <div
+                                  key={virtualItem.key}
+                                  style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    width: '100%',
+                                    height: `${virtualItem.size}px`,
+                                    transform: `translateY(${virtualItem.start}px)`,
+                                  }}
+                                  className="grid grid-cols-3 items-center gap-4 p-2 border-b border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer"
+                                  onClick={() => handleItemClick(pump)}
+                                >
+                                  <span className="font-medium text-slate-900 dark:text-white whitespace-nowrap truncate">{pump.nama_infrastruktur}</span>
+                                  <span className="text-slate-500 dark:text-slate-400 text-sm whitespace-nowrap truncate">{pump.lokasi || 'N/A'}</span>
+                                  <div className="whitespace-nowrap">
+                                    <Badge variant={getBadgeVariant(pump.kondisi_bangunan)} className="flex items-center gap-1">
+                                      {getStatusIcon(pump.kondisi_bangunan)} {pump.kondisi_bangunan || 'Tidak Diketahui'}
+                                    </Badge>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                            {filteredPumpData.length === 0 && (
+                              <div className="grid grid-cols-3 text-center text-slate-500 dark:text-slate-400 py-4">
+                                <div className="col-span-3 flex flex-col items-center justify-center">
+                                  <Search className="h-6 w-6 mb-2" />
+                                  Tidak ada data pompa yang ditemukan.
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Collapsible>
 
-        {/* Summary Stats */}
-        <div className="mt-6 pt-6 border-t border-slate-700/50">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-slate-800/50 rounded-lg">
-              <p className="text-sm text-slate-400">Pos Air Dipantau</p>
-              <p className="text-2xl font-bold text-white">{waterLevelPosts.length}</p>
-            </div>
-            <div className="text-center p-4 bg-slate-800/50 rounded-lg">
-              <p className="text-sm text-slate-400">Total Pompa</p>
-              <p className="text-2xl font-bold text-white">{pumpStatusData.length}</p>
-            </div>
-            <div className="text-center p-4 bg-slate-800/50 rounded-lg">
-              <p className="text-2xl font-bold text-emerald-400">{pumpStatusData.filter(p => p.kondisi_bangunan?.toLowerCase() === 'aktif').length}</p>
-              <div className="text-sm text-slate-400">Aktif</div>
-            </div>
-            <div className="text-center p-4 bg-slate-800/50 rounded-lg">
-              <p className="text-sm text-slate-400">Lokasi Siaga</p>
-              <p className="text-2xl font-bold text-amber-400">{waterLevelPosts.filter(p => p.status?.toLowerCase().includes('siaga')).length}</p>
+          </div>
+
+          {/* Summary Stats */}
+          <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700/50">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                <p className="text-sm text-slate-500 dark:text-slate-400">Pos Air Dipantau</p>
+                <p className="text-2xl font-bold text-slate-900 dark:text-white">{waterLevelPosts.length}</p>
+              </div>
+              <div className="text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                <p className="text-sm text-slate-500 dark:text-slate-400">Total Pompa</p>
+                <p className="text-2xl font-bold text-slate-900 dark:text-white">{pumpStatusData.length}</p>
+              </div>
+              <div className="text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                <p className="text-2xl font-bold text-emerald-500 dark:text-emerald-400">{pumpStatusData.filter(p => p.kondisi_bangunan?.toLowerCase() === 'aktif').length}</p>
+                <div className="text-sm text-slate-500 dark:text-slate-400">Aktif</div>
+              </div>
+              <div className="text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                <p className="text-sm text-slate-500 dark:text-slate-400">Lokasi Siaga</p>
+                <p className="text-2xl font-bold text-amber-500 dark:text-amber-400">{waterLevelPosts.filter(p => p.status?.toLowerCase().includes('siaga')).length}</p>
+              </div>
             </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
 
       <AnimatePresence>
         {isDetailOpen && selectedItem && (
@@ -451,14 +451,15 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="bg-slate-800 border border-slate-700 rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto custom-scrollbar"
+              className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto custom-scrollbar"
               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
             >
+
               <DetailPopup item={selectedItem} onClose={() => setIsDetailOpen(false)} />
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence >
     </>
   );
 }

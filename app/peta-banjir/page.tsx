@@ -381,7 +381,8 @@ export default function PetaBanjirPage() {
           'transition-all duration-300 ease-in-out',
           isCarouselOpen ? 'h-auto' : 'h-12',
           isBrowserFullScreen && 'hidden',
-        )}
+        )
+        }
       >
         <button
           onClick={() => setIsCarouselOpen(!isCarouselOpen)}

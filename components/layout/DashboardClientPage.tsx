@@ -38,6 +38,7 @@ import {
   Users,
   Shield,
   Activity,
+  Map,
   ArrowRight,
   AlertTriangle,
   CloudRain,
@@ -331,8 +332,8 @@ export function DashboardClientPage({ initialData }) {
         history: chatHistory,
         location:
           selectedLocation &&
-          selectedLocation.latitude &&
-          selectedLocation.longitude
+            selectedLocation.latitude &&
+            selectedLocation.longitude
             ? selectedLocation
             : null,
       };
@@ -464,7 +465,9 @@ export function DashboardClientPage({ initialData }) {
               quality={80}
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent z-10" />
+            {/* Additional Light Mode Overlay for readability if image is dark */}
+            <div className="absolute inset-0 bg-white/10 dark:bg-transparent mix-blend-overlay z-10" />
           </div>
           <div className="relative z-10 container mx-auto px-4 sm:px-6 py-20 md:py-28">
             <motion.div
@@ -549,7 +552,7 @@ export function DashboardClientPage({ initialData }) {
           id="pilih-lokasi"
           className="container mx-auto px-4 py-8 space-y-4"
         >
-          <Card className="bg-slate-900/80 border-slate-800/50 backdrop-blur-lg rounded-xl shadow-xl overflow-hidden">
+          <Card className="bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800/50 backdrop-blur-lg rounded-xl shadow-xl overflow-hidden">
             <CardContent className="p-4">
               <RegionDropdown
                 onSelectDistrict={handleRegionSelect}
@@ -582,15 +585,15 @@ export function DashboardClientPage({ initialData }) {
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="lg:col-span-2"
               >
-                <Card className="h-full flex flex-col items-center justify-center text-center p-8 bg-slate-900/80 border-slate-800/50">
+                <Card className="h-full flex flex-col items-center justify-center text-center p-8 bg-white/80 dark:bg-slate-900/80 border-slate-200/50 dark:border-slate-800/50">
                   <CardHeader>
                     <CardTitle className="flex items-center space-x-2">
                       <MapPin className="h-8 w-8 text-primary" />
-                      <span className="text-2xl">Peta Banjir Interaktif</span>
+                      <span className="text-2xl text-slate-900 dark:text-white">Peta Banjir Interaktif</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground mb-6">
+                    <p className="text-slate-600 dark:text-slate-400 mb-6">
                       Visualisasikan data banjir, zona rawan, dan peringatan
                       secara real-time. Buka peta untuk eksplorasi mendalam.
                     </p>
@@ -666,9 +669,9 @@ export function DashboardClientPage({ initialData }) {
                   <LocationPromptCard />
                 </motion.div>
               ) : isLoadingWidgets ? (
-                <Card className="flex h-full min-h-[150px] flex-col items-center justify-center p-6 bg-slate-900/80 border-slate-800/50">
+                <Card className="flex h-full min-h-[150px] flex-col items-center justify-center p-6 bg-white/80 dark:bg-slate-900/80 border-slate-200/50 dark:border-slate-800/50">
                   <Loader2 className="h-8 w-8 animate-spin text-cyan-400 mb-3" />
-                  <p className="text-white">Memuat data cuaca...</p>
+                  <p className="text-slate-900 dark:text-white">Memuat data cuaca...</p>
                 </Card>
               ) : weatherSummary || airQuality ? (
                 <>
@@ -694,12 +697,12 @@ export function DashboardClientPage({ initialData }) {
                   )}
                 </>
               ) : (
-                <Card className="flex h-full min-h-[150px] flex-col items-center justify-center text-center p-6 bg-slate-900/80 border-slate-800/50">
-                  <Info className="h-8 w-8 text-yellow-400 mb-3" />
-                  <h4 className="text-white font-semibold mb-1">
+                <Card className="flex h-full min-h-[150px] flex-col items-center justify-center text-center p-6 bg-white/80 dark:bg-slate-900/80 border-slate-200/50 dark:border-slate-800/50">
+                  <Info className="h-8 w-8 text-yellow-500 dark:text-yellow-400 mb-3" />
+                  <h4 className="text-slate-900 dark:text-white font-semibold mb-1">
                     Data Tidak Tersedia
                   </h4>
-                  <p className="text-slate-400 text-sm">
+                  <p className="text-slate-500 dark:text-slate-400 text-sm">
                     Data cuaca atau kualitas udara tidak dapat dimuat untuk
                     lokasi ini.
                   </p>
@@ -742,7 +745,7 @@ export function DashboardClientPage({ initialData }) {
               <CardContent>
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex justify-center">
                   {initialData.realTimeAlerts &&
-                  initialData.realTimeAlerts.length > 0 ? (
+                    initialData.realTimeAlerts.length > 0 ? (
                     initialData.realTimeAlerts.map((alert: any) => (
                       <PeringatanBencanaCard key={alert.id} alert={alert} />
                     ))
@@ -782,7 +785,7 @@ export function DashboardClientPage({ initialData }) {
                 mobileMapRef.current = map;
               }}
               isFullscreen={false}
-              onFullscreenToggle={() => {}}
+              onFullscreenToggle={() => { }}
               showFullscreenButton={false}
             />
           </div>
@@ -833,6 +836,6 @@ export function DashboardClientPage({ initialData }) {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </div >
   );
 }

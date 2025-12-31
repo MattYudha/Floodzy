@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Image from 'next/image';
-import { 
-  Bot, 
-  Send, 
-  Loader2, 
-  X, 
-  Minus, 
-  MessageCircle, 
+import {
+  Bot,
+  Send,
+  Loader2,
+  X,
+  Minus,
+  MessageCircle,
   Zap,
   AlertTriangle,
   MapPin,
@@ -79,12 +79,12 @@ export default function GeminiChatSection({
   // Tambahkan respons dari Gemini ke daftar pesan
   useEffect(() => {
     if (geminiResponse) {
-        setMessages(prev => [...prev, {
-          id: Date.now().toString(),
-          text: geminiResponse,
-          isUser: false,
-          timestamp: new Date(),
-        }]);
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        text: geminiResponse,
+        isUser: false,
+        timestamp: new Date(),
+      }]);
     }
   }, [geminiResponse]);
 
@@ -103,7 +103,7 @@ export default function GeminiChatSection({
         isUser: true,
         timestamp: new Date(),
       }]);
-      
+
       setShowSuggestions(false); // Sembunyikan saran setelah pesan pertama dikirim
       handleGeminiAnalysis(geminiQuestion); // Panggil fungsi analisis dari props
       setGeminiQuestion(''); // Kosongkan input setelah dikirim
@@ -114,7 +114,7 @@ export default function GeminiChatSection({
   const handleSuggestionClick = (suggestionText: string) => {
     setGeminiQuestion(suggestionText); // Set input text dengan saran yang diklik
     setShowSuggestions(false);
-    
+
     // Tambahkan pesan pengguna (dari saran) ke state
     setMessages(prev => [...prev, {
       id: Date.now().toString(),
@@ -122,7 +122,7 @@ export default function GeminiChatSection({
       isUser: true,
       timestamp: new Date(),
     }]);
-    
+
     // Langsung panggil analisis setelah mengklik saran
     handleGeminiAnalysis(suggestionText);
   };
@@ -145,7 +145,7 @@ export default function GeminiChatSection({
         whileHover={{ scale: 1.05, y: -2 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 z-40 bg-slate-900 hover:bg-slate-800 text-white p-3 rounded-full shadow-2xl transition-all duration-300"
+        className="fixed bottom-4 right-4 z-40 bg-slate-800 dark:bg-slate-900 hover:bg-slate-700 dark:hover:bg-slate-800 text-white p-3 rounded-full shadow-2xl transition-all duration-300"
       >
         <Image src="/robofloodzy.png" alt="Asisten AI Floodzie" width={40} height={40} className="rounded-full" />
         <motion.div
@@ -174,19 +174,19 @@ export default function GeminiChatSection({
             {/* Chat Modal */}
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 100 }}
-              animate={{ 
-                scale: isMinimized ? 0.3 : 1, 
-                opacity: 1, 
+              animate={{
+                scale: isMinimized ? 0.3 : 1,
+                opacity: 1,
                 y: isMinimized ? 200 : 0,
-                x: isMinimized ? 150 : 0 
+                x: isMinimized ? 150 : 0
               }}
               exit={{ scale: 0.9, opacity: 0, y: 100 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="w-full sm:w-96 h-screen sm:h-[650px] bg-slate-900 backdrop-blur-xl sm:rounded-3xl shadow-2xl border border-slate-700/50 flex flex-col overflow-hidden"
+              className="w-full sm:w-96 h-screen sm:h-[650px] bg-white dark:bg-slate-900 backdrop-blur-xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700/50 flex flex-col overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10 border-b border-slate-700/50 p-4">
+              <div className="bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10 border-b border-slate-200 dark:border-slate-700/50 p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="relative">
@@ -198,7 +198,7 @@ export default function GeminiChatSection({
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-white font-bold text-base">Floodzie Assistant</h3>
+                      <h3 className="text-slate-800 dark:text-white font-bold text-base">Floodzie Assistant</h3>
                       <div className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                         <p className="text-cyan-400 text-xs font-medium">Sistem Analisis Real-time</p>
@@ -219,7 +219,7 @@ export default function GeminiChatSection({
               {!isMinimized && (
                 <>
                   {/* Chat Messages */}
-                  <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-950/50">
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-slate-950/50">
                     {messages.map((message) => (
                       <motion.div
                         key={message.id}
@@ -228,11 +228,10 @@ export default function GeminiChatSection({
                         transition={{ duration: 0.3 }}
                         className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
                       >
-                        <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${
-                          message.isUser 
-                            ? 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg' 
-                            : 'bg-slate-800/80 text-slate-100 border border-slate-700/50'
-                        }`}>
+                        <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${message.isUser
+                            ? 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg'
+                            : 'bg-slate-100 dark:bg-slate-800/80 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700/50'
+                          }`}>
                           {!message.isUser && message.type === 'info' && (
                             <div className="flex items-center space-x-2 mb-2 pb-2 border-b border-slate-600/30">
                               <Info className="w-4 h-4 text-cyan-400" />
@@ -246,26 +245,26 @@ export default function GeminiChatSection({
                         </div>
                       </motion.div>
                     ))}
-                    
+
                     {isGeminiLoading && (
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="flex justify-start"
                       >
-                        <div className="bg-slate-800/80 border border-slate-700/50 rounded-2xl px-4 py-3 max-w-[85%]">
+                        <div className="bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/50 rounded-2xl px-4 py-3 max-w-[85%]">
                           <div className="flex items-center space-x-3">
                             <div className="flex space-x-1">
                               <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
-                              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                              <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                              <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                             </div>
-                            <span className="text-sm text-slate-300">Menganalisis data sistem...</span>
+                            <span className="text-sm text-slate-600 dark:text-slate-300">Menganalisis data sistem...</span>
                           </div>
                         </div>
                       </motion.div>
                     )}
-                    
+
                     <div ref={messagesEndRef} />
                   </div>
 
@@ -274,9 +273,9 @@ export default function GeminiChatSection({
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="px-4 pb-3 bg-slate-950/30"
+                      className="px-4 pb-3 bg-slate-50 dark:bg-slate-950/30"
                     >
-                      <p className="text-slate-400 text-xs mb-3 font-semibold flex items-center">
+                      <p className="text-slate-500 dark:text-slate-400 text-xs mb-3 font-semibold flex items-center">
                         <Zap className="w-3 h-3 mr-1" />
                         AKSI CEPAT
                       </p>
@@ -290,7 +289,7 @@ export default function GeminiChatSection({
                             whileHover={{ scale: 1.02, y: -1 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => handleSuggestionClick(suggestion.text)}
-                            className="bg-slate-800/60 hover:bg-slate-700/80 border border-slate-600/50 hover:border-cyan-500/50 text-slate-300 hover:text-white text-xs px-3 py-3 rounded-xl transition-all duration-200 flex items-center space-x-2 group"
+                            className="bg-white dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-600/50 hover:border-cyan-500/50 text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-white text-xs px-3 py-3 rounded-xl transition-all duration-200 flex items-center space-x-2 group"
                           >
                             <span className="text-cyan-400 group-hover:text-cyan-300">{suggestion.icon}</span>
                             <span className="text-left leading-tight">{suggestion.text}</span>
@@ -301,13 +300,13 @@ export default function GeminiChatSection({
                   )}
 
                   {/* Input Area */}
-                  <div className="border-t border-slate-700/50 p-4 bg-slate-900/80 backdrop-blur-sm">
+                  <div className="border-t border-slate-200 dark:border-slate-700/50 p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
                     <div className="flex items-center space-x-3">
                       <div className="flex-1 relative">
                         <input
                           type="text"
                           placeholder="Tanyakan tentang kondisi banjir, cuaca, atau evakuasi..."
-                          className="w-full bg-slate-800/80 border border-slate-600/50 focus:border-cyan-500/50 rounded-2xl px-4 py-3 pr-12 text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200"
+                          className="w-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-600/50 focus:border-cyan-500/50 rounded-2xl px-4 py-3 pr-12 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200"
                           value={geminiQuestion}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGeminiQuestion(e.target.value as string)}
                           onKeyPress={handleKeyPress}

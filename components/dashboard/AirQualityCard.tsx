@@ -14,19 +14,19 @@ export function AirQualityCard({ airQuality }: AirQualityCardProps) {
   if (!airQuality || !airQuality.level) {
     // Return a placeholder or loading state instead of null
     return (
-      <Card className="bg-slate-800/50 border-slate-700/30 backdrop-blur-sm rounded-xl shadow-lg text-white">
-        <CardHeader className="pb-4">
-          <CardTitle className="flex items-center space-x-2 text-lg font-medium text-white">
-            <div className="p-2 bg-gray-500/20 rounded-lg border border-gray-400/30">
-              <Leaf className="h-5 w-5 text-gray-400" />
+      <Card className="bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700/30 backdrop-blur-sm rounded-xl shadow-lg dark:shadow-xl text-slate-900 dark:text-white">
+        <CardHeader className="pb-4 border-b border-slate-100 dark:border-slate-800/50">
+          <CardTitle className="flex items-center space-x-2 text-lg font-medium text-slate-900 dark:text-white">
+            <div className="p-2 bg-slate-100 dark:bg-gray-500/20 rounded-lg border border-slate-200 dark:border-gray-400/30">
+              <Leaf className="h-5 w-5 text-slate-500 dark:text-gray-400" />
             </div>
             <span>Kualitas Udara</span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-4 pt-0 space-y-4">
+        <CardContent className="p-4 pt-4 space-y-4">
           <div className="flex items-center justify-center h-24">
-            <Loader2 className="h-8 w-8 animate-spin text-cyan-400" />
-            <p className="ml-2 text-gray-400">Memuat data kualitas udara...</p>
+            <Loader2 className="h-8 w-8 animate-spin text-cyan-500 dark:text-cyan-400" />
+            <p className="ml-2 text-slate-500 dark:text-gray-400">Memuat data kualitas udara...</p>
           </div>
         </CardContent>
       </Card>
@@ -116,17 +116,17 @@ export function AirQualityCard({ airQuality }: AirQualityCardProps) {
   const detailedAqiInfo = getDetailedAqiInfo(airQuality.level);
 
   return (
-    <Card className="bg-slate-800/50 border-slate-700/30 backdrop-blur-sm rounded-xl shadow-lg text-white hover:bg-slate-800/60 transition-colors duration-200">
-      <CardHeader className="pb-4">
-        <CardTitle className="flex items-center space-x-2 text-lg font-medium text-white">
-          <div className="p-2 bg-emerald-500/20 rounded-lg border border-emerald-400/30">
-            <Leaf className="h-5 w-5 text-emerald-400" />
+    <Card className="h-full bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700/30 backdrop-blur-sm rounded-xl shadow-sm dark:shadow-lg text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors duration-200">
+      <CardHeader className="pb-4 border-b border-slate-100 dark:border-slate-800/50">
+        <CardTitle className="flex items-center space-x-2 text-lg font-medium text-slate-900 dark:text-white">
+          <div className="p-2 bg-emerald-100 dark:bg-emerald-500/20 rounded-lg border border-emerald-200 dark:border-emerald-400/30">
+            <Leaf className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
           </div>
           <span>Kualitas Udara</span>
         </CardTitle>
       </CardHeader>
-      
-      <CardContent className="p-4 pt-0 space-y-4">
+
+      <CardContent className="p-4 pt-4 space-y-4">
         {/* AQI Main Display */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -135,8 +135,8 @@ export function AirQualityCard({ airQuality }: AirQualityCardProps) {
             </div>
             <div>
               <div className="flex items-baseline space-x-2">
-                <span className="text-3xl font-bold text-white">{airQuality.aqi}</span>
-                <span className="text-sm text-gray-400">AQI</span>
+                <span className="text-3xl font-bold text-slate-900 dark:text-white">{airQuality.aqi}</span>
+                <span className="text-sm text-slate-500 dark:text-gray-400">AQI</span>
               </div>
               <p className={`text-sm font-medium ${getAqiLevelColor(airQuality.level)}`}>
                 {airQuality.level}
@@ -146,22 +146,22 @@ export function AirQualityCard({ airQuality }: AirQualityCardProps) {
         </div>
 
         {/* Pollutant Info */}
-        <div className="bg-slate-700/30 rounded-lg p-3 border border-slate-600/30">
+        <div className="bg-slate-50 dark:bg-slate-700/30 rounded-lg p-3 border border-slate-200 dark:border-slate-600/30">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-400">Polutan Utama</span>
-            <span className="text-sm font-medium text-white">{airQuality.pollutant}</span>
+            <span className="text-sm text-slate-500 dark:text-gray-400">Polutan Utama</span>
+            <span className="text-sm font-medium text-slate-900 dark:text-white">{airQuality.pollutant}</span>
           </div>
         </div>
 
         {/* Recommendation */}
-        <div className="border-t border-slate-700/50 pt-3">
+        <div className="border-t border-slate-200 dark:border-slate-700/50 pt-3">
           <div className="flex items-start space-x-2">
-            <div className="w-1.5 h-1.5 bg-teal-400 rounded-full mt-2 flex-shrink-0"></div>
+            <div className="w-1.5 h-1.5 bg-teal-500 dark:bg-teal-400 rounded-full mt-2 flex-shrink-0"></div>
             <div>
-              <p className="text-xs text-gray-400 mb-1">Deskripsi</p>
-              <p className="text-sm text-gray-200 leading-relaxed">{detailedAqiInfo.description}</p>
-              <p className="text-xs text-gray-400 mt-2 mb-1">Rekomendasi</p>
-              <p className="text-sm text-gray-200 leading-relaxed">{detailedAqiInfo.recommendation}</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400 mb-1">Deskripsi</p>
+              <p className="text-sm text-slate-700 dark:text-gray-200 leading-relaxed">{detailedAqiInfo.description}</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400 mt-2 mb-1">Rekomendasi</p>
+              <p className="text-sm text-slate-700 dark:text-gray-200 leading-relaxed">{detailedAqiInfo.recommendation}</p>
             </div>
           </div>
         </div>

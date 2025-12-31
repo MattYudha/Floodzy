@@ -208,7 +208,7 @@ export default function StatistikPage() {
               ...historyForApi,
               { role: 'model', parts: [{ functionCall: data.originalCall }] }
             ];
-            
+
             const functionResponse = {
               role: 'function',
               parts: [{
@@ -261,7 +261,7 @@ export default function StatistikPage() {
   // Render loading & error
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-slate-900">
+      <div className="flex items-center justify-center h-screen bg-white dark:bg-slate-900">
         <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
       </div>
     );
@@ -269,7 +269,7 @@ export default function StatistikPage() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen bg-slate-900">
+      <div className="flex items-center justify-center h-screen bg-white dark:bg-slate-900">
         <p className="text-red-500 font-semibold">Terjadi kesalahan: {error}</p>
       </div>
     );
@@ -277,7 +277,7 @@ export default function StatistikPage() {
 
   // Main render
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-slate-900 dark:text-white transition-colors duration-300">
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
@@ -302,26 +302,26 @@ export default function StatistikPage() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="bg-slate-800 rounded-lg p-4 mb-6"
+              className="bg-white dark:bg-slate-800 rounded-lg p-4 mb-6 shadow-sm border border-slate-200 dark:border-slate-700"
             >
               {/* Filter Panel */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm">Start Date</label>
+                  <label className="text-sm text-slate-600 dark:text-slate-400">Start Date</label>
                   <input
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full p-2 bg-slate-700 rounded"
+                    className="w-full p-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-slate-900 dark:text-white"
                   />
                 </div>
                 <div>
-                  <label className="text-sm">End Date</label>
+                  <label className="text-sm text-slate-600 dark:text-slate-400">End Date</label>
                   <input
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full p-2 bg-slate-700 rounded"
+                    className="w-full p-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-slate-900 dark:text-white"
                   />
                 </div>
               </div>

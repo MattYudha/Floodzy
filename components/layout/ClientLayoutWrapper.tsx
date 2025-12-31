@@ -95,7 +95,7 @@ export default function ClientLayoutWrapper({
   const isMapPage = pathname === '/peta-banjir';
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-transparent">
       <Sidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}

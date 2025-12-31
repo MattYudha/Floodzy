@@ -34,33 +34,33 @@ const getWeatherIcon = (iconName: string, size: string = "w-6 h-6") => {
 
 export function WeatherSummaryCard({ weatherSummary }: WeatherSummaryCardProps) {
   return (
-    <Card className="bg-slate-900/80 border-slate-800/50 backdrop-blur-lg rounded-xl shadow-xl overflow-hidden text-white">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center space-x-2 text-lg font-semibold text-gray-100">
+    <Card className="bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800/50 backdrop-blur-lg rounded-xl shadow-lg dark:shadow-xl overflow-hidden text-slate-900 dark:text-white transition-all duration-300">
+      <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800/50">
+        <CardTitle className="flex items-center space-x-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
           <Thermometer className="h-5 w-5 text-primary" />
           <span>Prakiraan Cuaca</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-4 pt-0">
+      <CardContent className="p-4 pt-4">
         <div className="flex items-center justify-between mb-4">
           {weatherSummary.current && (
             <div className="flex items-center">
               {getWeatherIcon(weatherSummary.current.icon, "w-12 h-12")}
               <div className="ml-4">
-                <p className="text-5xl font-bold text-white">{weatherSummary.current.temperature}°C</p>
-                <p className="text-md text-gray-300">{weatherSummary.current.condition}</p>
+                <p className="text-5xl font-bold text-slate-900 dark:text-white">{weatherSummary.current.temperature}°C</p>
+                <p className="text-md text-slate-600 dark:text-slate-300">{weatherSummary.current.condition}</p>
               </div>
             </div>
           )}
-          <p className="text-sm text-gray-400 text-right">{weatherSummary.location}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 text-right">{weatherSummary.location}</p>
         </div>
         {weatherSummary.forecast && weatherSummary.forecast.length > 0 && (
-          <div className="grid grid-cols-3 gap-2 text-center border-t border-slate-700 pt-4 mt-4">
+          <div className="grid grid-cols-3 gap-2 text-center border-t border-slate-200 dark:border-slate-700 pt-4 mt-4">
             {weatherSummary.forecast.map((item, index) => (
               <div key={index} className="flex flex-col items-center">
-                <p className="text-xs font-medium text-gray-300 mb-1">{item.time}</p>
+                <p className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">{item.time}</p>
                 {getWeatherIcon(item.condition, "w-5 h-5")}
-                <p className="text-sm text-gray-200 mt-1">{item.temperature}°C</p>
+                <p className="text-sm text-slate-700 dark:text-slate-200 mt-1">{item.temperature}°C</p>
               </div>
             ))}
           </div>

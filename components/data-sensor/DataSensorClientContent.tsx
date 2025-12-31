@@ -50,17 +50,17 @@ const classifyWaterLevelString = (waterLevelString: string): {
 } => {
   switch (waterLevelString) {
     case 'semata_kaki':
-      return { label: 'Semata Kaki', level: 'low', colorClass: 'text-green-400 bg-green-500/20', icon: <Activity className="h-4 w-4" /> };
+      return { label: 'Semata Kaki', level: 'low', colorClass: 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-500/20', icon: <Activity className="h-4 w-4" /> };
     case 'selutut':
-      return { label: 'Selutut', level: 'medium', colorClass: 'text-yellow-440 bg-yellow-500/20', icon: <Droplets className="h-4 w-4" /> };
+      return { label: 'Selutut', level: 'medium', colorClass: 'text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-500/20', icon: <Droplets className="h-4 w-4" /> };
     case 'sepaha':
-      return { label: 'Sepaha', level: 'medium', colorClass: 'text-orange-400 bg-orange-500/20', icon: <Droplets className="h-4 w-4" /> };
+      return { label: 'Sepaha', level: 'medium', colorClass: 'text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-500/20', icon: <Droplets className="h-4 w-4" /> };
     case 'sepusar':
-      return { label: 'Sepusar', level: 'high', colorClass: 'text-red-400 bg-red-500/20', icon: <AlertCircle className="h-4 w-4" /> };
+      return { label: 'Sepusar', level: 'high', colorClass: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-500/20', icon: <AlertCircle className="h-4 w-4" /> };
     case 'lebih_dari_sepusar':
-      return { label: 'Lebih dari Sepusar', level: 'high', colorClass: 'text-red-600 bg-red-700/20', icon: <AlertCircle className="h-4 w-4" /> };
+      return { label: 'Lebih dari Sepusar', level: 'high', colorClass: 'text-red-700 dark:text-red-500 bg-red-200 dark:bg-red-700/20', icon: <AlertCircle className="h-4 w-4" /> };
     default:
-      return { label: 'Tidak diketahui', level: 'low', colorClass: 'text-gray-400 bg-gray-500/20', icon: <Activity className="h-4 w-4" /> };
+      return { label: 'Tidak diketahui', level: 'low', colorClass: 'text-slate-600 dark:text-gray-400 bg-slate-100 dark:bg-gray-500/20', icon: <Activity className="h-4 w-4" /> };
   }
 };
 
@@ -103,7 +103,7 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
     });
 
     // Sorting by created_at in descending order (terbaru ke terlama)
-    const sorted = [...filtered].sort((a, b) => 
+    const sorted = [...filtered].sort((a, b) =>
       parseISO(b.created_at).getTime() - parseISO(a.created_at).getTime()
     );
 
@@ -120,7 +120,7 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
     const highLevel = laporan.filter(r => classifyWaterLevelString(r.water_level).level === 'high').length;
     const mediumLevel = laporan.filter(r => classifyWaterLevelString(r.water_level).level === 'medium').length;
     const lowLevel = laporan.filter(r => classifyWaterLevelString(r.water_level).level === 'low').length;
-    
+
     return { total, highLevel, mediumLevel, lowLevel, avgLevel: 0 };
   }, [laporan]);
 
@@ -135,19 +135,19 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
       'ID', 'Lokasi', 'Latitude', 'Longitude', 'Level Air',
       'Deskripsi', 'Nama Pelapor', 'Kontak Pelapor', 'Waktu Laporan'
     ];
-    
+
     const csvContent = [
       headers.join(','),
-      ...displayedReports.map(report => 
+      ...displayedReports.map(report =>
         [
-          `"${report.id}"`, 
-          `"${report.location}"`, 
+          `"${report.id}"`,
+          `"${report.location}"`,
           report.latitude,
           report.longitude,
-          `"${classifyWaterLevelString(report.water_level).label}"`, 
-          `"${report.description ? report.description.replace(/"/g, '""') : ''}"`, 
-          `"${report.reporter_name ? report.reporter_name.replace(/"/g, '""') : ''}"`, 
-          `"${report.reporter_contact ? report.reporter_contact.replace(/"/g, '""') : ''}"`, 
+          `"${classifyWaterLevelString(report.water_level).label}"`,
+          `"${report.description ? report.description.replace(/"/g, '""') : ''}"`,
+          `"${report.reporter_name ? report.reporter_name.replace(/"/g, '""') : ''}"`,
+          `"${report.reporter_contact ? report.reporter_contact.replace(/"/g, '""') : ''}"`,
           `"${format(parseISO(report.created_at), 'dd MMM yyyy, HH:mm', { locale: id })}"`
         ].join(',')
       )
@@ -220,87 +220,87 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="w-full text-slate-900 dark:text-white">
       <div className="container mx-auto px-6 py-8">
         {/* Header Section */}
         <div className="mb-8">
           <div className="flex items-center space-x-3 mb-4">
-            <div className="p-3 bg-cyan-500/20 rounded-xl">
-              <TableIcon className="h-6 w-6 text-cyan-400" />
+            <div className="p-3 bg-cyan-100 dark:bg-cyan-500/20 rounded-xl">
+              <TableIcon className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Analisis Data Sensor</h1>
-              <p className="text-gray-400">Monitoring laporan banjir dan data cuaca real-time</p>
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Analisis Data Sensor</h1>
+              <p className="text-slate-500 dark:text-gray-400">Monitoring laporan banjir dan data cuaca real-time</p>
             </div>
           </div>
         </div>
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <TableIcon className="h-8 w-8 text-cyan-400" />
-              <span className="bg-cyan-500/20 text-cyan-400 text-xs px-2 py-1 rounded-full">Total</span>
+              <TableIcon className="h-8 w-8 text-cyan-600 dark:text-cyan-400" />
+              <span className="bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs px-2 py-1 rounded-full">Total</span>
             </div>
-            <div className="text-3xl font-bold mb-1">{stats.total}</div>
-            <div className="text-gray-400 text-sm">Total Laporan</div>
+            <div className="text-3xl font-bold mb-1 text-slate-900 dark:text-white">{stats.total}</div>
+            <div className="text-slate-500 dark:text-gray-400 text-sm">Total Laporan</div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <AlertCircle className="h-8 w-8 text-red-400" />
-              <span className="bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded-full">Tinggi</span>
+              <AlertCircle className="h-8 w-8 text-red-500 dark:text-red-400" />
+              <span className="bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 text-xs px-2 py-1 rounded-full">Tinggi</span>
             </div>
-            <div className="text-3xl font-bold mb-1">{stats.highLevel}</div>
-            <div className="text-gray-400 text-sm">Level Bahaya (Sepusar/Lebih)</div>
+            <div className="text-3xl font-bold mb-1 text-slate-900 dark:text-white">{stats.highLevel}</div>
+            <div className="text-slate-500 dark:text-gray-400 text-sm">Level Bahaya (Sepusar/Lebih)</div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <Droplets className="h-8 w-8 text-yellow-400" />
-              <span className="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded-full">Sedang</span>
+              <Droplets className="h-8 w-8 text-yellow-500 dark:text-yellow-400" />
+              <span className="bg-yellow-100 dark:bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 text-xs px-2 py-1 rounded-full">Sedang</span>
             </div>
-            <div className="text-3xl font-bold mb-1">{stats.mediumLevel}</div>
-            <div className="text-gray-400 text-sm">Level Waspada (Selutut/Sepaha)</div>
+            <div className="text-3xl font-bold mb-1 text-slate-900 dark:text-white">{stats.mediumLevel}</div>
+            <div className="text-slate-500 dark:text-gray-400 text-sm">Level Waspada (Selutut/Sepaha)</div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <Activity className="h-8 w-8 text-green-400" />
-              <span className="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded-full">Rendah</span>
+              <Activity className="h-8 w-8 text-green-500 dark:text-green-400" />
+              <span className="bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 text-xs px-2 py-1 rounded-full">Rendah</span>
             </div>
-            <div className="text-3xl font-bold mb-1">{stats.lowLevel}</div>
-            <div className="text-gray-400 text-sm">Level Normal (Semata Kaki)</div>
+            <div className="text-3xl font-bold mb-1 text-slate-900 dark:text-white">{stats.lowLevel}</div>
+            <div className="text-slate-500 dark:text-gray-400 text-sm">Level Normal (Semata Kaki)</div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <TrendingUp className="h-8 w-8 text-purple-400" />
-              <span className="bg-purple-500/20 text-purple-400 text-xs px-2 py-1 rounded-full">Avg</span>
+              <TrendingUp className="h-8 w-8 text-purple-500 dark:text-purple-400" />
+              <span className="bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 text-xs px-2 py-1 rounded-full">Avg</span>
             </div>
-            <div className="text-3xl font-bold mb-1">{stats.avgLevel}<span className="text-lg text-gray-400">cm</span></div>
-            <div className="text-gray-400 text-sm">Rata-rata Level</div>
+            <div className="text-3xl font-bold mb-1 text-slate-900 dark:text-white">{stats.avgLevel}<span className="text-lg text-slate-400 dark:text-gray-400">cm</span></div>
+            <div className="text-slate-500 dark:text-gray-400 text-sm">Rata-rata Level</div>
           </div>
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 mb-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 mb-8 shadow-sm">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
             <div className="flex items-center space-x-4">
               <div className="relative flex-1 lg:w-80">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <input
                   type="text"
                   placeholder="Cari lokasi atau deskripsi..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-gray-700 border border-gray-600 text-white pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent placeholder-slate-400"
                 />
               </div>
               <select
                 value={selectedFilter}
                 onChange={(e) => setSelectedFilter(e.target.value)}
-                className="bg-gray-700 border border-gray-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
                 <option value="all">Semua Level</option>
                 <option value="low">Semata Kaki</option>
@@ -309,14 +309,14 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
               </select>
             </div>
             <div className="flex items-center space-x-2">
-              <button 
-                  onClick={handleExportData}
-                  className="flex items-center space-x-2 bg-cyan-500/20 text-cyan-400 px-4 py-2 rounded-lg hover:bg-cyan-500/30 transition-colors"
-                >
-                  <Download className="h-4 w-4" />
-                  <span>Export Data</span>
-                </button>
-              <button className="flex items-center space-x-2 bg-gray-700 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
+              <button
+                onClick={handleExportData}
+                className="flex items-center space-x-2 bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 px-4 py-2 rounded-lg hover:bg-cyan-200 dark:hover:bg-cyan-500/30 transition-colors"
+              >
+                <Download className="h-4 w-4" />
+                <span>Export Data</span>
+              </button>
+              <button className="flex items-center space-x-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
                 <Filter className="h-4 w-4" />
                 <span>Filter</span>
               </button>
@@ -328,30 +328,21 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
           {/* Reports Table */}
           <div className="xl:col-span-2">
-            <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-              <div className="p-6 border-b border-gray-700">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+              <div className="p-6 border-b border-slate-200 dark:border-slate-700">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-purple-500/20 rounded-lg">
-                      <TableIcon className="h-5 w-5 text-purple-400" />
+                    <div className="p-2 bg-purple-100 dark:bg-purple-500/20 rounded-lg">
+                      <TableIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-white">Laporan Banjir Terbaru</h3>
-                      <p className="text-sm text-gray-400">Menampilkan {displayedReports.length} dari {laporan.length} laporan</p>
+                      <h3 className="text-xl font-semibold text-slate-900 dark:text-white">Laporan Banjir Terbaru</h3>
+                      <p className="text-sm text-slate-500 dark:text-gray-400">Menampilkan {displayedReports.length} dari {laporan.length} laporan</p>
                       {/* Note: Button component is not imported, assuming it's from a library like shadcn/ui */}
                       {displayedReports.length < filteredAndSortedLaporan.length && (
-                        /*
-                        <Button
-                          onClick={() => setDisplayLimit(filteredAndSortedLaporan.length)}
-                          variant="outline"
-                          className="mt-4 w-full"
-                        >
-                          Lihat Selengkapnya ({filteredAndSortedLaporan.length - displayedReports.length} laporan lagi)
-                        </Button>
-                        */
                         <button
                           onClick={() => setDisplayLimit(filteredAndSortedLaporan.length)}
-                          className="mt-4 w-full border border-gray-600 text-gray-300 rounded-lg px-4 py-2 hover:bg-gray-700 transition-colors"
+                          className="mt-4 w-full border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-gray-300 rounded-lg px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
                         >
                           Lihat Selengkapnya ({filteredAndSortedLaporan.length - displayedReports.length} laporan lagi)
                         </button>
@@ -359,28 +350,28 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
                     </div>
                   </div>
                   {/* Mengganti latestReports dengan displayedReports */}
-                  <div className="text-2xl font-bold text-white">{displayedReports.length}</div>
+                  <div className="text-2xl font-bold text-slate-900 dark:text-white">{displayedReports.length}</div>
                 </div>
               </div>
 
               <div className="overflow-x-auto">
                 {/* Mengganti latestReports dengan displayedReports */}
                 {displayedReports.length > 0 ? (
-                  <div className="divide-y divide-gray-700">
+                  <div className="divide-y divide-slate-200 dark:divide-slate-700">
                     {displayedReports.map((report, index) => (
-                      <div key={report.id || index} className="p-6 hover:bg-gray-700/50 transition-colors">
+                      <div key={report.id || index} className="p-6 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-3 mb-3">
-                              <MapPin className="h-4 w-4 text-cyan-400 flex-shrink-0" />
-                              <h4 className="font-semibold text-white truncate">{report.location}</h4>
+                              <MapPin className="h-4 w-4 text-cyan-600 dark:text-cyan-400 flex-shrink-0" />
+                              <h4 className="font-semibold text-slate-900 dark:text-white truncate">{report.location}</h4>
                               <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${classifyWaterLevelString(report.water_level || '').colorClass}`}>
                                 {classifyWaterLevelString(report.water_level || '').icon}
                                 <span>{classifyWaterLevelString(report.water_level || '').label}</span>
                               </div>
                             </div>
-                            
-                            <div className="flex items-center space-x-4 text-sm text-gray-400 mb-2">
+
+                            <div className="flex items-center space-x-4 text-sm text-slate-500 dark:text-gray-400 mb-2">
                               <div className="flex items-center space-x-1">
                                 <Clock className="h-3 w-3" />
                                 <span>{format(parseISO(report.created_at), 'dd MMM yyyy, HH:mm', { locale: id })}</span>
@@ -392,29 +383,29 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
                                 </div>
                               )}
                             </div>
-                            
+
                             {report.description && (
-                              <p className="text-gray-300 text-sm leading-relaxed">
-                                {report.description.length > 100 
-                                  ? `${report.description.substring(0, 100)}...` 
+                              <p className="text-slate-600 dark:text-gray-300 text-sm leading-relaxed">
+                                {report.description.length > 100
+                                  ? `${report.description.substring(0, 100)}...`
                                   : report.description
                                 }
                               </p>
                             )}
                             {report.photo_url && (
-                                <div className="relative w-48 h-48 mt-2">
-                                  <Image
-                                    src={report.photo_url}
-                                    alt="Foto Laporan"
-                                    fill
-                                    className="object-cover rounded-md"
-                                    unoptimized
-                                  />
-                                </div>
+                              <div className="relative w-48 h-48 mt-2">
+                                <Image
+                                  src={report.photo_url}
+                                  alt="Foto Laporan"
+                                  fill
+                                  className="object-cover rounded-md"
+                                  unoptimized
+                                />
+                              </div>
                             )}
                           </div>
-                          
-                          <button className="ml-4 p-2 text-gray-400 hover:text-cyan-400 transition-colors">
+
+                          <button className="ml-4 p-2 text-slate-400 dark:text-gray-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
                             <ChevronRight className="h-4 w-4" />
                           </button>
                         </div>
@@ -423,9 +414,9 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
                   </div>
                 ) : (
                   <div className="p-12 text-center">
-                    <TableIcon className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-400 mb-2">Tidak Ada Data</h3>
-                    <p className="text-gray-500">Belum ada laporan banjir yang sesuai dengan filter</p>
+                    <TableIcon className="h-16 w-16 text-slate-400 dark:text-gray-600 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-slate-500 dark:text-gray-400 mb-2">Tidak Ada Data</h3>
+                    <p className="text-slate-400 dark:text-gray-500">Belum ada laporan banjir yang sesuai dengan filter</p>
                   </div>
                 )}
               </div>
@@ -435,107 +426,111 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
           {/* Weather Analysis Sidebar */}
           <div className="space-y-6">
             {/* Current Weather */}
-            <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-              <div className="p-6 border-b border-gray-700">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+              <div className="p-6 border-b border-slate-200 dark:border-slate-700">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-cyan-500/20 rounded-lg">
-                    <CloudRain className="h-5 w-5 text-cyan-400" />
+                  <div className="p-2 bg-cyan-100 dark:bg-cyan-500/20 rounded-lg">
+                    <CloudRain className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-white">Cuaca Saat Ini</h3>
-                    <p className="text-sm text-gray-400">Kondisi weather real-time</p>
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Cuaca Saat Ini</h3>
+                    <p className="text-sm text-slate-500 dark:text-gray-400">Kondisi weather real-time</p>
                   </div>
                 </div>
               </div>
               <div className="p-6 space-y-4">
                 {isWeatherLoading ? (
                   <div className="text-center py-8">
-                    <Loader2 className="h-8 w-8 animate-spin text-cyan-400 mx-auto mb-3" />
-                    <p className="text-gray-400">Memuat data cuaca...</p>
+                    <Loader2 className="h-8 w-8 animate-spin text-cyan-600 dark:text-cyan-400 mx-auto mb-3" />
+                    <p className="text-slate-500 dark:text-gray-400">Memuat data cuaca...</p>
                   </div>
                 ) : weatherError ? (
                   <div className="text-center py-8">
-                    <AlertCircle className="h-8 w-8 text-red-400 mx-auto mb-3" />
-                    <p className="text-red-400">Gagal memuat cuaca: {weatherError}</p>
+                    <AlertCircle className="h-8 w-8 text-red-500 dark:text-red-400 mx-auto mb-3" />
+                    <p className="text-red-500 dark:text-red-400">Gagal memuat cuaca: {weatherError}</p>
                   </div>
                 ) : weatherData ? (
                   <>
                     <div className="text-center mb-6">
-                      <div className="text-4xl font-bold text-white mb-2">{Math.round(weatherData.current.main.temp)}°C</div>
-                      <div className="text-gray-400">{weatherData.current.weather[0].description}</div>
+                      <div className="text-4xl font-bold text-slate-900 dark:text-white mb-2">{Math.round(weatherData.current.main.temp)}°C</div>
+                      <div className="text-slate-500 dark:text-gray-400">{weatherData.current.weather[0].description}</div>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4">
                       <div className="text-center">
-                        <Droplets className="h-6 w-6 text-blue-400 mx-auto mb-2" />
-                        <div className="text-lg font-semibold text-white">{weatherData.current.main.humidity}%</div>
-                        <div className="text-xs text-gray-400">Kelembaban</div>
+                        <Droplets className="h-6 w-6 text-blue-500 dark:text-blue-400 mx-auto mb-2" />
+                        <div className="text-lg font-semibold text-slate-900 dark:text-white">{weatherData.current.main.humidity}%</div>
+                        <div className="text-xs text-slate-500 dark:text-gray-400">Kelembaban</div>
                       </div>
                       <div className="text-center">
-                        <Wind className="h-6 w-6 text-green-400 mx-auto mb-2" />
-                        <div className="text-lg font-semibold text-white">{weatherData.current.wind.speed} m/s</div>
-                        <div className="text-xs text-gray-400">Angin</div>
+                        <Wind className="h-6 w-6 text-green-500 dark:text-green-400 mx-auto mb-2" />
+                        <div className="text-lg font-semibold text-slate-900 dark:text-white">{weatherData.current.wind.speed} m/s</div>
+                        <div className="text-xs text-slate-500 dark:text-gray-400">Angin</div>
                       </div>
                       <div className="text-center">
-                        <Thermometer className="h-6 w-6 text-orange-400 mx-auto mb-2" />
-                        <div className="text-lg font-semibold text-white">{weatherData.current.main.pressure} hPa</div>
-                        <div className="text-xs text-gray-400">Tekanan</div>
+                        <Thermometer className="h-6 w-6 text-orange-500 dark:text-orange-400 mx-auto mb-2" />
+                        <div className="text-lg font-semibold text-slate-900 dark:text-white">{weatherData.current.main.pressure} hPa</div>
+                        <div className="text-xs text-slate-500 dark:text-gray-400">Tekanan</div>
                       </div>
                       <div className="text-center">
-                        <Eye className="h-6 w-6 text-purple-400 mx-auto mb-2" />
-                        <div className="text-lg font-semibold text-white">{weatherData.current.visibility / 1000} km</div>
-                        <div className="text-xs text-gray-400">Jarak Pandang</div>
+                        <Eye className="h-6 w-6 text-purple-500 dark:text-purple-400 mx-auto mb-2" />
+                        <div className="text-lg font-semibold text-slate-900 dark:text-white">{weatherData.current.visibility / 1000} km</div>
+                        <div className="text-xs text-slate-500 dark:text-gray-400">Jarak Pandang</div>
                       </div>
                     </div>
                   </>
                 ) : (
                   <div className="text-center py-8">
-                    <AlertCircle className="h-8 w-8 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-400">Data cuaca tidak tersedia.</p>
+                    <AlertCircle className="h-8 w-8 text-slate-400 dark:text-gray-400 mx-auto mb-3" />
+                    <p className="text-slate-500 dark:text-gray-400">Data cuaca tidak tersedia.</p>
                   </div>
                 )}
               </div>
             </div>
 
-            
+
 
             {/* Flood Report Chart */}
             <FloodReportChart />
 
             {/* Quick Actions */}
-            <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Aksi Cepat</h3>
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Aksi Cepat</h3>
               <div className="space-y-3">
-                <button 
+                <button
                   onClick={handleExportData}
-                  className="w-full flex items-center justify-between p-3 bg-cyan-500/20 text-cyan-400 rounded-lg hover:bg-cyan-500/30 transition-colors">
+                  className="w-full flex items-center justify-between p-3 bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 rounded-lg hover:bg-cyan-200 dark:hover:bg-cyan-500/30 transition-colors"
+                >
                   <div className="flex items-center space-x-3">
                     <Download className="h-4 w-4" />
                     <span>Export Data</span>
                   </div>
                   <ChevronRight className="h-4 w-4" />
                 </button>
-                <button 
+                <button
                   onClick={handleOpenScheduleModal}
-                  className="w-full flex items-center justify-between p-3 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors">
+                  className="w-full flex items-center justify-between p-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-gray-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                >
                   <div className="flex items-center space-x-3">
                     <Calendar className="h-4 w-4" />
                     <span>Jadwal Laporan</span>
                   </div>
                   <ChevronRight className="h-4 w-4" />
                 </button>
-                <button 
+                <button
                   onClick={handleOpenAlertModal}
-                  className="w-full flex items-center justify-between p-3 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors">
+                  className="w-full flex items-center justify-between p-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-gray-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                >
                   <div className="flex items-center space-x-3">
                     <AlertCircle className="h-4 w-4" />
                     <span>Alert Settings</span>
                   </div>
                   <ChevronRight className="h-4 w-4" />
                 </button>
-                <button 
+                <button
                   onClick={handleOpenWeatherModal}
-                  className="w-full flex items-center justify-between p-3 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors">
+                  className="w-full flex items-center justify-between p-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-gray-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                >
                   <div className="flex items-center space-x-3">
                     <Cloud className="h-4 w-4" />
                     <span>Cuaca Sekarang</span>
@@ -548,29 +543,29 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
         </div>
       </div>
       {isScheduleModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-gray-800 p-8 rounded-xl border border-gray-700 w-full max-w-md mx-auto shadow-lg">
-            <h3 className="text-xl font-semibold text-white mb-4">Jadwalkan Laporan</h3>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-slate-800 p-8 rounded-xl border border-slate-200 dark:border-slate-700 w-full max-w-md mx-auto shadow-xl">
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Jadwalkan Laporan</h3>
             <form onSubmit={handleScheduleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="scheduleEmail" className="block text-gray-300 text-sm font-medium mb-1">Email Penerima</label>
+                <label htmlFor="scheduleEmail" className="block text-slate-700 dark:text-gray-300 text-sm font-medium mb-1">Email Penerima</label>
                 <input
                   type="email"
                   id="scheduleEmail"
                   value={scheduleEmail}
                   onChange={(e) => setScheduleEmail(e.target.value)}
                   placeholder="contoh@email.com"
-                  className="w-full bg-gray-700 border border-gray-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   required
                 />
               </div>
               <div>
-                <label htmlFor="scheduleFrequency" className="block text-gray-300 text-sm font-medium mb-1">Frekuensi</label>
+                <label htmlFor="scheduleFrequency" className="block text-slate-700 dark:text-gray-300 text-sm font-medium mb-1">Frekuensi</label>
                 <select
                   id="scheduleFrequency"
                   value={scheduleFrequency}
                   onChange={(e) => setScheduleFrequency(e.target.value)}
-                  className="w-full bg-gray-700 border border-gray-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 >
                   <option value="daily">Harian</option>
                   <option value="weekly">Mingguan</option>
@@ -581,7 +576,7 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
                 <button
                   type="button"
                   onClick={handleCloseScheduleModal}
-                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                  className="px-4 py-2 bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-white rounded-lg hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
                 >
                   Batal
                 </button>
@@ -598,17 +593,17 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
       )}
 
       {isAlertModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-gray-800 p-8 rounded-xl border border-gray-700 w-full max-w-md mx-auto shadow-lg">
-            <h3 className="text-xl font-semibold text-white mb-4">Pengaturan Notifikasi</h3>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-slate-800 p-8 rounded-xl border border-slate-200 dark:border-slate-700 w-full max-w-md mx-auto shadow-xl">
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Pengaturan Notifikasi</h3>
             <form onSubmit={handleAlertSubmit} className="space-y-4">
               <div>
-                <label htmlFor="alertThreshold" className="block text-gray-300 text-sm font-medium mb-1">Ambang Batas Peringatan</label>
+                <label htmlFor="alertThreshold" className="block text-slate-700 dark:text-gray-300 text-sm font-medium mb-1">Ambang Batas Peringatan</label>
                 <select
                   id="alertThreshold"
                   value={alertThreshold}
                   onChange={(e) => setAlertThreshold(e.target.value)}
-                  className="w-full bg-gray-700 border border-gray-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 >
                   <option value="low">Semata Kaki</option>
                   <option value="medium">Selutut/Sepaha</option>
@@ -616,12 +611,12 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
                 </select>
               </div>
               <div>
-                <label htmlFor="alertMethod" className="block text-gray-300 text-sm font-medium mb-1">Metode Notifikasi</label>
+                <label htmlFor="alertMethod" className="block text-slate-700 dark:text-gray-300 text-sm font-medium mb-1">Metode Notifikasi</label>
                 <select
                   id="alertMethod"
                   value={alertMethod}
                   onChange={(e) => setAlertMethod(e.target.value)}
-                  className="w-full bg-gray-700 border border-gray-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 >
                   <option value="email">Email</option>
                   <option value="sms">SMS (Simulasi)</option>
@@ -631,7 +626,7 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
                 <button
                   type="button"
                   onClick={handleCloseAlertModal}
-                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                  className="px-4 py-2 bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-white rounded-lg hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
                 >
                   Batal
                 </button>
@@ -648,70 +643,70 @@ const DataSensorClientContent: React.FC<DataSensorClientContentProps> = ({ initi
       )}
 
       {isWeatherModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-gray-800 p-8 rounded-xl border border-gray-700 w-full max-w-md mx-auto shadow-lg">
-            <h3 className="text-xl font-semibold text-white mb-4">Cuaca Sekarang</h3>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-slate-800 p-8 rounded-xl border border-slate-200 dark:border-slate-700 w-full max-w-md mx-auto shadow-xl">
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Cuaca Sekarang</h3>
             {isWeatherLoading ? (
               <div className="text-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-cyan-400 mx-auto mb-3" />
-                <p className="text-gray-400">Memuat data cuaca...</p>
+                <Loader2 className="h-8 w-8 animate-spin text-cyan-600 dark:text-cyan-400 mx-auto mb-3" />
+                <p className="text-slate-500 dark:text-gray-400">Memuat data cuaca...</p>
               </div>
             ) : weatherError ? (
               <div className="text-center py-8">
-                <AlertCircle className="h-8 w-8 text-red-400 mx-auto mb-3" />
-                <p className="text-red-400">Gagal memuat cuaca: {weatherError}</p>
+                <AlertCircle className="h-8 w-8 text-red-500 dark:text-red-400 mx-auto mb-3" />
+                <p className="text-red-500 dark:text-red-400">Gagal memuat cuaca: {weatherError}</p>
               </div>
             ) : weatherData ? (
               <div className="space-y-4">
                 <div className="text-center">
-                  <p className="text-gray-400 text-sm">Lokasi: {weatherData?.current?.name}</p>
-                  <div className="text-5xl font-bold text-white mt-2">{Math.round(weatherData?.current?.main?.temp || 0)}°C</div>
-                  <p className="text-gray-400 text-lg">{weatherData?.current?.weather?.[0]?.description}</p>
+                  <p className="text-slate-500 dark:text-gray-400 text-sm">Lokasi: {weatherData?.current?.name}</p>
+                  <div className="text-5xl font-bold text-slate-900 dark:text-white mt-2">{Math.round(weatherData?.current?.main?.temp || 0)}°C</div>
+                  <p className="text-slate-500 dark:text-gray-400 text-lg">{weatherData?.current?.weather?.[0]?.description}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
-                    <Droplets className="h-6 w-6 text-blue-400 mx-auto mb-1" />
-                    <p className="text-lg font-semibold text-white">{weatherData?.current?.main?.humidity}%</p>
-                    <p className="text-xs text-gray-400">Kelembaban</p>
+                    <Droplets className="h-6 w-6 text-blue-500 dark:text-blue-400 mx-auto mb-1" />
+                    <p className="text-lg font-semibold text-slate-900 dark:text-white">{weatherData?.current?.main?.humidity}%</p>
+                    <p className="text-xs text-slate-500 dark:text-gray-400">Kelembaban</p>
                   </div>
                   <div>
-                    <Wind className="h-6 w-6 text-green-400 mx-auto mb-1" />
-                    <p className="text-lg font-semibold text-white">{weatherData?.current?.wind?.speed} m/s</p>
-                    <p className="text-xs text-gray-400">Angin</p>
+                    <Wind className="h-6 w-6 text-green-500 dark:text-green-400 mx-auto mb-1" />
+                    <p className="text-lg font-semibold text-slate-900 dark:text-white">{weatherData?.current?.wind?.speed} m/s</p>
+                    <p className="text-xs text-slate-500 dark:text-gray-400">Angin</p>
                   </div>
                   <div>
-                    <Thermometer className="h-6 w-6 text-orange-400 mx-auto mb-1" />
-                    <p className="text-lg font-semibold text-white">{weatherData?.current?.main?.pressure} hPa</p>
-                    <p className="text-xs text-gray-400">Tekanan</p>
+                    <Thermometer className="h-6 w-6 text-orange-500 dark:text-orange-400 mx-auto mb-1" />
+                    <p className="text-lg font-semibold text-slate-900 dark:text-white">{weatherData?.current?.main?.pressure} hPa</p>
+                    <p className="text-xs text-slate-500 dark:text-gray-400">Tekanan</p>
                   </div>
                   <div>
-                    <Eye className="h-6 w-6 text-purple-400 mx-auto mb-1" />
-                    <p className="text-lg font-semibold text-white">{weatherData?.current?.visibility ? weatherData.current.visibility / 1000 : 'N/A'} km</p>
-                    <p className="text-xs text-gray-400">Jarak Pandang</p>
+                    <Eye className="h-6 w-6 text-purple-500 dark:text-purple-400 mx-auto mb-1" />
+                    <p className="text-lg font-semibold text-slate-900 dark:text-white">{weatherData?.current?.visibility ? weatherData.current.visibility / 1000 : 'N/A'} km</p>
+                    <p className="text-xs text-slate-500 dark:text-gray-400">Jarak Pandang</p>
                   </div>
                   <div>
-                    <Clock className="h-6 w-6 text-yellow-400 mx-auto mb-1" />
-                    <p className="text-lg font-semibold text-white">{weatherData?.current?.sys?.sunrise ? format(new Date(weatherData.current.sys.sunrise * 1000), 'HH:mm') : 'N/A'}</p>
-                    <p className="text-xs text-gray-400">Matahari Terbit</p>
+                    <Clock className="h-6 w-6 text-yellow-500 dark:text-yellow-400 mx-auto mb-1" />
+                    <p className="text-lg font-semibold text-slate-900 dark:text-white">{weatherData?.current?.sys?.sunrise ? format(new Date(weatherData.current.sys.sunrise * 1000), 'HH:mm') : 'N/A'}</p>
+                    <p className="text-xs text-slate-500 dark:text-gray-400">Matahari Terbit</p>
                   </div>
                   <div>
-                    <Clock className="h-6 w-6 text-yellow-400 mx-auto mb-1" />
-                    <p className="text-lg font-semibold text-white">{weatherData?.current?.sys?.sunset ? format(new Date(weatherData.current.sys.sunset * 1000), 'HH:mm') : 'N/A'}</p>
-                    <p className="text-xs text-gray-400">Matahari Terbenam</p>
+                    <Clock className="h-6 w-6 text-yellow-500 dark:text-yellow-400 mx-auto mb-1" />
+                    <p className="text-lg font-semibold text-slate-900 dark:text-white">{weatherData?.current?.sys?.sunset ? format(new Date(weatherData.current.sys.sunset * 1000), 'HH:mm') : 'N/A'}</p>
+                    <p className="text-xs text-slate-500 dark:text-gray-400">Matahari Terbenam</p>
                   </div>
                 </div>
               </div>
             ) : (
               <div className="text-center py-8">
-                <AlertCircle className="h-8 w-8 text-gray-400 mx-auto mb-3" />
-                <p className="text-gray-400">Data cuaca tidak tersedia.</p>
+                <AlertCircle className="h-8 w-8 text-slate-400 dark:text-gray-400 mx-auto mb-3" />
+                <p className="text-slate-500 dark:text-gray-400">Data cuaca tidak tersedia.</p>
               </div>
             )}
             <div className="flex justify-end mt-6">
               <button
                 type="button"
                 onClick={handleCloseWeatherModal}
-                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-white rounded-lg hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
               >
                 Tutup
               </button>

@@ -142,12 +142,12 @@ export function DashboardStats({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <Card className="hover:shadow-lg transition-shadow">
+            <Card className="hover:shadow-lg transition-shadow bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
                     <item.icon className={cn('h-4 w-4 sm:h-5 sm:w-5', item.color)} />
-                    <span className="text-xs sm:text-sm font-medium text-muted-foreground">
+                    <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
                       {item.title}
                     </span>
                   </div>
@@ -160,9 +160,9 @@ export function DashboardStats({
                     </Badge>
                   )}
                 </div>
-                <div className="text-xl sm:text-2xl font-bold text-white">
+                <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
                   {item.value}
-                  <span className="text-sm sm:text-base text-muted-foreground ml-1">
+                  <span className="text-sm sm:text-base text-slate-500 dark:text-slate-400 ml-1">
                     {item.unit}
                   </span>
                 </div>
@@ -180,11 +180,11 @@ export function DashboardStats({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <Card className="h-full">
+          <Card className="h-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                <span className="text-base sm:text-lg font-semibold">Status Sistem Pompa</span> {/* Judul diubah */}
+                <span className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">Status Sistem Pompa</span> {/* Judul diubah */}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -241,11 +241,11 @@ export function DashboardStats({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <Card className="h-full">
+          <Card className="h-full bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-secondary" />
-                <span className="text-base sm:text-lg font-semibold">Aktivitas Terkini</span>
+                <span className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">Aktivitas Terkini</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -263,8 +263,8 @@ export function DashboardStats({
                   </div>
                 )}
                 {!loadingWaterLevel &&
-                !waterLevelError &&
-                waterLevelPosts.length > 0 ? (
+                  !waterLevelError &&
+                  waterLevelPosts.length > 0 ? (
                   waterLevelPosts.slice(0, 3).map(
                     (
                       post, // Tampilkan hingga 3 pos TMA terdekat
@@ -276,12 +276,12 @@ export function DashboardStats({
                         <div className="w-2 h-2 bg-blue-400 rounded-full" />{' '}
                         {/* Warna biru untuk TMA */}
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-white">
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">
                             Tinggi Air {post.name}: {post.water_level || 'N/A'}{' '}
                             {post.unit || 'm'}
                             {post.status && ` (${post.status})`}
                           </p>
-                          <p className="text-xs sm:text-sm text-muted-foreground">
+                          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
                             {post.timestamp
                               ? getTimeAgo(new Date(post.timestamp))
                               : 'Waktu tidak tersedia'}

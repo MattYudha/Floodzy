@@ -98,15 +98,15 @@ const StatisticsDashboard = () => {
       const now = new Date();
       let dataToProcess;
 
-        if (selectedTimeRange === '30d') {
-          dataToProcess = generateRandomData(30); // Generate fresh mock data for 30 days
-        } else if (selectedTimeRange === '90d') {
-          dataToProcess = generateRandomData(90); // Generate fresh mock data for 90 days
-        } else {
-          // For 24h and 7d, filter from masterData as before
-          const cutoff = isHours ? subDays(now, days / 24) : subDays(now, days);
-          dataToProcess = masterData.filter((d) => new Date(d.date) >= cutoff);
-        }
+      if (selectedTimeRange === '30d') {
+        dataToProcess = generateRandomData(30); // Generate fresh mock data for 30 days
+      } else if (selectedTimeRange === '90d') {
+        dataToProcess = generateRandomData(90); // Generate fresh mock data for 90 days
+      } else {
+        // For 24h and 7d, filter from masterData as before
+        const cutoff = isHours ? subDays(now, days / 24) : subDays(now, days);
+        dataToProcess = masterData.filter((d) => new Date(d.date) >= cutoff);
+      }
 
       // Process data for charts
       const line = normalizeSeries(
@@ -171,8 +171,8 @@ const StatisticsDashboard = () => {
     if (active && payload && payload.length) {
       const dataItem = payload[0].payload;
       return (
-        <div className="bg-gray-700/80 backdrop-blur-sm text-white p-3 rounded-lg border border-gray-600 shadow-lg">
-          <p className="font-bold text-cyan-400">{label}</p>
+        <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm text-slate-900 dark:text-white p-3 rounded-lg border border-slate-200 dark:border-slate-600 shadow-lg">
+          <p className="font-bold text-cyan-600 dark:text-cyan-400">{label}</p>
           {dataItem.jumlah !== undefined && (
             <p className="text-sm">{`Laporan: ${dataItem.jumlah}`}</p>
           )}
@@ -186,14 +186,13 @@ const StatisticsDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* Header */}
-      <div className="bg-gray-800 border-b border-gray-700 sticky top-0 z-10">
-        <div className="container mx-auto px-6 py-4">
+    <div className="w-full space-y-6">
+      {/* Header / Filter Section */}
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 sticky top-20 z-10 shadow-sm">
+        <div className="">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <button className="flex items-center text-cyan-400 hover:text-cyan-300 transition-colors"></button>
-              <div className="text-2xl font-bold text-white">
+              <div className="text-xl font-bold text-slate-900 dark:text-white">
                 Statistik Data
               </div>
             </div>
@@ -201,7 +200,7 @@ const StatisticsDashboard = () => {
               <select
                 value={selectedTimeRange}
                 onChange={(e) => setSelectedTimeRange(e.target.value)}
-                className="bg-gray-700 border border-gray-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
                 <option value="24h">24 Jam</option>
                 <option value="7d">7 Hari</option>
@@ -214,13 +213,13 @@ const StatisticsDashboard = () => {
       </div>
 
       <div
-        className={`container mx-auto px-6 py-8 transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}
+        className={`transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}
       >
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           {/* Bar Chart: Lokasi Paling Rawan */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 lg:col-span-1">
-            <h3 className="text-lg font-semibold text-white mb-4">
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 lg:col-span-1 shadow-sm">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
               Lokasi Paling Rawan
             </h3>
             <div style={{ width: '100%', height: 300 }}>
@@ -230,9 +229,9 @@ const StatisticsDashboard = () => {
                     data={chartData.bar}
                     margin={{ top: 5, right: 20, left: -10, bottom: 5 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#4a5568" />
-                    <XAxis dataKey="name" stroke="#a0aec0" fontSize={12} />
-                    <YAxis stroke="#a0aec0" fontSize={12} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" strokeOpacity={0.3} />
+                    <XAxis dataKey="name" stroke="#64748b" fontSize={12} />
+                    <YAxis stroke="#64748b" fontSize={12} />
                     <Tooltip
                       content={<CustomTooltip />}
                       cursor={{ fill: 'rgba(100, 116, 139, 0.1)' }}
@@ -240,7 +239,7 @@ const StatisticsDashboard = () => {
                     <Bar dataKey="jumlah" fill="#2dd4bf" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 ) : (
-                  <div className="flex items-center justify-center h-full text-gray-500">
+                  <div className="flex items-center justify-center h-full text-slate-500">
                     Tidak ada data tersedia untuk grafik ini.
                   </div>
                 )}
@@ -249,8 +248,8 @@ const StatisticsDashboard = () => {
           </div>
 
           {/* Line Chart: Tren Kejadian Banjir */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 lg:col-span-2">
-            <h3 className="text-lg font-semibold text-white mb-4">
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 lg:col-span-2 shadow-sm">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
               Tren Kejadian Banjir
             </h3>
             <div style={{ width: '100%', height: 300 }}>
@@ -260,9 +259,9 @@ const StatisticsDashboard = () => {
                     data={chartData.line}
                     margin={{ top: 5, right: 20, left: -10, bottom: 5 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#4a5568" />
-                    <XAxis dataKey="day" stroke="#a0aec0" fontSize={12} />
-                    <YAxis stroke="#a0aec0" fontSize={12} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" strokeOpacity={0.3} />
+                    <XAxis dataKey="day" stroke="#64748b" fontSize={12} />
+                    <YAxis stroke="#64748b" fontSize={12} />
                     <Tooltip content={<CustomTooltip />} />
                     <Legend />
                     <Line
@@ -280,7 +279,7 @@ const StatisticsDashboard = () => {
                     />
                   </LineChart>
                 ) : (
-                  <div className="flex items-center justify-center h-full text-gray-500">
+                  <div className="flex items-center justify-center h-full text-slate-500">
                     Tidak ada data tersedia untuk grafik ini.
                   </div>
                 )}
@@ -289,8 +288,8 @@ const StatisticsDashboard = () => {
           </div>
 
           {/* Pie Chart: Komposisi Laporan */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 lg:col-span-1">
-            <h3 className="text-lg font-semibold text-white mb-4">
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 lg:col-span-1 shadow-sm">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
               Komposisi Laporan
             </h3>
             <div style={{ width: '100%', height: 300 }}>
@@ -318,7 +317,7 @@ const StatisticsDashboard = () => {
                     <Legend />
                   </PieChart>
                 ) : (
-                  <div className="flex items-center justify-center h-full text-gray-500">
+                  <div className="flex items-center justify-center h-full text-slate-500">
                     Tidak ada data tersedia untuk grafik ini.
                   </div>
                 )}
@@ -327,8 +326,8 @@ const StatisticsDashboard = () => {
           </div>
 
           {/* New Stacked Bar Chart: Laporan Harian & Terselesaikan */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 lg:col-span-2">
-            <h3 className="text-lg font-semibold text-white mb-4">
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 lg:col-span-2 shadow-sm">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
               Laporan Harian & Terselesaikan
             </h3>
             <div style={{ width: '100%', height: 300 }}>
@@ -338,10 +337,10 @@ const StatisticsDashboard = () => {
                     data={chartData.line}
                     margin={{ top: 5, right: 20, left: -10, bottom: 5 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#4a5568" />
-                    <XAxis dataKey="day" stroke="#a0aec0" fontSize={12} />
-                    <YAxis stroke="#a0aec0" fontSize={12} />
-                    <Tooltip />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" strokeOpacity={0.3} />
+                    <XAxis dataKey="day" stroke="#64748b" fontSize={12} />
+                    <YAxis stroke="#64748b" fontSize={12} />
+                    <Tooltip cursor={{ fill: 'rgba(100, 116, 139, 0.1)' }} content={<CustomTooltip />} />
                     <Legend />
                     <Bar
                       dataKey="jumlah"
@@ -357,7 +356,7 @@ const StatisticsDashboard = () => {
                     />
                   </BarChart>
                 ) : (
-                  <div className="flex items-center justify-center h-full text-gray-500">
+                  <div className="flex items-center justify-center h-full text-slate-500">
                     Tidak ada data tersedia untuk grafik ini.
                   </div>
                 )}

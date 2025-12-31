@@ -101,7 +101,7 @@ export function Header({ onMenuToggle, isMenuOpen }: HeaderProps) {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-        className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+        className="sticky top-0 z-50 w-full border-b bg-white/95 border-slate-200 dark:bg-slate-900/95 dark:border-slate-800 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-900/60"
       >
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           {/* Logo and Brand */}

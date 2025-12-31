@@ -60,6 +60,8 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Switch } from '@/components/ui/switch';
+import { RegionDropdown } from '@/components/region-selector/RegionDropdown';
+import { SelectedLocation } from '@/types/location';
 
 // --- Helper Functions (Tidak ada perubahan) ---
 const getWeatherIcon = (iconCode: string, size = 8) => {
@@ -105,45 +107,8 @@ const formatDay = (timestamp: number) => {
 };
 
 // --- Data & Komponen Statis (Tidak ada perubahan) ---
-const regionData = [
-  { name: 'Jakarta Pusat', lat: -6.1751, lon: 106.865 },
-  { name: 'Bandung', lat: -6.9175, lon: 107.6191 },
-  { name: 'Surabaya', lat: -7.2575, lon: 112.7521 },
-  { name: 'Yogyakarta', lat: -7.7956, lon: 110.3695 },
-  { name: 'Medan', lat: 3.5952, lon: 98.6722 },
-];
-interface Region {
-  name: string;
-  lat: number;
-  lon: number;
-}
+// Local components removed (RegionDropdown, Region, regionData) to use shared ones.
 
-const RegionDropdown = ({
-  onSelectRegion,
-  selectedLocation,
-}: {
-  onSelectRegion: (region: Region) => void;
-  selectedLocation: Region | null;
-}) => {
-  return (
-    <div className="space-y-2">
-      {regionData.map((region) => (
-        <Button
-          key={region.name}
-          onClick={() => onSelectRegion(region)}
-          className={`w-full text-left p-3 rounded-xl border transition-all duration-300 flex items-center space-x-3 ${
-            selectedLocation?.name === region.name
-              ? 'bg-blue-600/20 border-blue-500/50 text-blue-400'
-              : 'bg-slate-700/30 border-slate-600/30 text-slate-300 hover:bg-slate-600/40'
-          }`}
-        >
-          <MapPin className="w-4 h-4" />
-          <span className="font-medium">{region.name}</span>
-        </Button>
-      ))}
-    </div>
-  );
-};
 const MapUpdater = ({
   center,
   zoom,
@@ -159,6 +124,7 @@ const MapUpdater = ({
   }, [center, zoom, map]);
   return null;
 };
+
 
 // --- Komponen Display (Ada Perubahan) ---
 interface WeatherDisplayProps {
@@ -219,7 +185,7 @@ const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
   const { current } = data;
 
   return (
-    <Card className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 bg-slate-800/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl">
+    <Card className="bg-gradient-to-br from-white/60 to-slate-50/60 dark:from-slate-800/60 dark:to-slate-900/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl shadow-2xl">
       <CardHeader>
         <CardTitle className="text-white flex items-center space-x-2">
           <Activity className="w-5 h-5 text-cyan-400" />
@@ -239,7 +205,7 @@ const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
               {getWeatherIcon(current.weather?.[0]?.icon || '', 10)}
             </div>
             <div>
-              <div className="text-5xl font-bold text-white mb-1">
+              <div className="text-5xl font-bold text-slate-900 dark:text-white mb-1">
                 {Math.round(current.main?.temp || 0)}°C
               </div>
               <div className="text-slate-300 capitalize">
@@ -253,40 +219,40 @@ const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="bg-slate-700/30 rounded-xl p-4 border border-slate-600/20 flex items-center space-x-3">
+          <div className="bg-slate-100/50 dark:bg-slate-700/30 rounded-xl p-4 border border-slate-200/50 dark:border-slate-600/20 flex items-center space-x-3">
             <Droplets className="w-5 h-5 text-blue-400" />
             <div>
-              <span className="text-xs text-slate-400">Kelembaban</span>
-              <div className="font-semibold text-white">
+              <span className="text-xs text-slate-500 dark:text-slate-400">Kelembaban</span>
+              <div className="font-semibold text-slate-900 dark:text-white">
                 {current.main?.humidity ?? 'N/A'}%
               </div>
             </div>
           </div>
-          <div className="bg-slate-700/30 rounded-xl p-4 border border-slate-600/20 flex items-center space-x-3">
+          <div className="bg-slate-100/50 dark:bg-slate-700/30 rounded-xl p-4 border border-slate-200/50 dark:border-slate-600/20 flex items-center space-x-3">
             <Wind className="w-5 h-5 text-green-400" />
             <div>
-              <span className="text-xs text-slate-400">Angin</span>
-              <div className="font-semibold text-white">
+              <span className="text-xs text-slate-500 dark:text-slate-400">Angin</span>
+              <div className="font-semibold text-slate-900 dark:text-white">
                 {current.wind?.speed !== undefined
                   ? `${current.wind.speed.toFixed(1)} m/s`
                   : 'N/A'}
               </div>
             </div>
           </div>
-          <div className="bg-slate-700/30 rounded-xl p-4 border border-slate-600/20 flex items-center space-x-3">
+          <div className="bg-slate-100/50 dark:bg-slate-700/30 rounded-xl p-4 border border-slate-200/50 dark:border-slate-600/20 flex items-center space-x-3">
             <Gauge className="w-5 h-5 text-purple-400" />
             <div>
-              <span className="text-xs text-slate-400">Tekanan</span>
-              <div className="font-semibold text-white">
+              <span className="text-xs text-slate-500 dark:text-slate-400">Tekanan</span>
+              <div className="font-semibold text-slate-900 dark:text-white">
                 {current.main?.pressure ?? 'N/A'} hPa
               </div>
             </div>
           </div>
-          <div className="bg-slate-700/30 rounded-xl p-4 border border-slate-600/20 flex items-center space-x-3">
+          <div className="bg-slate-100/50 dark:bg-slate-700/30 rounded-xl p-4 border border-slate-200/50 dark:border-slate-600/20 flex items-center space-x-3">
             <Eye className="w-5 h-5 text-orange-400" />
             <div>
-              <span className="text-xs text-slate-400">Visibilitas</span>
-              <div className="font-semibold text-white">
+              <span className="text-xs text-slate-500 dark:text-slate-400">Visibilitas</span>
+              <div className="font-semibold text-slate-900 dark:text-white">
                 {current.visibility !== undefined
                   ? `${(current.visibility / 1000).toFixed(1)} km`
                   : 'N/A'}
@@ -299,13 +265,13 @@ const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
           <div className="flex items-center space-x-2">
             <Sunrise className="w-6 h-6 text-yellow-400" />
             <div>
-              <div className="text-xs text-slate-400">Terbit</div>
-              <div className="font-semibold text-white">
+              <div className="text-xs text-slate-500 dark:text-slate-400">Terbit</div>
+              <div className="font-semibold text-slate-900 dark:text-white">
                 {current.sys?.sunrise
                   ? new Date(current.sys.sunrise * 1000).toLocaleTimeString(
-                      'id-ID',
-                      { hour: '2-digit', minute: '2-digit' },
-                    )
+                    'id-ID',
+                    { hour: '2-digit', minute: '2-digit' },
+                  )
                   : 'N/A'}
               </div>
             </div>
@@ -314,12 +280,12 @@ const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
             <Sunset className="w-6 h-6 text-orange-500" />
             <div>
               <div className="text-xs text-slate-400">Terbenam</div>
-              <div className="font-semibold text-white">
+              <div className="font-semibold text-slate-900 dark:text-white">
                 {current.sys?.sunset
                   ? new Date(current.sys.sunset * 1000).toLocaleTimeString(
-                      'id-ID',
-                      { hour: '2-digit', minute: '2-digit' },
-                    )
+                    'id-ID',
+                    { hour: '2-digit', minute: '2-digit' },
+                  )
                   : 'N/A'}
               </div>
             </div>
@@ -377,9 +343,9 @@ const DailyForecast = ({
   if (!data || !data.daily) return null;
 
   return (
-    <Card className="bg-slate-800/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl">
+    <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl shadow-2xl">
       <CardHeader>
-        <CardTitle className="text-white flex items-center space-x-2">
+        <CardTitle className="text-slate-900 dark:text-white flex items-center space-x-2">
           <TrendingUp className="w-5 h-5 text-green-400" />
           {/* ✅ PERBAIKAN: Judul menjadi 5 hari */}
           <span>Prakiraan 5 Hari</span>
@@ -390,18 +356,18 @@ const DailyForecast = ({
         {data.daily.map((day: any, index: number) => (
           <div
             key={index}
-            className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-700/30 transition-colors"
+            className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-700/30 transition-colors"
           >
-            <span className="font-medium text-slate-300 w-1/4">
+            <span className="font-medium text-slate-700 dark:text-slate-300 w-1/4">
               {formatDay(day.dt)}
             </span>
             <div className="w-1/4 flex justify-center">
               {getWeatherIcon(day.weather?.[0]?.icon || '', 6)}
             </div>
-            <span className="text-xs text-slate-400 w-1/4 text-center capitalize">
+            <span className="text-xs text-slate-600 dark:text-slate-400 w-1/4 text-center capitalize">
               {day.weather?.[0]?.description || 'N/A'}
             </span>
-            <span className="font-mono text-sm text-white w-1/4 text-right">
+            <span className="font-mono text-sm text-slate-900 dark:text-white w-1/4 text-right">
               {day.main?.temp_max !== undefined
                 ? `${Math.round(day.main.temp_max)}°`
                 : 'N/A'}{' '}
@@ -417,14 +383,17 @@ const DailyForecast = ({
   );
 };
 
+
+
 export default function PrakiraanCuacaPage() {
   const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY;
 
-  const [selectedLocation, setSelectedLocation] = useState<null | {
-    name: string;
-    lat: number;
-    lon: number;
-  }>(regionData[0]);
+  const [selectedLocation, setSelectedLocation] = useState<SelectedLocation | null>({
+    name: 'Jakarta Pusat',
+    latitude: -6.1751,
+    longitude: 106.865,
+    districtName: 'Jakarta Pusat'
+  });
   const [currentMapCenter, setCurrentMapCenter] = useState<[number, number]>([
     -6.1751, 106.865,
   ]);
@@ -491,12 +460,12 @@ export default function PrakiraanCuacaPage() {
         try {
           const response = await axios.get('/api/weather', {
             params: {
-              lat: selectedLocation.lat,
-              lon: selectedLocation.lon,
+              lat: selectedLocation.latitude,
+              lon: selectedLocation.longitude,
             },
           });
           setCurrentWeatherData(response.data);
-          setCurrentMapCenter([selectedLocation.lat, selectedLocation.lon]);
+          setCurrentMapCenter([selectedLocation.latitude, selectedLocation.longitude]);
           setCurrentMapZoom(12);
         } catch (error: any) {
           console.error('Error fetching weather data:', error);
@@ -513,14 +482,9 @@ export default function PrakiraanCuacaPage() {
     }
   }, [selectedLocation, API_KEY]);
 
-  const handleRegionSelect = (region: any) => {
-    const newLocation = {
-      name: region.name,
-      lat: region.lat,
-      lon: region.lon,
-    };
-    setSelectedLocation(newLocation);
-    console.log('Selected location via RegionDropdown:', newLocation);
+  const handleRegionSelect = (location: SelectedLocation) => {
+    setSelectedLocation(location);
+    console.log('Selected location via RegionDropdown:', location);
   };
 
   const handleSearchLocation = async () => {
@@ -570,7 +534,12 @@ export default function PrakiraanCuacaPage() {
       );
       if (response.data && response.data.length > 0) {
         const { name, lat, lon, country, state } = response.data[0];
-        const newLocation = { name: `${name}, ${state || country}`, lat, lon };
+        const newLocation: SelectedLocation = {
+          name: `${name}, ${state || country}`,
+          latitude: lat,
+          longitude: lon,
+          districtName: name // Fallback
+        };
         setSelectedLocation(newLocation);
         console.log('Selected location via search:', newLocation);
         setSearchQuery('');
@@ -607,22 +576,25 @@ export default function PrakiraanCuacaPage() {
               const { name, country, state } = response.data[0];
               setSelectedLocation({
                 name: `${name}, ${state || country}`,
-                lat: latitude,
-                lon: longitude,
+                latitude: latitude,
+                longitude: longitude,
+                districtName: name
               });
             } else {
               setSelectedLocation({
                 name: 'Lokasi Saat Ini',
-                lat: latitude,
-                lon: longitude,
+                latitude: latitude,
+                longitude: longitude,
+                districtName: 'Lokasi Saat Ini'
               });
             }
           } catch (error) {
             setSearchLocationError('Gagal mendapatkan nama lokasi.');
             setSelectedLocation({
               name: 'Lokasi Saat Ini',
-              lat: latitude,
-              lon: longitude,
+              latitude: latitude,
+              longitude: longitude,
+              districtName: 'Lokasi Saat Ini'
             });
           } finally {
             setIsSearchingLocation(false);
@@ -686,8 +658,8 @@ export default function PrakiraanCuacaPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
-      <header className="sticky top-0 z-50 border-b border-slate-800/50 bg-slate-900/50 backdrop-blur-xl">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-slate-900 dark:text-white">
+      <header className="sticky top-0 z-50 border-b border-slate-200/50 dark:border-slate-800/50 bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl">
         <div className="max-w-screen-2xl mx-auto px-6 py-3">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -699,10 +671,10 @@ export default function PrakiraanCuacaPage() {
                 <CloudSun className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-white via-blue-100 to-cyan-100 bg-clip-text text-transparent">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-cyan-600 dark:from-white dark:via-blue-100 dark:to-cyan-100 bg-clip-text text-transparent">
                   Prakiraan Cuaca
                 </h1>
-                <p className="text-slate-400 text-xs hidden md:block">
+                <p className="text-slate-500 dark:text-slate-400 text-xs hidden md:block">
                   Monitoring cuaca real-time dengan visualisasi interaktif
                 </p>
               </div>
@@ -744,10 +716,10 @@ export default function PrakiraanCuacaPage() {
             transition={{ delay: 0.1 }}
             className="lg:col-span-3 space-y-6"
           >
-            <Card className="bg-slate-800/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl">
+            <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl shadow-2xl">
               <CardHeader>
-                <CardTitle className="text-white flex items-center space-x-2">
-                  <Search className="w-5 h-5 text-blue-400" />
+                <CardTitle className="text-slate-900 dark:text-white flex items-center space-x-2">
+                  <Search className="w-5 h-5 text-blue-500 dark:text-blue-400" />
                   <span>Pencarian Lokasi</span>
                 </CardTitle>
               </CardHeader>
@@ -761,7 +733,7 @@ export default function PrakiraanCuacaPage() {
                       e.key === 'Enter' && handleSearchLocation()
                     }
                     disabled={isSearchingLocation}
-                    className="pl-4 w-full px-4 py-3 bg-slate-800/50 border border-slate-600/50 rounded-xl text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300"
+                    className="pl-4 w-full px-4 py-3 bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-600/50 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300"
                   />
                   {isSearchingLocation && (
                     <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400 animate-spin" />
@@ -798,33 +770,33 @@ export default function PrakiraanCuacaPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl">
+            <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl shadow-2xl">
               <CardHeader>
-                <CardTitle className="text-white flex items-center space-x-2">
-                  <MapPin className="w-5 h-5 text-green-400" />
+                <CardTitle className="text-slate-900 dark:text-white flex items-center space-x-2">
+                  <MapPin className="w-5 h-5 text-green-500 dark:text-green-400" />
                   <span>Lokasi Cepat</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <RegionDropdown
-                  onSelectRegion={handleRegionSelect}
+                  onSelectDistrict={handleRegionSelect}
                   selectedLocation={selectedLocation}
                 />
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl">
+            <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl shadow-2xl">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-white flex items-center space-x-2">
-                    <Layers className="w-5 h-5 text-purple-400" />
+                  <CardTitle className="text-slate-900 dark:text-white flex items-center space-x-2">
+                    <Layers className="w-5 h-5 text-purple-500 dark:text-purple-400" />
                     <span>Layer Peta</span>
                   </CardTitle>
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => setShowFilters(!showFilters)}
-                    className="w-10 h-10 inline-flex items-center justify-center rounded-xl font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500/50 bg-transparent hover:bg-slate-700/30 text-slate-300 hover:text-white p-2"
+                    className="w-10 h-10 inline-flex items-center justify-center rounded-xl font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500/50 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-700/30 text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white p-2"
                   >
                     <Filter className="w-4 h-4" />
                   </Button>
@@ -841,15 +813,15 @@ export default function PrakiraanCuacaPage() {
                       {weatherLayerConfigs.map((layer) => (
                         <div
                           key={layer.key}
-                          className="flex items-center justify-between p-3 rounded-xl bg-slate-700/20 border border-slate-600/20"
+                          className="flex items-center justify-between p-3 rounded-xl bg-slate-100/50 dark:bg-slate-700/20 border border-slate-200/50 dark:border-slate-600/20"
                         >
                           <div className="flex items-center space-x-3">
                             <layer.icon className={`w-4 h-4 ${layer.color}`} />
                             <div>
-                              <span className="text-sm font-medium text-slate-200">
+                              <span className="text-sm font-medium text-slate-900 dark:text-slate-200">
                                 {layer.label}
                               </span>
-                              <p className="text-xs text-slate-400">
+                              <p className="text-xs text-slate-500 dark:text-slate-400">
                                 {layer.description}
                               </p>
                             </div>
@@ -883,12 +855,12 @@ export default function PrakiraanCuacaPage() {
             }
           >
             <Card
-              className={`h-full bg-slate-800/60 backdrop-blur-xl border border-slate-700/50 shadow-2xl ${isMapFullscreen ? 'rounded-none' : 'rounded-2xl'}`}
+              className={`h-full bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 shadow-2xl ${isMapFullscreen ? 'rounded-none' : 'rounded-2xl'}`}
             >
-              <CardHeader className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border-b border-slate-700/50">
+              <CardHeader className="bg-gradient-to-r from-slate-50/50 to-white/50 dark:from-slate-800/50 dark:to-slate-700/50 border-b border-slate-200/50 dark:border-slate-700/50">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-white flex items-center space-x-2 truncate">
-                    <Globe className="w-5 h-5 text-blue-400 flex-shrink-0" />
+                  <CardTitle className="text-slate-900 dark:text-white flex items-center space-x-2 truncate">
+                    <Globe className="w-5 h-5 text-blue-500 dark:text-blue-400 flex-shrink-0" />
                     <span className="truncate">
                       {selectedLocation?.name || 'Peta Cuaca Interaktif'}
                     </span>
@@ -918,12 +890,6 @@ export default function PrakiraanCuacaPage() {
                 >
                   {API_KEY ? (
                     <>
-                      {console.log('Rendering WeatherMap with props:')}
-                      {console.log('  center:', currentMapCenter)}
-                      {console.log('  zoom:', currentMapZoom)}
-                      {console.log('  weatherLayers:', weatherLayers)}
-                      {console.log('  selectedLocation:', selectedLocation)}
-                      {console.log('  apiKey:', API_KEY)}
                       <WeatherMap
                         key={isMapFullscreen ? 'fullscreen' : 'normal'}
                         center={currentMapCenter}
@@ -972,55 +938,55 @@ export default function PrakiraanCuacaPage() {
             />
 
             {currentWeatherData?.airQuality && (
-              <Card className="bg-slate-800/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl">
+              <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl shadow-2xl">
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center space-x-2">
-                    <Leaf className="w-5 h-5 text-white" />
+                  <CardTitle className="text-slate-900 dark:text-white flex items-center space-x-2">
+                    <Leaf className="w-5 h-5 text-green-500 dark:text-white" />
                     <span>Kualitas Udara</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
-                      <Wind className="w-12 h-12 text-white" />
+                      <Wind className="w-12 h-12 text-slate-900 dark:text-white" />
                       <div className="ml-4">
-                        <p className="text-5xl font-bold text-white">
+                        <p className="text-5xl font-bold text-slate-900 dark:text-white">
                           AQI: {currentWeatherData.airQuality.aqi}
                         </p>
-                        <p className="text-md text-gray-300">
+                        <p className="text-md text-slate-500 dark:text-gray-300">
                           Level: {currentWeatherData.airQuality.level}
                         </p>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-400 text-right">
+                    <p className="text-sm text-slate-500 dark:text-gray-400 text-right">
                       Polutan Utama: {currentWeatherData.airQuality.pollutant}
                     </p>
                   </div>
-                  <p className="text-sm text-gray-200 border-t border-slate-700 pt-4 mt-4">
+                  <p className="text-sm text-slate-600 dark:text-gray-200 border-t border-slate-200 dark:border-slate-700 pt-4 mt-4">
                     Rekomendasi: {currentWeatherData.airQuality.recommendation}
                   </p>
                 </CardContent>
               </Card>
             )}
             {selectedLocation && (
-              <Card className="bg-slate-800/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl">
+              <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl shadow-2xl">
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center space-x-2">
-                    <Compass className="w-5 h-5 text-cyan-400" />
+                  <CardTitle className="text-slate-900 dark:text-white flex items-center space-x-2">
+                    <Compass className="w-5 h-5 text-cyan-500 dark:text-cyan-400" />
                     <span>Informasi Lokasi</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
-                  <div className="flex justify-between py-2 border-b border-slate-700/30">
-                    <span className="text-slate-400">Latitude</span>
-                    <span className="text-white font-medium font-mono">
-                      {selectedLocation.lat.toFixed(4)}°
+                  <div className="flex justify-between py-2 border-b border-slate-200 dark:border-slate-700/30">
+                    <span className="text-slate-500 dark:text-slate-400">Latitude</span>
+                    <span className="text-slate-900 dark:text-white font-medium font-mono">
+                      {selectedLocation.latitude.toFixed(4)}°
                     </span>
                   </div>
                   <div className="flex justify-between py-2">
-                    <span className="text-slate-400">Longitude</span>
-                    <span className="text-white font-medium font-mono">
-                      {selectedLocation.lon.toFixed(4)}°
+                    <span className="text-slate-500 dark:text-slate-400">Longitude</span>
+                    <span className="text-slate-900 dark:text-white font-medium font-mono">
+                      {selectedLocation.longitude.toFixed(4)}°
                     </span>
                   </div>
                 </CardContent>

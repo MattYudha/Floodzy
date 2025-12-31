@@ -16,6 +16,7 @@ import {
   ChevronDown,
   Search,
   ArrowRight,
+  Maximize2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import {
@@ -36,6 +37,21 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CombinedWeatherData } from '@/lib/api';
 import { WeatherMapIframe } from '@/components/weather/WeatherMapIframe';
 import { SelectedLocation } from '@/types/location';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTrigger,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 interface RegionSelectFieldProps {
   selectedValue: string | null;
@@ -48,6 +64,8 @@ interface RegionSelectFieldProps {
   valueKey: string;
   nameKey: string;
   currentDisplayName: string | null;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 function RegionSelectField({
@@ -61,114 +79,157 @@ function RegionSelectField({
   valueKey,
   nameKey,
   currentDisplayName,
+  isOpen,
+  onOpenChange,
 }: RegionSelectFieldProps) {
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+
+  const open = isOpen !== undefined ? isOpen : internalOpen;
+  const setOpen = onOpenChange || setInternalOpen;
+
+  const RegionList = (
+    <>
+      <Command className="bg-transparent">
+        <div className="px-3 py-2 border-b border-slate-100 dark:border-gray-700">
+          <CommandInput
+            placeholder={`Cari ${placeholder.toLowerCase()}...`}
+            className="h-9 border-0 bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-0"
+            autoFocus={!isDesktop}
+          />
+        </div>
+
+        <CommandEmpty>
+          <div className="flex flex-col items-center justify-center py-8 text-slate-500 dark:text-gray-400">
+            <Map className="h-10 w-10 mb-3 text-slate-300 dark:text-slate-600" />
+            <p className="text-sm font-medium">{placeholder} tidak ditemukan</p>
+            <p className="text-xs text-slate-400 mt-1">Coba kata kunci lain</p>
+          </div>
+        </CommandEmpty>
+
+        <CommandList className={isDesktop ? "max-h-64 overflow-auto scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700" : "max-h-[60vh] overflow-y-auto"}>
+          <CommandGroup>
+            {loading ? (
+              <div className="p-4 text-center">
+                <div className="flex items-center justify-center gap-2 text-blue-500 dark:text-blue-400">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-sm">Memuat data...</span>
+                </div>
+              </div>
+            ) : (
+              data.map((item) => (
+                <CommandItem
+                  key={item[valueKey]}
+                  value={item[nameKey]}
+                  onSelect={(currentValue) => {
+                    const selected = data.find(
+                      (i) => i[nameKey].toLowerCase() === currentValue.toLowerCase()
+                    );
+                    if (selected) {
+                      onValueChange(String(selected[valueKey]));
+                      setOpen(false);
+                    }
+                  }}
+                  className={`
+                    cursor-pointer text-sm py-3 px-3 mx-1 my-1 rounded-md transition-all
+                    flex items-center justify-between
+                    ${selectedValue === String(item[valueKey])
+                      ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-l-4 border-blue-500 pl-2 font-medium shadow-sm'
+                      : 'text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800/50'
+                    }
+                    active:scale-[0.98] active:bg-slate-100 dark:active:bg-slate-800
+                  `}
+                >
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    {/* Show selected dot if not active, or just rely on the border/bg */}
+                    <span className="truncate">{item[nameKey]}</span>
+                  </div>
+                  {selectedValue === String(item[valueKey]) && (
+                    <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                  )}
+                </CommandItem>
+              ))
+            )}
+          </CommandGroup>
+        </CommandList>
+      </Command>
+    </>
+  );
+
+  const triggerButton = (
+    <Button
+      variant="outline"
+      role="combobox"
+      aria-expanded={open}
+      disabled={disabled}
+      onClick={() => setOpen(!open)}
+      className={`
+        w-full h-11 px-4
+        bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-900 dark:text-white rounded-lg
+        hover:bg-slate-50 dark:hover:bg-gray-750 hover:border-slate-300 dark:hover:border-gray-600
+        focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+        disabled:opacity-50 disabled:cursor-not-allowed
+        transition-colors duration-200
+        justify-between
+      `}
+    >
+      <div className="flex items-center gap-2 truncate">
+        {icon}
+        <span className={`truncate ${currentDisplayName ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-gray-400'}`}>
+          {currentDisplayName || `Pilih ${placeholder}`}
+        </span>
+      </div>
+      <ChevronDown
+        className={`h-4 w-4 text-slate-400 dark:text-gray-400 transition-transform duration-200 flex-shrink-0 ${open ? 'rotate-180' : ''}`}
+      />
+    </Button>
+  );
+
+  if (isDesktop) {
+    return (
+      <div className="space-y-2">
+        <label className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-gray-300">
+          {/* Label removed here as it is inside the button or above? Keeping simple. */}
+          {placeholder}
+          {loading && (
+            <Loader2 className="h-3.5 w-3.5 animate-spin text-blue-500 dark:text-blue-400 ml-1" />
+          )}
+        </label>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>{triggerButton}</PopoverTrigger>
+          <PopoverContent
+            className="w-[--radix-popover-trigger-width] p-0 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-lg shadow-xl"
+            align="start"
+          >
+            {RegionList}
+          </PopoverContent>
+        </Popover>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-2">
-      <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
-        {icon}
-        <span>{placeholder}</span>
+      <label className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-gray-300">
+        {placeholder}
         {loading && (
-          <Loader2 className="h-3.5 w-3.5 animate-spin text-blue-400 ml-1" />
+          <Loader2 className="h-3.5 w-3.5 animate-spin text-blue-500 dark:text-blue-400 ml-1" />
         )}
       </label>
-
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            disabled={disabled}
-            className={`
-              w-full h-11 px-4
-              bg-gray-800 border border-gray-700 text-white rounded-lg
-              hover:bg-gray-750 hover:border-gray-600
-              focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-              disabled:opacity-50 disabled:cursor-not-allowed
-              transition-colors duration-200
-            `}
-          >
-            <div className="flex items-center justify-between w-full">
-              <span
-                className={`text-sm ${currentDisplayName ? 'text-white' : 'text-gray-400'}`}
-              >
-                {currentDisplayName || `Pilih ${placeholder}`}
-              </span>
-              <ChevronDown
-                className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-              />
-            </div>
-          </Button>
-        </PopoverTrigger>
-
-        <PopoverContent
-          className="w-[--radix-popover-trigger-width] p-0 bg-gray-800 border border-gray-700 rounded-lg shadow-xl"
-          align="start"
-        >
-          <Command className="bg-transparent">
-            <div className="px-3 py-2 border-b border-gray-700">
-              <CommandInput
-                placeholder={`Cari ${placeholder.toLowerCase()}...`}
-                className="h-9 border-0 bg-transparent text-white placeholder:text-gray-500 focus:ring-0"
-              />
-            </div>
-
-            <CommandEmpty>
-              <div className="flex flex-col items-center justify-center py-6 text-gray-400">
-                <Search className="h-8 w-8 mb-2 opacity-40" />
-                <p className="text-sm">Tidak ditemukan</p>
-              </div>
-            </CommandEmpty>
-
-            <CommandList className="max-h-64 overflow-auto">
-              <CommandGroup>
-                {loading ? (
-                  <div className="p-4 text-center">
-                    <div className="flex items-center justify-center gap-2 text-blue-400">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span className="text-sm">Memuat...</span>
-                    </div>
-                  </div>
-                ) : (
-                  data.map((item) => (
-                    <CommandItem
-                      key={item[valueKey]}
-                      value={item[nameKey]}
-                      onSelect={(currentValue) => {
-                        const selected = data.find(
-                          (d) =>
-                            d[nameKey].toLowerCase() ===
-                            currentValue.toLowerCase(),
-                        );
-                        if (selected) {
-                          onValueChange(String(selected[valueKey]));
-                        }
-                        setOpen(false);
-                      }}
-                      className={`
-                        cursor-pointer py-2.5 px-3 mx-2 my-0.5 rounded-md
-                        hover:bg-gray-700/50
-                        ${selectedValue === String(item[valueKey]) ? 'bg-blue-500/10 text-blue-400' : 'text-white'}
-                      `}
-                    >
-                      <div className="flex items-center justify-between w-full gap-2">
-                        <span className="text-sm truncate">
-                          {item[nameKey]}
-                        </span>
-                        {selectedValue === String(item[valueKey]) && (
-                          <CheckCircle className="h-4 w-4 text-blue-400 flex-shrink-0" />
-                        )}
-                      </div>
-                    </CommandItem>
-                  ))
-                )}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
+        <DrawerContent className="bg-white dark:bg-gray-900 border-t border-slate-200 dark:border-gray-800 max-h-[85vh]">
+          <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-slate-200 dark:bg-gray-700 mt-4 mb-2" />
+          <DrawerHeader>
+            <DrawerTitle className="text-center font-semibold text-slate-900 dark:text-white">
+              Pilih {placeholder}
+            </DrawerTitle>
+          </DrawerHeader>
+          <div className="p-2 pb-8">
+            {RegionList}
+          </div>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }
@@ -189,6 +250,7 @@ export function RegionDropdown({
   weatherError,
 }: RegionDropdownProps) {
   const router = useRouter();
+  const [activeField, setActiveField] = useState<'province' | 'regency' | 'district' | null>(null);
   const [selectedProvinceCode, setSelectedProvinceCode] = useState<
     string | null
   >(null);
@@ -208,6 +270,7 @@ export function RegionDropdown({
   const [displayDistrictName, setDisplayDistrictName] = useState<string | null>(
     null,
   );
+  const [isMapFullscreen, setIsMapFullscreen] = useState(false);
 
   const {
     data: provinces,
@@ -290,6 +353,7 @@ export function RegionDropdown({
     setDisplayRegencyName(null);
     setSelectedDistrictCode(null);
     setDisplayDistrictName(null);
+    setActiveField('regency');
   };
 
   const handleRegencyChange = (value: string) => {
@@ -300,10 +364,12 @@ export function RegionDropdown({
 
     setSelectedDistrictCode(null);
     setDisplayDistrictName(null);
+    setActiveField('district');
   };
 
   const handleDistrictChange = (value: string) => {
     setSelectedDistrictCode(value);
+    setActiveField(null);
 
     if (!selectedProvinceCode || !selectedRegencyCode) {
       setDisplayDistrictName(null);
@@ -348,7 +414,7 @@ export function RegionDropdown({
   const renderError = (errorMessage: string) => (
     <Alert
       variant="destructive"
-      className="bg-red-900/20 border-red-800 text-red-400"
+      className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400"
     >
       <Frown className="h-4 w-4" />
       <AlertTitle className="text-sm font-semibold">Error</AlertTitle>
@@ -363,35 +429,20 @@ export function RegionDropdown({
     displayDistrictName;
 
   return (
-    <div className="min-h-screen bg-gray-900 p-4 sm:p-6 lg:p-8">
-      {/* Header */}
-      <div className="max-w-7xl mx-auto mb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-blue-500 rounded-lg">
-            <Globe className="h-5 w-5 text-white" />
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">
-            Pilih Lokasi Wilayah
-          </h1>
-        </div>
-        <p className="text-gray-400 text-sm ml-14">
-          Tentukan wilayah untuk monitoring sistem deteksi banjir
-        </p>
-      </div>
-
+    <div className="w-full">
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Form Card */}
-        <Card className="bg-gray-800 border-gray-700">
-          <CardHeader className="border-b border-gray-700 pb-4">
+        <Card className="bg-white dark:bg-gray-800 border-slate-200 dark:border-gray-700 shadow-sm">
+          <CardHeader className="border-b border-slate-200 dark:border-gray-700 pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <MapPin className="h-5 w-5 text-blue-400" />
+                <MapPin className="h-5 w-5 text-blue-500 dark:text-blue-400" />
                 <div>
-                  <CardTitle className="text-lg font-semibold text-white">
+                  <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white">
                     Pilih Wilayah
                   </CardTitle>
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
                     Pilih dari provinsi hingga kecamatan
                   </p>
                 </div>
@@ -400,19 +451,19 @@ export function RegionDropdown({
               {/* Progress Indicators */}
               <div className="flex items-center gap-1.5">
                 <div
-                  className={`w-2 h-2 rounded-full transition-colors ${selectedProvinceCode ? 'bg-blue-500' : 'bg-gray-600'}`}
+                  className={`w-2 h-2 rounded-full transition-colors ${selectedProvinceCode ? 'bg-blue-500' : 'bg-slate-300 dark:bg-gray-600'}`}
                 />
                 <div
-                  className={`w-2 h-2 rounded-full transition-colors ${selectedRegencyCode ? 'bg-blue-500' : 'bg-gray-600'}`}
+                  className={`w-2 h-2 rounded-full transition-colors ${selectedRegencyCode ? 'bg-blue-500' : 'bg-slate-300 dark:bg-gray-600'}`}
                 />
                 <div
-                  className={`w-2 h-2 rounded-full transition-colors ${selectedDistrictCode ? 'bg-blue-500' : 'bg-gray-600'}`}
+                  className={`w-2 h-2 rounded-full transition-colors ${selectedDistrictCode ? 'bg-blue-500' : 'bg-slate-300 dark:bg-gray-600'}`}
                 />
               </div>
             </div>
           </CardHeader>
 
-          <CardContent className="p-6 space-y-4">
+          <CardContent className="p-4 sm:p-6 space-y-4">
             {/* Error Messages */}
             {errorProvinces && renderError(errorProvinces)}
             {errorRegencies && renderError(errorRegencies)}
@@ -427,10 +478,12 @@ export function RegionDropdown({
                 loading={loadingProvinces}
                 disabled={loadingProvinces}
                 data={provinces}
-                icon={<Globe className="h-4 w-4 text-blue-400" />}
+                icon={<Globe className="h-4 w-4 text-blue-500 dark:text-blue-400" />}
                 valueKey="province_code"
                 nameKey="province_name"
                 currentDisplayName={displayProvinceName}
+                isOpen={activeField === 'province'}
+                onOpenChange={(open) => setActiveField(open ? 'province' : null)}
               />
 
               <RegionSelectField
@@ -440,10 +493,12 @@ export function RegionDropdown({
                 loading={loadingRegencies}
                 disabled={!selectedProvinceCode || loadingRegencies}
                 data={regencies}
-                icon={<Building2 className="h-4 w-4 text-blue-400" />}
+                icon={<Building2 className="h-4 w-4 text-blue-500 dark:text-blue-400" />}
                 valueKey="city_code"
                 nameKey="city_name"
                 currentDisplayName={displayRegencyName}
+                isOpen={activeField === 'regency'}
+                onOpenChange={(open) => setActiveField(open ? 'regency' : null)}
               />
 
               <RegionSelectField
@@ -453,45 +508,47 @@ export function RegionDropdown({
                 loading={loadingDistricts}
                 disabled={!selectedRegencyCode || loadingDistricts}
                 data={districts}
-                icon={<MapPin className="h-4 w-4 text-blue-400" />}
+                icon={<MapPin className="h-4 w-4 text-blue-500 dark:text-blue-400" />}
                 valueKey="sub_district_code"
                 nameKey="sub_district_name"
                 currentDisplayName={displayDistrictName}
+                isOpen={activeField === 'district'}
+                onOpenChange={(open) => setActiveField(open ? 'district' : null)}
               />
             </div>
 
             {/* Success Summary */}
             {isComplete && (
-              <div className="mt-6 p-4 bg-green-900/20 border border-green-800 rounded-lg">
+              <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
                 <div className="flex items-center gap-2 mb-3">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
-                  <h4 className="text-sm font-semibold text-green-400">
+                  <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400" />
+                  <h4 className="text-sm font-semibold text-green-600 dark:text-green-400">
                     Lokasi Berhasil Dipilih
                   </h4>
                 </div>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Provinsi</span>
-                    <span className="text-white font-medium">
+                    <span className="text-slate-500 dark:text-gray-400">Provinsi</span>
+                    <span className="text-slate-900 dark:text-white font-medium">
                       {displayProvinceName}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Kabupaten/Kota</span>
-                    <span className="text-white font-medium">
+                    <span className="text-slate-500 dark:text-gray-400">Kabupaten/Kota</span>
+                    <span className="text-slate-900 dark:text-white font-medium">
                       {displayRegencyName}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Kecamatan</span>
-                    <span className="text-white font-medium">
+                    <span className="text-slate-500 dark:text-gray-400">Kecamatan</span>
+                    <span className="text-slate-900 dark:text-white font-medium">
                       {displayDistrictName}
                     </span>
                   </div>
                 </div>
                 <Link href="/#peta-banjir" passHref legacyBehavior>
                   <Button
-                    className="w-full mt-4 bg-blue-500 hover:bg-blue-600"
+                    className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white"
                   >
                     <span className="flex items-center justify-center">
                       Lihat Peta Banjir
@@ -505,52 +562,86 @@ export function RegionDropdown({
         </Card>
 
         {/* Map Card */}
-        <Card className="bg-gray-800 border-gray-700">
-          <CardHeader className="border-b border-gray-700 pb-4">
+        <Card className="bg-white dark:bg-gray-800 border-slate-200 dark:border-gray-700 shadow-sm">
+          <CardHeader className="border-b border-slate-200 dark:border-gray-700 pb-4">
             <div className="flex items-center gap-3">
-              <Map className="h-5 w-5 text-blue-400" />
+              <Map className="h-5 w-5 text-blue-500 dark:text-blue-400" />
               <div>
-                <CardTitle className="text-lg font-semibold text-white">
+                <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white">
                   Peta Cuaca
                 </CardTitle>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  Visualisasi cuaca lokasi terpilih
+                <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
+                  {selectedLocation?.districtName
+                    ? "Visualisasi cuaca lokasi terpilih"
+                    : "Pilih lokasi untuk melihat detail cuaca"}
                 </p>
               </div>
             </div>
           </CardHeader>
 
-          <CardContent className="p-2">
-            <div className="h-[400px] lg:h-[500px]">
-              {selectedLocation &&
-              typeof selectedLocation.latitude === 'number' &&
-              typeof selectedLocation.longitude === 'number' ? (
-                <WeatherMapIframe
-                  selectedLocationCoords={{
-                    lat: selectedLocation.latitude,
-                    lng: selectedLocation.longitude,
-                    name: selectedLocation.districtName,
-                  }}
-                  currentWeatherData={currentWeatherData}
-                  loadingWeather={loadingWeather}
-                  weatherError={weatherError}
-                  height="100%"
-                />
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full bg-gray-900/30 rounded-lg">
-                  <MapPin className="h-12 w-12 text-gray-600 mb-3" />
-                  <h3 className="text-lg font-semibold text-white mb-1">
-                    Pilih Lokasi
-                  </h3>
-                  <p className="text-sm text-gray-400">
-                    Peta cuaca akan ditampilkan di sini
-                  </p>
-                </div>
+          <CardContent className="p-2 pt-0 h-full relative">
+            <div className="h-[400px] lg:h-[500px] relative rounded-md overflow-hidden group">
+              {/* Fullscreen Toggle Button */}
+              {selectedLocation && typeof selectedLocation.latitude === 'number' && (
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="absolute top-3 right-3 z-10 h-8 w-8 bg-white/90 dark:bg-slate-800/90 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => setIsMapFullscreen(true)}
+                >
+                  <Maximize2 className="h-4 w-4 text-slate-700 dark:text-slate-300" />
+                </Button>
               )}
+
+              <WeatherMapIframe
+                selectedLocationCoords={
+                  selectedLocation && typeof selectedLocation.latitude === 'number'
+                    ? {
+                      lat: selectedLocation.latitude,
+                      lng: selectedLocation.longitude,
+                      name: selectedLocation.districtName,
+                    }
+                    : null
+                }
+                currentWeatherData={currentWeatherData}
+                loadingWeather={loadingWeather}
+                weatherError={weatherError}
+                height="100%"
+              />
             </div>
+
+            {/* Fullscreen Map Modal */}
+            <Dialog open={isMapFullscreen} onOpenChange={setIsMapFullscreen}>
+              <DialogContent className="max-w-[95vw] w-full h-[90vh] p-0 overflow-hidden bg-slate-900 border-none">
+                <div className="relative w-full h-full">
+                  <div className="absolute top-4 left-4 z-50 bg-slate-900/80 backdrop-blur px-4 py-2 rounded-full border border-white/10 pointer-events-none">
+                    <h3 className="text-white font-semibold text-sm flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-blue-400" />
+                      {displayDistrictName || 'Peta Cuaca'}
+                    </h3>
+                  </div>
+                  <WeatherMapIframe
+                    selectedLocationCoords={
+                      selectedLocation && typeof selectedLocation.latitude === 'number'
+                        ? {
+                          lat: selectedLocation.latitude,
+                          lng: selectedLocation.longitude,
+                          name: selectedLocation.districtName,
+                        }
+                        : null
+                    }
+                    currentWeatherData={currentWeatherData}
+                    loadingWeather={loadingWeather}
+                    weatherError={weatherError}
+                    height="100%"
+                  />
+                </div>
+              </DialogContent>
+            </Dialog>
           </CardContent>
-        </Card>
-      </div>
-    </div>
+
+        </Card >
+      </div >
+    </div >
   );
 }

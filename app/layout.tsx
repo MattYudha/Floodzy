@@ -18,8 +18,8 @@ export const metadata = {
   description: "Real-time flood detection and alert system",
   icons: {
     icon: [
-        { url: '/web-app-manifest-192x192.png', sizes: '192x192' },
-        { url: '/web-app-manifest-512x512.png', sizes: '512x512' },
+      { url: '/web-app-manifest-192x192.png', sizes: '192x192' },
+      { url: '/web-app-manifest-512x512.png', sizes: '512x512' },
     ],
     apple: { url: '/apple-icon.png' },
   },
@@ -33,7 +33,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-slate-50 dark:bg-slate-950`}>
         <ReactQueryProvider>
           <ThemeProvider>
             <AlertCountProvider>

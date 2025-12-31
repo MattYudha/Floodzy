@@ -180,7 +180,10 @@ export function Sidebar({
         transition={{ type: 'spring', damping: 20, stiffness: 300 }}
         className={cn(
           'fixed left-0 top-16 h-[calc(100vh-4rem)] z-50 flex flex-col',
-          'bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60',
+          'bg-white/95 text-slate-900',
+          'dark:bg-slate-900/95 dark:text-slate-100',
+          'backdrop-blur supports-[backdrop-filter]:bg-white/80',
+          'dark:supports-[backdrop-filter]:bg-slate-900/80',
           'border-r border-border shadow-xl',
           isMobile ? 'w-70' : isCollapsed ? 'w-16' : 'w-64',
         )}

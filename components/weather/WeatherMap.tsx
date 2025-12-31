@@ -62,18 +62,7 @@ interface WeatherLayers {
   pressure: boolean;
 }
 
-interface SelectedLocationDetails {
-  districtCode?: string; // Make optional as it's not always present in page.tsx's selectedLocation
-  districtName?: string; // Make optional
-  regencyCode?: string;
-  provinceCode?: string;
-  latitude?: number;
-  longitude?: number;
-  geometry?: string;
-  name: string; // Add name property from page.tsx
-  lat: number; // Add lat property from page.tsx
-  lon: number; // Add lon property from page.tsx
-}
+import { SelectedLocation } from '@/types/location';
 
 /**
  * Props for the WeatherMap component.
@@ -85,7 +74,7 @@ interface WeatherMapProps {
   center: [number, number];
   zoom: number;
   weatherLayers: WeatherLayers;
-  selectedLocation: SelectedLocationDetails | null;
+  selectedLocation: SelectedLocation | null;
   currentWeatherData: CombinedWeatherData | null; // Use CombinedWeatherData
   className?: string;
   apiKey: string; // Add apiKey prop
@@ -303,10 +292,10 @@ export function WeatherMap({
         <MapReset center={DEFAULT_MAP_CENTER} zoom={DEFAULT_MAP_ZOOM} />
 
         {/* Location marker */}
-        {selectedLocation?.lat && selectedLocation?.lon && (
+        {selectedLocation?.latitude && selectedLocation?.longitude && (
           <Marker
             {...{
-              position: [selectedLocation.lat, selectedLocation.lon],
+              position: [selectedLocation.latitude, selectedLocation.longitude],
               icon: createWeatherIcon(
                 currentWeatherData?.current?.weather?.[0]?.icon || '',
               ),
@@ -331,15 +320,15 @@ export function WeatherMap({
                           )
                             ? '☀️'
                             : currentWeatherData.current.weather?.[0]?.icon?.startsWith(
-                                  '09',
-                                ) ||
-                                currentWeatherData.current.weather?.[0]?.icon?.startsWith(
-                                  '10',
-                                )
+                              '09',
+                            ) ||
+                              currentWeatherData.current.weather?.[0]?.icon?.startsWith(
+                                '10',
+                              )
                               ? '🌧️'
                               : currentWeatherData.current.weather?.[0]?.icon?.startsWith(
-                                    '11',
-                                  )
+                                '11',
+                              )
                                 ? '⛈️'
                                 : '☁️'}
                         </div>
@@ -381,7 +370,7 @@ export function WeatherMap({
                           <span>
                             Angin:{' '}
                             {currentWeatherData.current.wind?.speed !==
-                            undefined
+                              undefined
                               ? `${Math.round(currentWeatherData.current.wind.speed * 3.6)}`
                               : 'N/A'}{' '}
                             km/h
@@ -415,8 +404,8 @@ export function WeatherMap({
                   )}
 
                   <div className="text-xs text-slate-500 border-t pt-2">
-                    Lat: {selectedLocation?.lat?.toFixed(4) || 'N/A'}, Lng:{' '}
-                    {selectedLocation?.lon?.toFixed(4) || 'N/A'}
+                    Lat: {selectedLocation?.latitude?.toFixed(4) || 'N/A'}, Lng:{' '}
+                    {selectedLocation?.longitude?.toFixed(4) || 'N/A'}
                   </div>
                 </div>
               </Card>

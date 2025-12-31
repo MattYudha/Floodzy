@@ -6,4 +6,5 @@ export interface SelectedLocation {
   regencyCode?: string;
   provinceCode?: string;
   geometry?: string;
+  name?: string;
 }
