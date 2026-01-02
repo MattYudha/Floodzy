@@ -6,17 +6,8 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRegionData } from '@/hooks/useRegionData';
 import {
-  Frown,
-  MapPin,
-  Building2,
-  Globe,
-  Map,
-  CheckCircle,
-  Loader2,
-  ChevronDown,
-  Search,
-  ArrowRight,
-  Maximize2,
+  Frown, MapPin, Building2, Globe, Map, CheckCircle, Loader2, ChevronDown,
+  Search, ArrowRight, Maximize2, Cloud, Droplets, Info, Wind, Eye, RotateCcw, CloudRain
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import {
@@ -35,8 +26,23 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CombinedWeatherData } from '@/lib/api';
-import { WeatherMapIframe } from '@/components/weather/WeatherMapIframe';
+// import { WeatherMapIframe } from '@/components/weather/WeatherMapIframe'; // Replaced
 import { SelectedLocation } from '@/types/location';
+import dynamic from 'next/dynamic';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+
+
+const WeatherInsightMap = dynamic(
+  () => import('@/components/map/WeatherInsightMap'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center h-full bg-gray-800 rounded-lg">
+        <Loader2 className="h-8 w-8 animate-spin text-cyan-400" />
+      </div>
+    ),
+  },
+);
 import {
   Drawer,
   DrawerContent,
@@ -240,6 +246,8 @@ interface RegionDropdownProps {
   currentWeatherData?: CombinedWeatherData | null;
   loadingWeather?: boolean;
   weatherError?: string | null;
+  onMapClick?: (lat: number, lon: number) => void;
+  activeFloodCount?: number;
 }
 
 export function RegionDropdown({
@@ -248,12 +256,25 @@ export function RegionDropdown({
   currentWeatherData,
   loadingWeather,
   weatherError,
+  onMapClick,
+  activeFloodCount = 0,
 }: RegionDropdownProps) {
   const router = useRouter();
   const [activeField, setActiveField] = useState<'province' | 'regency' | 'district' | null>(null);
+  const [isMapOpen, setIsMapOpen] = useState(false);
   const [selectedProvinceCode, setSelectedProvinceCode] = useState<
     string | null
   >(null);
+
+  // Auto-open map on desktop/large screens
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+      if (isDesktop) {
+        setIsMapOpen(true);
+      }
+    }
+  }, []);
   const [selectedRegencyCode, setSelectedRegencyCode] = useState<string | null>(
     null,
   );
@@ -271,6 +292,7 @@ export function RegionDropdown({
     null,
   );
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
+  const [weatherMapMode, setWeatherMapMode] = useState<'radar' | 'aqi'>('radar');
 
   const {
     data: provinces,
@@ -563,51 +585,99 @@ export function RegionDropdown({
 
         {/* Map Card */}
         <Card className="bg-white dark:bg-gray-800 border-slate-200 dark:border-gray-700 shadow-sm">
-          <CardHeader className="border-b border-slate-200 dark:border-gray-700 pb-4">
-            <div className="flex items-center gap-3">
-              <Map className="h-5 w-5 text-blue-500 dark:text-blue-400" />
-              <div>
-                <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white">
-                  Peta Cuaca
-                </CardTitle>
-                <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
-                  {selectedLocation?.districtName
-                    ? "Visualisasi cuaca lokasi terpilih"
-                    : "Pilih lokasi untuk melihat detail cuaca"}
-                </p>
+          <CardHeader className="pb-3 px-4 pt-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <Map className="h-5 w-5 text-blue-500 dark:text-blue-400 shrink-0" />
+                <div>
+                  <CardTitle className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
+                    Monitoring Cuaca
+                  </CardTitle>
+                  <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
+                    {selectedLocation?.districtName
+                      ? "Visualisasi cuaca lokasi terpilih"
+                      : "Pilih lokasi untuk melihat detail cuaca"}
+                  </p>
+                </div>
               </div>
+
+              {/* Mode Switcher - Full width on mobile */}
+              <ToggleGroup
+                type="single"
+                value={weatherMapMode}
+                onValueChange={(val) => { if (val) setWeatherMapMode(val as 'radar' | 'aqi') }}
+                className="bg-slate-100 dark:bg-slate-700/50 p-1 rounded-lg border border-slate-200 dark:border-slate-600 w-full sm:w-auto flex justify-between sm:justify-end"
+              >
+                <ToggleGroupItem value="radar" aria-label="Rain Radar" className="flex-1 sm:flex-none h-8 px-3 text-xs data-[state=on]:bg-blue-500 data-[state=on]:text-white">
+                  <CloudRain size={14} className="mr-1.5" />
+                  Radar
+                </ToggleGroupItem>
+                <ToggleGroupItem value="aqi" aria-label="Air Quality" className="flex-1 sm:flex-none h-8 px-3 text-xs data-[state=on]:bg-green-500 data-[state=on]:text-white">
+                  <Wind size={14} className="mr-1.5" />
+                  AQI
+                </ToggleGroupItem>
+              </ToggleGroup>
             </div>
           </CardHeader>
 
           <CardContent className="p-2 pt-0 h-full relative">
-            <div className="h-[400px] lg:h-[500px] relative rounded-md overflow-hidden group">
-              {/* Fullscreen Toggle Button */}
-              {selectedLocation && typeof selectedLocation.latitude === 'number' && (
-                <Button
-                  size="icon"
-                  variant="secondary"
-                  className="absolute top-3 right-3 z-10 h-8 w-8 bg-white/90 dark:bg-slate-800/90 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={() => setIsMapFullscreen(true)}
-                >
-                  <Maximize2 className="h-4 w-4 text-slate-700 dark:text-slate-300" />
-                </Button>
-              )}
 
-              <WeatherMapIframe
-                selectedLocationCoords={
-                  selectedLocation && typeof selectedLocation.latitude === 'number'
-                    ? {
-                      lat: selectedLocation.latitude,
-                      lng: selectedLocation.longitude,
-                      name: selectedLocation.districtName,
+            <div className={`
+              h-[400px] lg:h-[500px] relative rounded-md overflow-hidden group 
+              ${!isMapOpen ? 'bg-slate-50 dark:bg-slate-800/50 flex flex-col items-center justify-center border border-dashed border-slate-300 dark:border-slate-700' : ''}
+            `}>
+              {!isMapOpen ? (
+                <div className="text-center p-6 max-w-sm mx-auto animate-in fade-in zoom-in duration-300">
+                  <div className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center mx-auto mb-6 shadow-inner ring-4 ring-white dark:ring-slate-900">
+                    <MapPin className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                  </div>
+
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                    Visualisasi Cuaca & Banjir
+                  </h3>
+
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
+                    Lihat peta interaktif untuk memantau radar hujan, status banjir, dan kualitas udara di wilayah terpilih secara real-time.
+                  </p>
+
+                  <Button
+                    onClick={() => setIsMapOpen(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20 w-full sm:w-auto min-w-[140px]"
+                  >
+                    <Eye className="mr-2 h-4 w-4" />
+                    Buka Peta
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  {/* Fullscreen Toggle Button */}
+                  {selectedLocation && typeof selectedLocation.latitude === 'number' && (
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      className="absolute top-3 right-3 z-10 h-8 w-8 bg-white/90 dark:bg-slate-800/90 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => setIsMapFullscreen(true)}
+                    >
+                      <Maximize2 className="h-4 w-4 text-slate-700 dark:text-slate-300" />
+                    </Button>
+                  )}
+
+                  <WeatherInsightMap
+                    center={
+                      selectedLocation && typeof selectedLocation.latitude === 'number'
+                        ? [selectedLocation.latitude, selectedLocation.longitude]
+                        : [-6.2088, 106.8456] // Default Jakarta
                     }
-                    : null
-                }
-                currentWeatherData={currentWeatherData}
-                loadingWeather={loadingWeather}
-                weatherError={weatherError}
-                height="100%"
-              />
+                    zoom={10}
+                    activeMode={weatherMapMode}
+                    className="h-full w-full"
+                    selectedLocationName={selectedLocation?.districtName}
+                    weatherData={currentWeatherData}
+                    onMapClick={onMapClick}
+                    activeFloodCount={activeFloodCount}
+                  />
+                </>
+              )}
             </div>
 
             {/* Fullscreen Map Modal */}
@@ -620,20 +690,17 @@ export function RegionDropdown({
                       {displayDistrictName || 'Peta Cuaca'}
                     </h3>
                   </div>
-                  <WeatherMapIframe
-                    selectedLocationCoords={
+                  <WeatherInsightMap
+                    center={
                       selectedLocation && typeof selectedLocation.latitude === 'number'
-                        ? {
-                          lat: selectedLocation.latitude,
-                          lng: selectedLocation.longitude,
-                          name: selectedLocation.districtName,
-                        }
-                        : null
+                        ? [selectedLocation.latitude, selectedLocation.longitude]
+                        : [-6.2088, 106.8456]
                     }
-                    currentWeatherData={currentWeatherData}
-                    loadingWeather={loadingWeather}
-                    weatherError={weatherError}
-                    height="100%"
+                    zoom={10}
+                    activeMode={weatherMapMode}
+                    className="h-full w-full"
+                    onMapClick={onMapClick}
+                    activeFloodCount={activeFloodCount}
                   />
                 </div>
               </DialogContent>

@@ -207,7 +207,14 @@ export function DashboardClientPage({ initialData }) {
     };
 
     fetchDashboardWidgets();
-  }, [selectedLocation]);
+    if (
+      selectedLocation &&
+      selectedLocation.latitude != null &&
+      selectedLocation.longitude != null
+    ) {
+      fetchWeather(selectedLocation.latitude, selectedLocation.longitude);
+    }
+  }, [selectedLocation, fetchWeather]);
 
   const handleRegionSelect = useCallback(
     (location) => {
@@ -243,6 +250,28 @@ export function DashboardClientPage({ initialData }) {
       }
     },
     [fetchWeather, setSelectedLocation, setMapBounds, fetchDisasterAreas],
+  );
+
+  const handleMapClick = useCallback(
+    (lat: number, lon: number) => {
+      fetchWeather(lat, lon);
+      // Temporary location object for visual feedback
+      const customLocation: any = {
+        id: 'custom-map-click',
+        provinceCode: '',
+        regencyCode: '',
+        districtCode: '',
+        villageCode: '',
+        provinceName: '',
+        regencyName: '',
+        districtName: `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`,
+        villageName: '',
+        latitude: lat,
+        longitude: lon,
+      };
+      setSelectedLocation(customLocation);
+    },
+    [fetchWeather, setSelectedLocation],
   );
 
   const refreshDisasterData = useCallback(() => {
@@ -568,6 +597,11 @@ export function DashboardClientPage({ initialData }) {
                 currentWeatherData={weatherData}
                 loadingWeather={isLoadingWeather}
                 weatherError={weatherError}
+                onMapClick={handleMapClick}
+                activeFloodCount={initialData.realTimeAlerts?.filter((alert: any) =>
+                  selectedLocation && selectedLocation.districtName &&
+                  alert.location?.toLowerCase().includes(selectedLocation.districtName.toLowerCase())
+                ).length || 0}
               />
             </CardContent>
           </Card>
