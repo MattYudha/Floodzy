@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { useRegionData } from '@/hooks/useRegionData';
 import {
   Frown, MapPin, Building2, Globe, Map, CheckCircle, Loader2, ChevronDown,
-  Search, ArrowRight, Maximize2, Cloud, Droplets, Info, Wind, Eye, RotateCcw, CloudRain
+  Search, ArrowRight, Maximize2, Cloud, Droplets, Info, Wind, Eye, RotateCcw, CloudRain, X
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import {
@@ -49,6 +49,8 @@ import {
   DrawerTrigger,
   DrawerHeader,
   DrawerTitle,
+  DrawerDescription,
+  DrawerClose,
 } from '@/components/ui/drawer';
 import {
   Dialog,
@@ -265,6 +267,8 @@ export function RegionDropdown({
   const [selectedProvinceCode, setSelectedProvinceCode] = useState<
     string | null
   >(null);
+
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   // Auto-open map on desktop/large screens
   useEffect(() => {
@@ -641,7 +645,13 @@ export function RegionDropdown({
                   </p>
 
                   <Button
-                    onClick={() => setIsMapOpen(true)}
+                    onClick={() => {
+                      if (isMobile) {
+                        setIsMapFullscreen(true);
+                      } else {
+                        setIsMapOpen(true);
+                      }
+                    }}
                     className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20 w-full sm:w-auto min-w-[140px]"
                   >
                     <Eye className="mr-2 h-4 w-4" />
@@ -680,31 +690,70 @@ export function RegionDropdown({
               )}
             </div>
 
-            {/* Fullscreen Map Modal */}
-            <Dialog open={isMapFullscreen} onOpenChange={setIsMapFullscreen}>
-              <DialogContent className="max-w-[95vw] w-full h-[90vh] p-0 overflow-hidden bg-slate-900 border-none">
-                <div className="relative w-full h-full">
-                  <div className="absolute top-4 left-4 z-50 bg-slate-900/80 backdrop-blur px-4 py-2 rounded-full border border-white/10 pointer-events-none">
-                    <h3 className="text-white font-semibold text-sm flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-blue-400" />
-                      {displayDistrictName || 'Peta Cuaca'}
-                    </h3>
+            {/* Fullscreen Map Modal (Desktop)/Drawer (Mobile) */}
+            {isMobile ? (
+              <Drawer open={isMapFullscreen} onOpenChange={setIsMapFullscreen}>
+                <DrawerContent className="h-[100dvh] bg-slate-900 border-none">
+                  <DrawerHeader className="absolute top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-sm border-b border-white/10 px-4 py-2">
+                    <div className="flex items-center justify-between">
+                      <div className="text-left">
+                        <DrawerTitle className="text-white text-base font-semibold flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-blue-400" />
+                          Monitoring Cuaca
+                        </DrawerTitle>
+                        <DrawerDescription className="text-slate-400 text-xs">
+                          {displayDistrictName || 'Visualisasi Cuaca Real-time'}
+                        </DrawerDescription>
+                      </div>
+                      <DrawerClose asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-white">
+                          <X className="h-5 w-5" />
+                        </Button>
+                      </DrawerClose>
+                    </div>
+                  </DrawerHeader>
+                  <div className="flex-1 w-full h-full pt-[60px]" data-vaul-no-drag="true"> {/* Add padding top for header */}
+                    <WeatherInsightMap
+                      center={
+                        selectedLocation && typeof selectedLocation.latitude === 'number'
+                          ? [selectedLocation.latitude, selectedLocation.longitude]
+                          : [-6.2088, 106.8456]
+                      }
+                      zoom={10}
+                      activeMode={weatherMapMode}
+                      className="h-full w-full"
+                      onMapClick={onMapClick}
+                      activeFloodCount={activeFloodCount}
+                    />
                   </div>
-                  <WeatherInsightMap
-                    center={
-                      selectedLocation && typeof selectedLocation.latitude === 'number'
-                        ? [selectedLocation.latitude, selectedLocation.longitude]
-                        : [-6.2088, 106.8456]
-                    }
-                    zoom={10}
-                    activeMode={weatherMapMode}
-                    className="h-full w-full"
-                    onMapClick={onMapClick}
-                    activeFloodCount={activeFloodCount}
-                  />
-                </div>
-              </DialogContent>
-            </Dialog>
+                </DrawerContent>
+              </Drawer>
+            ) : (
+              <Dialog open={isMapFullscreen} onOpenChange={setIsMapFullscreen}>
+                <DialogContent className="max-w-[95vw] w-full h-[90vh] p-0 overflow-hidden bg-slate-900 border-none">
+                  <div className="relative w-full h-full">
+                    <div className="absolute top-4 left-4 z-50 bg-slate-900/80 backdrop-blur px-4 py-2 rounded-full border border-white/10 pointer-events-none">
+                      <h3 className="text-white font-semibold text-sm flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-blue-400" />
+                        {displayDistrictName || 'Peta Cuaca'}
+                      </h3>
+                    </div>
+                    <WeatherInsightMap
+                      center={
+                        selectedLocation && typeof selectedLocation.latitude === 'number'
+                          ? [selectedLocation.latitude, selectedLocation.longitude]
+                          : [-6.2088, 106.8456]
+                      }
+                      zoom={10}
+                      activeMode={weatherMapMode}
+                      className="h-full w-full"
+                      onMapClick={onMapClick}
+                      activeFloodCount={activeFloodCount}
+                    />
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
           </CardContent>
 
         </Card >
