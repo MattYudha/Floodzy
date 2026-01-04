@@ -1,18 +1,32 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Card } from '@/components/ui/card';
-import { Play, Pause, Loader2, Info, ZoomIn, MapPin, Cloud, CloudRain, Sun, CloudSun, Wind } from 'lucide-react';
+import { Play, Pause, Loader2, Info, ZoomIn, MapPin, Cloud, CloudRain, Sun, CloudSun, Wind, Maximize2, Minimize2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useTheme } from 'next-themes';
+import { WeatherLegend } from '@/components/map/WeatherLegend';
+import { RadarLayer } from '@/components/map/RadarLayer';
+import { TimelineScrubber } from '@/components/map/TimelineScrubber';
+import { MockAQILayer, AQIDetailCard, MockAQIPoint } from '@/components/map/MockAQILayer';
+// ... other imports
+
+// ...
+
+
+import { cn } from '@/lib/utils';
 
 // Dynamic imports for Leaflet components
 const MapContainer = dynamic<any>(
     () => import('react-leaflet').then((mod) => mod.MapContainer),
+    { ssr: false },
+);
+const Popup = dynamic<any>(
+    () => import('react-leaflet').then((mod) => mod.Popup),
     { ssr: false },
 );
 const TileLayer = dynamic<any>(
@@ -23,6 +37,9 @@ const Marker = dynamic<any>(
     () => import('react-leaflet').then((mod) => mod.Marker),
     { ssr: false },
 );
+
+// ... (existing imports)
+import { AQIPopup } from '@/components/map/AQIPopup';
 
 // --- CONFIGURATION ---
 const INDONESIA_BOUNDS: any[] = [
@@ -58,102 +75,6 @@ function LocationMarker({ position }: { position: [number, number] }) {
     return <Marker position={position} icon={createCustomIcon()} />;
 }
 
-interface RadarLoopProps {
-    isPlaying: boolean;
-    onFrameChange: (index: number, total: number) => void;
-}
-
-function RadarLoop({ isPlaying, onFrameChange }: RadarLoopProps) {
-    const map = useMap();
-    const [frames, setFrames] = useState<any[]>([]);
-    const [host, setHost] = useState<string>('https://tile.rainviewer.com');
-    const layerRefs = useRef<any[]>([]);
-    const [hasLoaded, setHasLoaded] = useState(false);
-
-    // 1. Lazy Load Data: Only fetch when user first clicks play
-    useEffect(() => {
-        if (!isPlaying && !hasLoaded) return;
-
-        if (!hasLoaded) {
-            setHasLoaded(true);
-            fetch(`https://api.rainviewer.com/public/weather-maps.json?_=${Date.now()}`, {
-                cache: 'no-store'
-            })
-                .then(res => res.json())
-                .then((data) => {
-                    if (data.radar && data.radar.past) {
-                        let newHost = data.host || 'https://tile.rainviewer.com';
-                        // Force HTTPS
-                        if (newHost.startsWith('http:')) {
-                            newHost = newHost.replace('http:', 'https:');
-                        }
-                        setHost(newHost);
-                        const pastFrames = data.radar.past;
-                        const nowcastFrames = data.radar.nowcast || [];
-                        const allFrames = [...pastFrames, ...nowcastFrames];
-                        setFrames(allFrames);
-                        onFrameChange(0, allFrames.length);
-                    }
-                })
-                .catch(err => console.error("Radar fetch error:", err));
-        }
-    }, [isPlaying, hasLoaded, onFrameChange]);
-
-    // 2. Initialize Layers (only after frames are loaded)
-    useEffect(() => {
-        if (frames.length === 0 || !host) return;
-
-        // Clean up old layers
-        layerRefs.current.forEach(layer => map.removeLayer(layer));
-        layerRefs.current = [];
-
-        // Create new layers
-        frames.forEach((frame) => {
-            const layer = (L as any).tileLayer(
-                `${host}${frame.path}/256/{z}/{x}/{y}/2/1_1.png`,
-                { opacity: 0, zIndex: 10, attribution: 'RainViewer' }
-            );
-            layer.addTo(map);
-            layerRefs.current.push(layer);
-        });
-
-        return () => { layerRefs.current.forEach(layer => map.removeLayer(layer)); };
-    }, [frames, host, map]);
-
-    // 3. Animation Loop
-    useEffect(() => {
-        if (!isPlaying) {
-            // Hide all layers immediately when paused/stopped
-            layerRefs.current.forEach(l => l.setOpacity(0));
-            return;
-        }
-
-        // Wait for layers to be ready
-        if (layerRefs.current.length === 0) return;
-
-        // Ensure we start with a visible frame
-        const anyVisible = layerRefs.current.some(l => l.options.opacity > 0);
-        if (!anyVisible && layerRefs.current[0]) {
-            layerRefs.current[0].setOpacity(0.75);
-            onFrameChange(0, frames.length);
-        }
-
-        const intervalId = setInterval(() => {
-            if (layerRefs.current.length === 0) return;
-            const current = layerRefs.current.findIndex(l => l.options.opacity > 0);
-            const next = (current + 1) % frames.length;
-
-            layerRefs.current.forEach(l => l.setOpacity(0));
-            if (layerRefs.current[next]) layerRefs.current[next].setOpacity(0.75);
-            onFrameChange(next, frames.length);
-        }, 1500);
-
-        return () => clearInterval(intervalId);
-    }, [isPlaying, frames]);
-
-    return null;
-}
-
 function AQILayer({ visible }: { visible: boolean }) {
     if (!visible) return null;
     return (
@@ -165,6 +86,20 @@ function AQILayer({ visible }: { visible: boolean }) {
             bounds={INDONESIA_BOUNDS as any}
         />
     );
+}
+
+// 2. Map Auto Zoom Helper
+function MapAutoZoom({ activeMode }: { activeMode: string }) {
+    const map = useMap();
+    useEffect(() => {
+        if (activeMode === 'radar') {
+            // Zoom closer (level 5) centered on Indonesia
+            map.flyTo([-2.5, 118], 5, {
+                duration: 1.5
+            });
+        }
+    }, [activeMode, map]);
+    return null;
 }
 
 interface MapEventHandlerProps {
@@ -218,23 +153,83 @@ export default function WeatherInsightMap({
     activeFloodCount = 0,
 }: WeatherInsightMapProps) {
     const { theme, systemTheme } = useTheme();
+    // Lifted state
     const [isPlaying, setIsPlaying] = useState(false);
+    const [frames, setFrames] = useState<any[]>([]);
+    const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
+    const [host, setHost] = useState<string>('https://tile.rainviewer.com');
+    const [hasLoaded, setHasLoaded] = useState(false);
+    const [isLoadingData, setIsLoadingData] = useState(false);
+
     const [isUserInteracting, setIsUserInteracting] = useState(false);
-    const [frameInfo, setFrameInfo] = useState({ index: 0, total: 0 });
     const [currentZoom, setCurrentZoom] = useState(zoom);
     const [mounted, setMounted] = useState(false);
-    const [showLegend, setShowLegend] = useState(false);
+
+    // UI State
+    const [isRadarOpen, setIsRadarOpen] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    // AQI State
+    const [selectedAqiPoint, setSelectedAqiPoint] = useState<MockAQIPoint | null>(null);
+    const [aqiLoading, setAqiLoading] = useState(false);
+    const [aqiPosition, setAqiPosition] = useState<[number, number] | null>(null);
+    const [aqiData, setAqiData] = useState<any>(null);
+
+    // Click Handler for AQI
+    const handleMapClick = useCallback((lat: number, lon: number) => {
+        // If a point is selected, clicking the map (background) should close it
+        if (selectedAqiPoint) {
+            setSelectedAqiPoint(null);
+            return;
+        }
+
+        if (activeMode === 'aqi') {
+            setAqiPosition([lat, lon]);
+            setAqiLoading(true);
+            setAqiData(null); // Clear previous data
+
+            fetch(`/api/aqi?lat=${lat}&lon=${lon}`)
+                .then(res => res.json())
+                .then(data => {
+                    setAqiData(data);
+                })
+                .catch(err => {
+                    console.error("AQI fetch error:", err);
+                    setAqiData({ status: 'error' }); // Fallback state
+                })
+                .finally(() => setAqiLoading(false));
+        } else if (onMapClick) {
+            // Pass through to parent if not in AQI mode
+            onMapClick(lat, lon);
+        }
+    }, [activeMode, onMapClick, selectedAqiPoint]);
+
+    const mapContainerRef = useRef<HTMLDivElement>(null);
+
+    // ... (rest of imports/setup)
+
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            mapContainerRef.current?.requestFullscreen();
+            setIsFullscreen(true);
+        } else {
+            document.exitFullscreen();
+            setIsFullscreen(false);
+        }
+    };
+
+    // Listen for fullscreen change events to update state (e.g. when user presses ESC)
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
 
     useEffect(() => {
         setMounted(true);
     }, []);
-
-    // Close legend when interacting with map (zooming/panning/clicking)
-    useEffect(() => {
-        if (isUserInteracting) {
-            setShowLegend(false);
-        }
-    }, [isUserInteracting]);
 
     const currentTheme = theme === 'system' ? systemTheme : theme;
     const isDark = currentTheme === 'dark';
@@ -245,21 +240,68 @@ export default function WeatherInsightMap({
 
     const showAqiData = activeMode === 'aqi' && currentZoom >= MIN_AQI_ZOOM;
 
-    // Logic: Radar is enabled if mode is radar AND user has clicked play.
-    const radarVisible = activeMode === 'radar' && isPlaying;
+    const radarVisible = activeMode === 'radar';
 
-    const getWeatherIcon = (condition: string) => {
-        const lower = condition?.toLowerCase() || '';
-        if (lower.includes('hujan')) return <CloudRain className="text-blue-500 dark:text-blue-400" size={24} />;
-        if (lower.includes('awan') || lower.includes('berawan')) return <Cloud className="text-gray-500 dark:text-gray-400" size={24} />;
-        if (lower.includes('cerah')) return <Sun className="text-yellow-500 dark:text-yellow-400" size={24} />;
-        return <CloudSun className="text-cyan-500 dark:text-cyan-400" size={24} />;
-    };
+    // 1. Fetch Radar Data (Lifted logic)
+    useEffect(() => {
+        // Fetch only if module is radar and we haven't loaded yet,
+        // OR if user clicks play/scrub and we don't have data (though we trigger auto-fetch on mount if radar mode)
+        // Let's lazy load on first radar activation
+        if (activeMode === 'radar' && !hasLoaded && !isLoadingData) {
+            setIsLoadingData(true);
+            fetch(`https://api.rainviewer.com/public/weather-maps.json?_=${Date.now()}`, {
+                cache: 'no-store'
+            })
+                .then(res => res.json())
+                .then((data) => {
+                    if (data.radar && data.radar.past) {
+                        let newHost = data.host || 'https://tile.rainviewer.com';
+                        if (newHost.startsWith('http:')) {
+                            newHost = newHost.replace('http:', 'https:');
+                        }
+                        setHost(newHost);
 
-    if (!mounted) return null; // Prevent hydration mismatch
+                        // Process frames with isPast flag
+                        const pastFrames = data.radar.past.map((f: any) => ({ ...f, isPast: true }));
+                        const nowcastFrames = (data.radar.nowcast || []).map((f: any) => ({ ...f, isPast: false }));
+                        const allFrames = [...pastFrames, ...nowcastFrames];
+
+                        setFrames(allFrames);
+                        // Start at the last "past" frame (most recent real data)
+                        const initialIndex = pastFrames.length > 0 ? pastFrames.length - 1 : 0;
+                        setCurrentFrameIndex(initialIndex);
+                        setHasLoaded(true);
+                    }
+                })
+                .catch(err => console.error("Radar fetch error:", err))
+                .finally(() => setIsLoadingData(false));
+        }
+    }, [activeMode, hasLoaded, isLoadingData]);
+
+    // Derived state for Forecast Mode
+    const currentFrame = frames[currentFrameIndex];
+    const isForecastFrame = currentFrame && !currentFrame.isPast;
+
+    // 2. Animation Loop (Refactored)
+    useEffect(() => {
+        let intervalId: NodeJS.Timeout;
+
+        if (isPlaying && frames.length > 0) {
+            intervalId = setInterval(() => {
+                setCurrentFrameIndex(prev => (prev + 1) % frames.length);
+            }, 1000); // 1.5s per frame
+        }
+
+        return () => clearInterval(intervalId);
+    }, [isPlaying, frames]);
+
+    if (!mounted) return null;
 
     return (
-        <div className={`relative w-full h-full rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-900 ${className}`}>
+        <div
+            ref={mapContainerRef}
+            className={`relative w-full h-full rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-900 ${className}`}
+        >
             <MapContainer
                 center={center}
                 zoom={zoom}
@@ -267,150 +309,150 @@ export default function WeatherInsightMap({
                 maxBounds={INDONESIA_BOUNDS as any}
                 maxBoundsViscosity={1.0}
                 className="w-full h-full z-0"
-                zoomControl={false}
+                zoomControl={true}
             >
                 <TileLayer
-                    key={isDark ? 'dark' : 'light'} // Force re-render on theme change
+                    key={isDark ? 'dark' : 'light'}
                     url={tileUrl}
                     attribution={isDark ? '&copy; CARTO' : '&copy; OpenStreetMap'}
                 />
 
-                {/* RadarLoop is now always mounted but handles its own visibility based on isPlaying */}
-                {activeMode === 'radar' && (
-                    <RadarLoop
-                        isPlaying={radarVisible}
-                        onFrameChange={(idx, total) => setFrameInfo({ index: idx, total })}
+                {/* Radar Layer */}
+                {activeMode === 'radar' && frames.length > 0 && (
+                    <RadarLayer
+                        frames={frames}
+                        currentIndex={currentFrameIndex}
+                        host={host}
+                        opacity={isForecastFrame ? 0.6 : 0.75} // Slightly lower opacity for forecast to indicate uncertainty
+                        visible={true}
                     />
                 )}
-                {activeMode === 'aqi' && <AQILayer visible={showAqiData} />}
+
+                <MapAutoZoom activeMode={activeMode} />
+
+                {activeMode === 'aqi' && (
+                    <MockAQILayer
+                        visible={true}
+                        onPointSelect={(point) => setSelectedAqiPoint(point)}
+                    />
+                )}
+
+                {/* AQI Hero Popup */}
+                {activeMode === 'aqi' && selectedAqiPoint && (
+                    <Popup
+                        position={[selectedAqiPoint.lat, selectedAqiPoint.lon]}
+                        onClose={() => setSelectedAqiPoint(null)}
+                        className="aqi-popup-hero !m-0 !p-0 overflow-visible"
+                        closeButton={false}
+                        autoPan={true}
+                        autoPanPadding={[20, 20]}
+                        offset={[0, -20]}
+                    >
+                        <div onClick={(e) => e.stopPropagation()}>
+                            {/* Stop propagation to prevent map click closing it immediately if event bubbling occurs */}
+                            <AQIDetailCard point={selectedAqiPoint} />
+                        </div>
+                    </Popup>
+                )}
 
                 <MapEventHandler
                     onZoomChange={setCurrentZoom}
                     onInteractionStart={() => setIsUserInteracting(true)}
                     onInteractionEnd={() => setIsUserInteracting(false)}
-                    onMapClick={onMapClick}
+                    onMapClick={handleMapClick}
                 />
 
                 {selectedLocationName && <LocationMarker position={center} />}
             </MapContainer>
 
-            {/* --- TOP RIGHT: FLOOD STATUS SYSTEM INDICATOR & LEGEND --- */}
-            {/* Shifted to right-16 to avoid overlapping with Close button in IDialog */}
-            <div className="absolute top-3 right-16 z-[500] pointer-events-none flex flex-col items-end">
-                {selectedLocationName && (
-                    <div className="flex items-start gap-2 pointer-events-auto relative">
+            {/* --- TOP RIGHT: FLOOD STATUS SYSTEM INDICATOR & LEGEND & CONTROLS --- */}
+            <div className="absolute top-3 right-3 z-[500] pointer-events-none flex flex-col items-end gap-2">
 
-                        {/* Legend Popup (Click triggered) */}
-                        <div className={`
-                            absolute top-full right-0 mt-2 w-48 p-3 rounded-xl bg-slate-900/95 backdrop-blur-md border border-white/10 text-slate-200 shadow-2xl 
-                            transition-all duration-200 transform origin-top-right z-[600]
-                            ${showLegend ? 'opacity-100 visible scale-100' : 'opacity-0 invisible scale-95'}
-                        `}>
-                            <div className="flex justify-between items-center mb-2 border-b border-white/5 pb-1">
-                                <h4 className="font-bold text-[10px] uppercase tracking-widest text-slate-400">Panduan Status</h4>
-                            </div>
-                            <div className="space-y-2 text-[11px]">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]"></div>
-                                    <span className="font-medium text-emerald-100">Zona Aman</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <span className="relative flex h-2 w-2">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                                    </span>
-                                    <span className="font-medium text-red-100">Waspada Banjir</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-slate-400"></div>
-                                    <span className="text-slate-400">Data Netral / Umum</span>
-                                </div>
-                            </div>
-                        </div>
+                {/* Top Row: Status Badge & Fullscreen */}
+                <div className="flex items-center gap-2 pointer-events-auto">
 
-                        {/* Status Badge */}
-                        <div
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/10 shadow-lg transition-colors hover:bg-slate-900"
-                        >
-                            {activeFloodCount > 0 ? (
-                                <>
-                                    <span className="relative flex h-2 w-2">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                                    </span>
-                                    <span className="text-[10px] font-semibold tracking-wider text-slate-100 uppercase">
-                                        Waspada ({activeFloodCount})
-                                    </span>
-                                </>
-                            ) : (
-                                <>
-                                    <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-                                    <span className="text-[10px] font-medium tracking-wider text-slate-200 uppercase">
-                                        Zona Aman
-                                    </span>
-                                </>
-                            )}
+                    {/* Status Badge - Always visible to show global/regional status */}
+                    <div
+                        className={cn(
+                            "flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md border shadow-lg transition-colors",
+                            activeFloodCount > 0
+                                ? "bg-red-900/80 border-red-500/30 text-red-100"
+                                : "bg-emerald-900/80 border-emerald-500/30 text-emerald-100"
+                        )}
+                    >
+                        {activeFloodCount > 0 ? (
+                            <>
+                                <span className="relative flex h-2.5 w-2.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                                </span>
+                                <span className="text-[11px] font-bold tracking-wider uppercase">
+                                    Waspada ({activeFloodCount})
+                                </span>
+                            </>
+                        ) : (
+                            <>
+                                <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+                                <span className="text-[11px] font-bold tracking-wider uppercase">
+                                    Zona Aman
+                                </span>
+                            </>
+                        )}
+                    </div>
 
-                            {/* Info Toggle Button */}
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setShowLegend(!showLegend);
-                                }}
-                                className={`
-                                    ml-1 p-0.5 rounded-full transition-colors hover:bg-slate-700 focus:outline-none
-                                    ${showLegend ? 'bg-slate-700 text-white' : 'text-slate-500'}
-                                `}
-                            >
-                                <Info size={12} />
-                            </button>
+                    {/* Fullscreen Toggle */}
+                    <button
+                        onClick={toggleFullscreen}
+                        className="p-2 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/10 text-slate-200 hover:bg-slate-800 shadow-lg transition-all"
+                        title={isFullscreen ? "Keluar Fullscreen" : "Fullscreen Map"}
+                    >
+                        {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                    </button>
+                </div>
+
+                {/* 2. New Clean Legend (Pointer events auto) - Only show if Radar control is OPEN */}
+                {activeMode === 'radar' && (
+                    <div className="pointer-events-auto animate-in fade-in slide-in-from-top-2 duration-300">
+                        <WeatherLegend mode={activeMode} />
+                    </div>
+                )}
+                {activeMode === 'aqi' && (
+                    <div className="pointer-events-auto flex flex-col items-end gap-2">
+                        <WeatherLegend mode={activeMode} />
+                        <div className="flex items-center gap-1.5 px-3 py-1 bg-yellow-500/10 backdrop-blur-md border border-yellow-500/20 rounded-full text-[10px] font-medium text-yellow-200 shadow-lg">
+                            <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse"></div>
+                            Data Estimasi
                         </div>
                     </div>
                 )}
             </div>
 
-            {/* --- BOTTOM LEFT: MINIMAL RADAR CONTROL --- */}
-            {activeMode === 'radar' && (
-                <div className="absolute bottom-3 left-3 z-[400] flex items-center gap-2">
-                    <Button
-                        size="sm"
-                        variant="ghost"
-                        className={`
-                            h-8 px-3 rounded-full backdrop-blur-md border border-white/10 shadow-lg transition-all
-                            ${isPlaying
-                                ? 'bg-slate-900/80 text-cyan-400 hover:bg-slate-900'
-                                : 'bg-slate-900/60 text-slate-200 hover:bg-slate-900/80'}
-                        `}
-                        onClick={() => setIsPlaying(!isPlaying)}
-                    >
-                        {isPlaying ? (
-                            <>
-                                <Pause size={12} className="mr-2" />
-                                <span className="text-[10px] font-medium tracking-wide">STOP RADAR</span>
-                            </>
-                        ) : (
-                            <>
-                                <Play size={12} className="mr-2" />
-                                <span className="text-[10px] font-medium tracking-wide">PUTAR RADAR</span>
-                            </>
-                        )}
-                    </Button>
-
-                    {isPlaying && (
-                        <div className="px-2 py-1 rounded-full bg-slate-900/60 backdrop-blur border border-white/5 animate-in fade-in slide-in-from-left-2 duration-300">
-                            <p className="text-[9px] font-mono text-slate-400">
-                                FRAME {frameInfo.index + 1}/{frameInfo.total}
-                            </p>
-                        </div>
-                    )}
+            {/* --- BOTTOM CONTROLS (Unified) --- */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] flex justify-center pointer-events-none">
+                <div className="pointer-events-auto shadow-2xl">
+                    <TimelineScrubber
+                        frames={frames}
+                        currentIndex={currentFrameIndex}
+                        isPlaying={isPlaying}
+                        onTogglePlay={() => setIsPlaying(!isPlaying)}
+                        onScrub={(index) => {
+                            setIsPlaying(false); // Pause on user interaction
+                            setCurrentFrameIndex(index);
+                        }}
+                        isLoading={isLoadingData}
+                        isExpanded={isRadarOpen}
+                        onExpandedChange={setIsRadarOpen}
+                    />
                 </div>
-            )}
+            </div>
 
             {activeMode === 'aqi' && !showAqiData && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[500]">
-                    <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 flex items-center gap-2 shadow-2xl">
-                        <ZoomIn size={16} className="text-yellow-500 dark:text-yellow-400" />
-                        <span className="text-sm font-medium text-slate-900 dark:text-white">Perbesar untuk detail AQI</span>
+                    <div className="bg-slate-900/80 backdrop-blur px-5 py-2.5 rounded-full border border-white/10 flex items-center gap-3 shadow-2xl">
+                        <div className="p-1.5 bg-yellow-500/20 rounded-full">
+                            <ZoomIn size={18} className="text-yellow-400" />
+                        </div>
+                        <span className="text-sm font-medium text-slate-100">Perbesar peta untuk detail AQI</span>
                     </div>
                 </div>
             )}

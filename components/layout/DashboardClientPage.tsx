@@ -598,10 +598,17 @@ export function DashboardClientPage({ initialData }) {
                 loadingWeather={isLoadingWeather}
                 weatherError={weatherError}
                 onMapClick={handleMapClick}
-                activeFloodCount={initialData.realTimeAlerts?.filter((alert: any) =>
-                  selectedLocation && selectedLocation.districtName &&
-                  alert.location?.toLowerCase().includes(selectedLocation.districtName.toLowerCase())
-                ).length || 0}
+                activeFloodCount={initialData.realTimeAlerts?.filter((alert: any) => {
+                  if (!selectedLocation || !selectedLocation.districtName) return false;
+                  const searchName = selectedLocation.districtName.toLowerCase();
+
+                  // Check matches in location string, affectedAreas array, or regionId
+                  const locationMatch = alert.location?.toLowerCase().includes(searchName);
+                  const areaMatch = alert.affectedAreas?.some((area: string) => area.toLowerCase().includes(searchName));
+                  const regionMatch = alert.regionId === searchName.replace(/\s+/g, '-');
+
+                  return locationMatch || areaMatch || regionMatch;
+                }).length || 0}
               />
             </CardContent>
           </Card>

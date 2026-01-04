@@ -1,14 +1,6 @@
 import { create } from 'zustand';
 
-export interface SelectedLocation {
-  latitude: number;
-  longitude: number;
-  districtName: string;
-  districtCode?: string;
-  regencyCode?: string;
-  provinceCode?: string;
-  geometry?: string;
-}
+import { SelectedLocation } from '@/types/location';
 
 export interface MapBounds {
   center: [number, number];

@@ -285,3 +285,17 @@
 .leaflet-control-layers-separator {
   border-top: 1px solid hsl(var(--border)) !important;
 }
+
+/* --- Hero Popup Overrides --- */
+.aqi-popup-hero .leaflet-popup-content-wrapper,
+.aqi-popup-hero .leaflet-popup-tip {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+.aqi-popup-hero .leaflet-popup-content {
+  margin: 0 !important;
+  width: auto !important;
+  line-height: inherit !important;
+}

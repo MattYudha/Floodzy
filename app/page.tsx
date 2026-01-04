@@ -22,7 +22,10 @@ export default async function Home() {
   // Note: In a real app, this data would come from a database or a live API.
   const waterLevelPosts = generateMockWaterLevels(100);
   const pumpStatusData = generateMockPumpStatus(100);
-  const realTimeAlerts = generateMockAlerts(); // Generate 5 active alerts for demonstration
+  // Use the updated constant alerts for "realtime" feel + some random ones if needed
+  // We prioritize the constants as they have the specific user-requested data
+  const { FLOOD_MOCK_ALERTS } = await import('@/lib/constants');
+  const realTimeAlerts = [...FLOOD_MOCK_ALERTS];
 
   // === LANGKAH 2: Kalkulasi Statistik Dinamis & Inovatif ===
 

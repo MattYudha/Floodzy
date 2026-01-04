@@ -4,7 +4,9 @@ export interface SelectedLocation {
   districtName: string;
   districtCode?: string;
   regencyCode?: string;
+  regencyName?: string;
   provinceCode?: string;
+  provinceName?: string;
   geometry?: string;
   name?: string;
 }
