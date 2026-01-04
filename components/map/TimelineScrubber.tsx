@@ -12,6 +12,8 @@ interface TimelineScrubberProps {
     onScrub: (index: number) => void;
     isLoading?: boolean;
     className?: string;
+    isExpanded?: boolean;
+    onExpandedChange?: (expanded: boolean) => void;
 }
 
 export function TimelineScrubber({
@@ -22,10 +24,22 @@ export function TimelineScrubber({
     onScrub,
     isLoading = false,
     className,
+    isExpanded,
+    onExpandedChange,
 }: TimelineScrubberProps) {
     const [localIndex, setLocalIndex] = useState(currentIndex);
     const [isDragging, setIsDragging] = useState(false);
-    const [isExpanded, setIsExpanded] = useState(false); // Default closed as per user request
+    const [internalExpanded, setInternalExpanded] = useState(false); // Default closed if uncontrolled
+
+    const isExpandedFinal = isExpanded ?? internalExpanded;
+    const handleExpandedChange = (val: boolean) => {
+        if (onExpandedChange) {
+            onExpandedChange(val);
+        } else {
+            setInternalExpanded(val);
+        }
+    };
+
     const lastUpdateRef = useRef<number>(0);
     const throttleRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -73,10 +87,10 @@ export function TimelineScrubber({
     const nowPercent = frames.length > 1 && nowIndex !== -1 ? (nowIndex / (frames.length - 1)) * 100 : 0;
 
     // --- MINIMIZED VIEW ---
-    if (!isExpanded) {
+    if (!isExpandedFinal) {
         return (
             <button
-                onClick={() => setIsExpanded(true)}
+                onClick={() => handleExpandedChange(true)}
                 className={cn(
                     "flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/60 backdrop-blur-md border border-white/10 shadow-lg text-white hover:bg-slate-900/80 transition-all group",
                     className
@@ -109,7 +123,7 @@ export function TimelineScrubber({
                     </span>
                 </div>
                 <button
-                    onClick={() => setIsExpanded(false)}
+                    onClick={() => handleExpandedChange(false)}
                     className="p-1 rounded-full hover:bg-white/10 text-slate-500 hover:text-white transition-colors"
                 >
                     <ChevronDown size={10} />
