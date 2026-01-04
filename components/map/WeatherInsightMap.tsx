@@ -76,11 +76,18 @@ function RadarLoop({ isPlaying, onFrameChange }: RadarLoopProps) {
 
         if (!hasLoaded) {
             setHasLoaded(true);
-            fetch('https://api.rainviewer.com/public/weather-maps.json')
+            fetch(`https://api.rainviewer.com/public/weather-maps.json?_=${Date.now()}`, {
+                cache: 'no-store'
+            })
                 .then(res => res.json())
                 .then((data) => {
                     if (data.radar && data.radar.past) {
-                        setHost(data.host || 'https://tile.rainviewer.com');
+                        let newHost = data.host || 'https://tile.rainviewer.com';
+                        // Force HTTPS
+                        if (newHost.startsWith('http:')) {
+                            newHost = newHost.replace('http:', 'https:');
+                        }
+                        setHost(newHost);
                         const pastFrames = data.radar.past;
                         const nowcastFrames = data.radar.nowcast || [];
                         const allFrames = [...pastFrames, ...nowcastFrames];
