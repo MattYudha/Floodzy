@@ -17,7 +17,7 @@
 
 ---
 
-## 🚀 Overview
+## 🚀 Overview About Floodzy
 
 Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang memanfaatkan teknologi  seperti **Next.js**, **ShadcnUI**, **TypeScript**, **React**, **Tailwind CSS**, dan **Supabase**. Platform ini menyediakan data ketinggian air, status pompa, prakiraan cuaca, analisis bencana, dan peta interaktif untuk mendukung mitigasi bencana di Indonesia. Data yang disajikan mencakup seluruh wilayah Indonesia hingga tingkat kecamatan dengan fungtional dan terstruktur.
 
