@@ -23,7 +23,7 @@ Floodzy adalah sistem pemantauan banjir dan peringatan dini real-time yang meman
 
 ---
 ```
-🌟 Roadmap
+🌟 Roadmap -- Floodzy
 
 > Roadmap proyek kini dikelola melalui [GitHub Issues](https://github.com/mattyudha/floodzy/issues). Silakan cek tab Issues untuk melihat rencana pengembangan dan berkontribusi.
 ```
