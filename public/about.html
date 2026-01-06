@@ -892,6 +892,120 @@
             box-shadow: 0 0 10px var(--cyan);
             margin-right: 8px;
         }
+
+        /* === MOBILE RESPONSIVENESS === */
+        /* === MOBILE RESPONSIVENESS (OPTIMIZED) === */
+        @media (max-width: 768px) {
+
+            /* Typography Scale Down */
+            html {
+                font-size: 14px;
+            }
+
+            .floodzy-logo {
+                font-size: 1.25rem;
+            }
+
+            h1 {
+                font-size: 2.25rem !important;
+                line-height: 1.1;
+            }
+
+            h2 {
+                font-size: 1.75rem !important;
+                line-height: 1.2;
+            }
+
+            p {
+                font-size: 1rem !important;
+            }
+
+            /* Scrollytelling Elements */
+            .sink-char {
+                font-size: 3rem;
+            }
+
+            #hud-overlay {
+                top: 100px;
+                transform: translateX(-50%) scale(0.8);
+            }
+
+            /* Layout Stacking */
+            #split-section {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+
+            .split-content {
+                padding: 2.5rem 1.5rem;
+                text-align: left;
+            }
+
+            .split-left {
+                padding-top: 2rem;
+                justify-content: flex-start;
+            }
+
+            .split-right {
+                padding-bottom: 2rem;
+                justify-content: flex-start;
+                background: rgba(5, 5, 7, 0.5);
+            }
+
+            .split-divider {
+                display: none;
+            }
+
+            /* Threat Playground */
+            .playground-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 1rem;
+                margin-top: 1.5rem;
+            }
+
+            #sim-map {
+                height: 200px;
+            }
+
+            /* Spacing Reductions */
+            .container {
+                padding: 0 1.25rem;
+            }
+
+            section.container {
+                padding: 3rem 0 !important;
+            }
+
+            /* Section Tweaks */
+            .mid-hero-title {
+                font-size: 2rem !important;
+                margin-bottom: 1rem;
+            }
+
+            .stats-grid {
+                gap: 2rem;
+            }
+
+            .stats-grid>div {
+                padding: 1.5rem !important;
+            }
+
+            /* Footer */
+            .ops-footer {
+                padding: 2rem 0;
+            }
+
+            /* Header Mobile */
+            header {
+                padding: 0.75rem 1rem;
+            }
+
+            .nav-link {
+                margin-left: 0.75rem;
+                font-size: 0.7rem;
+            }
+        }
     </style>
 </head>
 
