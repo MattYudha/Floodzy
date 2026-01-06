@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { getTimeAgo } from '@/lib/utils';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 // Import untuk data API
 import { WaterLevelPost, PumpData } from '@/lib/api'; // === IMPORT BARU: PumpData ===
@@ -57,6 +58,20 @@ export function DashboardStats({
   pumpStatusError, // Menerima status error pompa
   className,
 }: DashboardStatsProps) {
+  const { t, lang } = useLanguage();
+
+  const getStatusLabel = (status: string) => {
+    if (!status) return '';
+    if (lang === 'en') {
+      if (status.toLowerCase().includes('bahaya')) return 'Danger';
+      if (status.toLowerCase().includes('siaga 3')) return 'Alert 3';
+      if (status.toLowerCase().includes('siaga 2')) return 'Alert 2';
+      if (status.toLowerCase().includes('siaga 1')) return 'Alert 1';
+      if (status.toLowerCase().includes('normal')) return 'Normal';
+    }
+    return status;
+  };
+
   // === LOGIKA UNTUK MENGHITUNG STATUS POMPA ===
   const totalPumps = pumpStatusData.length;
   const activePumps = pumpStatusData.filter(
@@ -74,18 +89,18 @@ export function DashboardStats({
 
   const getPumpStatusBadge = (status: string) => {
     if (status.toLowerCase().includes('beroperasi'))
-      return <Badge variant="success">Beroperasi</Badge>;
+      return <Badge variant="success">{t('dashboard.operating')}</Badge>;
     if (
       status.toLowerCase().includes('tidak beroperasi') ||
       status.toLowerCase().includes('rusak')
     )
-      return <Badge variant="danger">Tidak Beroperasi</Badge>;
-    return <Badge variant="secondary">Tidak Diketahui</Badge>;
+      return <Badge variant="danger">{t('dashboard.notOperating')}</Badge>;
+    return <Badge variant="secondary">{t('dashboard.unknown')}</Badge>;
   };
 
   const statsConfig = [
     {
-      title: 'Total Wilayah',
+      title: t('landing.totalRegions'),
       value: stats.totalRegions,
       unit: '',
       icon: MapPin,
@@ -94,7 +109,7 @@ export function DashboardStats({
       changeType: 'up',
     },
     {
-      title: 'Peringatan Aktif',
+      title: t('landing.activeAlerts'),
       value: stats.activeAlerts,
       unit: '',
       icon: Bell,
@@ -103,7 +118,7 @@ export function DashboardStats({
       changeType: 'down',
     },
     {
-      title: 'Zona Banjir',
+      title: t('dashboard.floodZones'),
       value: stats.floodZones,
       unit: '',
       icon: Shield,
@@ -112,7 +127,7 @@ export function DashboardStats({
       changeType: 'up',
     },
     {
-      title: 'Orang Berisiko',
+      title: t('dashboard.peopleAtRisk'),
       value: `${(stats.peopleAtRisk / 1000000).toFixed(1)}M`, // Mengubah 2.5M menjadi 2.5M
       unit: '',
       icon: Users,
@@ -121,7 +136,7 @@ export function DashboardStats({
       changeType: 'down',
     },
     {
-      title: 'Stasiun Cuaca',
+      title: t('dashboard.weatherStations'),
       value: stats.weatherStations,
       unit: '',
       icon: Activity,
@@ -184,42 +199,42 @@ export function DashboardStats({
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                <span className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">Status Sistem Pompa</span> {/* Judul diubah */}
+                <span className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">{t('dashboard.pumpSystemStatus')}</span> {/* Judul diubah */}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {loadingPumpStatus ? (
                 <div className="text-center text-xs sm:text-sm text-muted-foreground flex items-center justify-center space-x-2 h-[120px]">
                   <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
-                  <span>Memuat status pompa...</span>
+                  <span>{t('dashboard.loadingPumpStatus')}</span>
                 </div>
               ) : pumpStatusError ? (
                 <div className="text-center text-xs sm:text-sm text-red-400 h-[120px] flex items-center justify-center">
                   <AlertTriangle className="h-5 w-5 mr-2" />
-                  <span>Error pompa: {pumpStatusError}</span>
+                  <span>{t('dashboard.pumpError')}{pumpStatusError}</span>
                 </div>
               ) : totalPumps > 0 ? (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs sm:text-sm">Total Pompa Terdaftar</span>
+                    <span className="text-xs sm:text-sm">{t('dashboard.totalRegisteredPumps')}</span>
                     <Badge variant="secondary">{totalPumps}</Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs sm:text-sm">Pompa Beroperasi</span>
+                    <span className="text-xs sm:text-sm">{t('dashboard.operatingPumps')}</span>
                     <Badge variant="success">
                       <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                       {activePumps}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs sm:text-sm">Pompa Tidak Beroperasi</span>
+                    <span className="text-xs sm:text-sm">{t('dashboard.nonOperatingPumps')}</span>
                     <Badge variant="danger">
                       <XCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                       {inactivePumps}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs sm:text-sm">Membutuhkan Perbaikan</span>
+                    <span className="text-xs sm:text-sm">{t('dashboard.needingMaintenance')}</span>
                     <Badge variant="warning">
                       <AlertTriangle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                       {pumpsNeedingMaintenance}
@@ -228,7 +243,7 @@ export function DashboardStats({
                 </div>
               ) : (
                 <div className="text-center text-xs sm:text-sm text-muted-foreground h-[120px] flex items-center justify-center">
-                  <span>Pilih wilayah untuk melihat pompa.</span>
+                  <span>{t('dashboard.selectRegionForPumps')}</span>
                 </div>
               )}
             </CardContent>
@@ -245,7 +260,7 @@ export function DashboardStats({
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-secondary" />
-                <span className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">Aktivitas Terkini</span>
+                <span className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">{t('dashboard.recentActivity')}</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -254,12 +269,12 @@ export function DashboardStats({
                 {loadingWaterLevel && (
                   <div className="text-center text-sm text-muted-foreground flex items-center justify-center space-x-2">
                     <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
-                    <span>Memuat data TMA...</span>
+                    <span>{t('dashboard.loadingWaterLevel')}</span>
                   </div>
                 )}
                 {waterLevelError && (
                   <div className="text-center text-sm text-red-400">
-                    Error TMA: {waterLevelError}
+                    {t('dashboard.waterLevelError')}{waterLevelError}
                   </div>
                 )}
                 {!loadingWaterLevel &&
@@ -277,14 +292,14 @@ export function DashboardStats({
                         {/* Warna biru untuk TMA */}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-slate-900 dark:text-white">
-                            Tinggi Air {post.name}: {post.water_level || 'N/A'}{' '}
+                            {t('dashboard.waterLevel')} {post.name}: {post.water_level || 'N/A'}{' '}
                             {post.unit || 'm'}
-                            {post.status && ` (${post.status})`}
+                            {post.status && ` (${getStatusLabel(post.status)})`}
                           </p>
                           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
                             {post.timestamp
-                              ? getTimeAgo(new Date(post.timestamp))
-                              : 'Waktu tidak tersedia'}
+                              ? getTimeAgo(new Date(post.timestamp), lang)
+                              : t('dashboard.timeUnavailable')}
                           </p>
                         </div>
                         {post.status && (
@@ -297,7 +312,7 @@ export function DashboardStats({
                                   : 'success'
                             }
                           >
-                            {post.status}
+                            {getStatusLabel(post.status)}
                           </Badge>
                         )}
                       </div>
@@ -307,8 +322,7 @@ export function DashboardStats({
                   !waterLevelError &&
                   waterLevelPosts.length === 0 ? (
                   <p className="text-sm text-muted-foreground text-center">
-                    Pilih wilayah untuk melihat data Pos Duga Air di dekat
-                    wilayah anda.
+                    {t('dashboard.selectRegionForWaterLevel')}
                   </p>
                 ) : null}
               </div>

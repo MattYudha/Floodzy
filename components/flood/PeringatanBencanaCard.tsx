@@ -3,9 +3,11 @@
 import React, { useEffect, useRef, useCallback, useMemo, memo } from 'react';
 import Link from 'next/link';
 import { AlertTriangle, Bell, Info, Clock, Users, Eye } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 import { getTimeAgo } from '@/lib/utils';
 import type { FloodAlert as FloodAlertType } from '@/types';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 // Import file CSS yang baru dibuat
 import './PeringatanBencanaCard.css';
@@ -50,6 +52,7 @@ export const PeringatanBencanaCard = memo(( // ADDED: memo
   PeringatanBencanaCard.displayName = 'PeringatanBencanaCard'; // ADDED: display name
   const wrapRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLElement>(null);
+  const { t, lang } = useLanguage();
 
   // Memoized handlers untuk mengoptimalkan performa animasi
   const animationHandlers = useMemo(() => {
@@ -188,24 +191,28 @@ export const PeringatanBencanaCard = memo(( // ADDED: memo
             </div>
             <div className="pc-content">
               <div className="pc-details">
-                <h3>{alert.title}</h3>
-                <p>{alert.level.toUpperCase()}</p>
+                <h3>{lang === 'en' && alert.titleEn ? alert.titleEn : alert.title}</h3>
+                <p>{(alert.level === 'danger' && lang === 'id') ? 'BAHAYA' : (alert.level === 'danger' && lang === 'en') ? 'DANGER' :
+                  (alert.level === 'warning' && lang === 'id') ? 'PERINGATAN' : (alert.level === 'warning' && lang === 'en') ? 'WARNING' :
+                    (alert.level === 'critical' && lang === 'id') ? 'KRITIKAL' : (alert.level === 'critical' && lang === 'en') ? 'CRITICAL' :
+                      (alert.level === 'info' && lang === 'id') ? 'INFO' : 'INFO'}
+                </p>
               </div>
             </div>
             <div className="pc-alert-info">
               <div className="pc-alert-details">
                 <div>
                   <Info className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span>{alert.message}</span>
+                  <span>{lang === 'en' && alert.messageEn ? alert.messageEn : alert.message}</span>
                 </div>
                 <div>
                   <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span>{getTimeAgo(alert.timestamp)}</span>
+                  <span>{getTimeAgo(alert.timestamp, lang)}</span>
                 </div>
                 {alert.affectedAreas && alert.affectedAreas.length > 0 && (
                   <div>
                     <Users className="w-3 h-3 sm:w-4 sm:h-4" />
-                    <span>Terdampak: {alert.affectedAreas.join(', ')}</span>
+                    <span>{t('common.affected')} {alert.affectedAreas.join(', ')}</span>
                   </div>
                 )}
               </div>

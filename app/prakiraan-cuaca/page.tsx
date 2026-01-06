@@ -62,6 +62,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Switch } from '@/components/ui/switch';
 
 import { SelectedLocation } from '@/types/location';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 // --- Helper Functions (Tidak ada perubahan) ---
 const getWeatherIcon = (iconCode: string, size = 8) => {
@@ -137,13 +138,15 @@ interface WeatherDisplayProps {
 }
 
 const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
+  const { t, lang } = useLanguage();
+
   if (loading) {
     return (
       <Card className="h-full flex items-center justify-center bg-slate-800/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl">
         <CardContent>
           <div className="text-center">
             <Loader2 className="w-8 h-8 animate-spin text-blue-400 mx-auto mb-4" />
-            <p className="text-slate-400">Memuat data cuaca...</p>
+            <p className="text-slate-400">{t('weather.loadingData')}</p>
           </div>
         </CardContent>
       </Card>
@@ -174,7 +177,7 @@ const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
           <div className="text-center py-8">
             <Cloud className="w-16 h-16 text-slate-600 mx-auto mb-4" />
             <p className="text-slate-400">
-              Pilih atau cari lokasi untuk melihat cuaca
+              {t('weather.selectLocation')}
             </p>
           </div>
         </CardContent>
@@ -189,12 +192,12 @@ const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
       <CardHeader>
         <CardTitle className="text-white flex items-center space-x-2">
           <Activity className="w-5 h-5 text-cyan-400" />
-          <span>Cuaca Saat Ini</span>
+          <span>{t('weather.currentWeather')}</span>
           <Badge
             variant="success"
             className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border bg-green-600/20 text-green-400 border-green-500/30"
           >
-            Live
+            {t('weather.live')}
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -209,12 +212,12 @@ const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
                 {Math.round(current.main?.temp || 0)}°C
               </div>
               <div className="text-slate-300 capitalize">
-                {current.weather?.[0]?.description || 'Tidak diketahui'}
+                {current.weather?.[0]?.description || t('weather.unknown')}
               </div>
             </div>
           </div>
           <div className="text-sm text-slate-400">
-            Terasa seperti {Math.round(current.main?.feels_like || 0)}°C
+            {t('weather.feelsLike')} {Math.round(current.main?.feels_like || 0)}°C
           </div>
         </div>
 
@@ -222,7 +225,7 @@ const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
           <div className="bg-slate-100/50 dark:bg-slate-700/30 rounded-xl p-4 border border-slate-200/50 dark:border-slate-600/20 flex items-center space-x-3">
             <Droplets className="w-5 h-5 text-blue-400" />
             <div>
-              <span className="text-xs text-slate-500 dark:text-slate-400">Kelembaban</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">{t('weather.humidity')}</span>
               <div className="font-semibold text-slate-900 dark:text-white">
                 {current.main?.humidity ?? 'N/A'}%
               </div>
@@ -231,7 +234,7 @@ const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
           <div className="bg-slate-100/50 dark:bg-slate-700/30 rounded-xl p-4 border border-slate-200/50 dark:border-slate-600/20 flex items-center space-x-3">
             <Wind className="w-5 h-5 text-green-400" />
             <div>
-              <span className="text-xs text-slate-500 dark:text-slate-400">Angin</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">{t('weather.wind')}</span>
               <div className="font-semibold text-slate-900 dark:text-white">
                 {current.wind?.speed !== undefined
                   ? `${current.wind.speed.toFixed(1)} m/s`
@@ -242,7 +245,7 @@ const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
           <div className="bg-slate-100/50 dark:bg-slate-700/30 rounded-xl p-4 border border-slate-200/50 dark:border-slate-600/20 flex items-center space-x-3">
             <Gauge className="w-5 h-5 text-purple-400" />
             <div>
-              <span className="text-xs text-slate-500 dark:text-slate-400">Tekanan</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">{t('weather.pressure')}</span>
               <div className="font-semibold text-slate-900 dark:text-white">
                 {current.main?.pressure ?? 'N/A'} hPa
               </div>
@@ -251,7 +254,7 @@ const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
           <div className="bg-slate-100/50 dark:bg-slate-700/30 rounded-xl p-4 border border-slate-200/50 dark:border-slate-600/20 flex items-center space-x-3">
             <Eye className="w-5 h-5 text-orange-400" />
             <div>
-              <span className="text-xs text-slate-500 dark:text-slate-400">Visibilitas</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">{t('weather.visibility')}</span>
               <div className="font-semibold text-slate-900 dark:text-white">
                 {current.visibility !== undefined
                   ? `${(current.visibility / 1000).toFixed(1)} km`
@@ -265,11 +268,11 @@ const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
           <div className="flex items-center space-x-2">
             <Sunrise className="w-6 h-6 text-yellow-400" />
             <div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">Terbit</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400">{t('weather.sunrise')}</div>
               <div className="font-semibold text-slate-900 dark:text-white">
                 {current.sys?.sunrise
                   ? new Date(current.sys.sunrise * 1000).toLocaleTimeString(
-                    'id-ID',
+                    lang === 'en' ? 'en-US' : 'id-ID',
                     { hour: '2-digit', minute: '2-digit' },
                   )
                   : 'N/A'}
@@ -279,11 +282,11 @@ const WeatherDisplay = ({ data, loading, error }: WeatherDisplayProps) => {
           <div className="flex items-center space-x-2">
             <Sunset className="w-6 h-6 text-orange-500" />
             <div>
-              <div className="text-xs text-slate-400">Terbenam</div>
+              <div className="text-xs text-slate-400">{t('weather.sunset')}</div>
               <div className="font-semibold text-slate-900 dark:text-white">
                 {current.sys?.sunset
                   ? new Date(current.sys.sunset * 1000).toLocaleTimeString(
-                    'id-ID',
+                    lang === 'en' ? 'en-US' : 'id-ID',
                     { hour: '2-digit', minute: '2-digit' },
                   )
                   : 'N/A'}
@@ -310,6 +313,8 @@ const DailyForecast = ({
   loading,
   error, // Destructure error prop
 }: DailyForecastProps) => {
+  const { t, lang } = useLanguage();
+
   // ✅ PERBAIKAN: Cek data.daily yang sekarang berasal dari endpoint 2.5/forecast
   if (loading) {
     return (
@@ -317,7 +322,7 @@ const DailyForecast = ({
         <CardContent>
           <div className="text-center">
             <Loader2 className="w-8 h-8 animate-spin text-blue-400 mx-auto mb-4" />
-            <p className="text-slate-400">Memuat prakiraan...</p>
+            <p className="text-slate-400">{t('weather.loadingForecast')}</p>
           </div>
         </CardContent>
       </Card>
@@ -348,7 +353,7 @@ const DailyForecast = ({
         <CardTitle className="text-slate-900 dark:text-white flex items-center space-x-2">
           <TrendingUp className="w-5 h-5 text-green-400" />
           {/* ✅ PERBAIKAN: Judul menjadi 5 hari */}
-          <span>Prakiraan 5 Hari</span>
+          <span>{t('weather.forecast5Days')}</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -359,7 +364,9 @@ const DailyForecast = ({
             className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-700/30 transition-colors"
           >
             <span className="font-medium text-slate-700 dark:text-slate-300 w-1/4">
-              {formatDay(day.dt)}
+              {new Date(day.dt * 1000).toLocaleDateString(lang === 'en' ? 'en-US' : 'id-ID', {
+                weekday: 'short',
+              })}
             </span>
             <div className="w-1/4 flex justify-center">
               {getWeatherIcon(day.weather?.[0]?.icon || '', 6)}
@@ -386,6 +393,7 @@ const DailyForecast = ({
 
 
 export default function PrakiraanCuacaPage() {
+  const { t, lang } = useLanguage();
   const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY;
 
   const [selectedLocation, setSelectedLocation] = useState<SelectedLocation | null>({
@@ -462,6 +470,7 @@ export default function PrakiraanCuacaPage() {
             params: {
               lat: selectedLocation.latitude,
               lon: selectedLocation.longitude,
+              lang: lang === 'id' ? 'id' : 'en',
             },
           });
           setCurrentWeatherData(response.data);
@@ -471,7 +480,7 @@ export default function PrakiraanCuacaPage() {
           console.error('Error fetching weather data:', error);
           const errorMessage =
             error.response?.data?.error ||
-            'Gagal mengambil data cuaca. Coba lagi nanti.';
+            t('weather.errors.fetchFailed');
           setWeatherError(errorMessage);
         } finally {
           setLoadingWeather(false);
@@ -480,7 +489,7 @@ export default function PrakiraanCuacaPage() {
 
       fetchWeatherData();
     }
-  }, [selectedLocation, API_KEY]);
+  }, [selectedLocation, API_KEY, lang]);
 
   const handleRegionSelect = (location: SelectedLocation) => {
     setSelectedLocation(location);
@@ -491,20 +500,20 @@ export default function PrakiraanCuacaPage() {
     const trimmedQuery = searchQuery.trim();
 
     if (!trimmedQuery) {
-      setSearchLocationError('Input pencarian tidak boleh kosong.');
+      setSearchLocationError(t('weather.errors.searchEmpty'));
       return;
     }
 
     if (trimmedQuery.length < 2) {
       setSearchLocationError(
-        'Input pencarian terlalu pendek (minimal 2 karakter).',
+        t('weather.errors.searchShort'),
       );
       return;
     }
 
     if (trimmedQuery.length > 100) {
       setSearchLocationError(
-        'Input pencarian terlalu panjang (maksimal 100 karakter).',
+        t('weather.errors.searchLong'),
       );
       return;
     }
@@ -513,13 +522,13 @@ export default function PrakiraanCuacaPage() {
     const validCharactersRegex = /^[a-zA-Z0-9\s,.-]*$/;
     if (!validCharactersRegex.test(trimmedQuery)) {
       setSearchLocationError(
-        'Input pencarian mengandung karakter yang tidak valid.',
+        t('weather.errors.searchInvalid'),
       );
       return;
     }
 
     if (!API_KEY) {
-      setSearchLocationError('API Key OpenWeatherMap tidak ditemukan.');
+      setSearchLocationError(t('weather.errors.apiKeyMissing'));
       return;
     }
 
@@ -544,11 +553,11 @@ export default function PrakiraanCuacaPage() {
         console.log('Selected location via search:', newLocation);
         setSearchQuery('');
       } else {
-        setSearchLocationError(`Lokasi "${trimmedQuery}" tidak ditemukan.`);
+        setSearchLocationError(t('weather.errors.locationNotFound').replace('{query}', trimmedQuery));
       }
     } catch (error) {
       console.error('Error geocoding location:', error);
-      setSearchLocationError('Gagal mencari lokasi. Periksa koneksi Anda.');
+      setSearchLocationError(t('weather.errors.searchFailed'));
     } finally {
       setIsSearchingLocation(false);
     }
@@ -589,7 +598,7 @@ export default function PrakiraanCuacaPage() {
               });
             }
           } catch (error) {
-            setSearchLocationError('Gagal mendapatkan nama lokasi.');
+            setSearchLocationError(t('weather.errors.getLocationFailed'));
             setSelectedLocation({
               name: 'Lokasi Saat Ini',
               latitude: latitude,
@@ -602,13 +611,13 @@ export default function PrakiraanCuacaPage() {
         },
         (error) => {
           setSearchLocationError(
-            'Gagal mengakses lokasi. Izinkan akses di browser Anda.',
+            t('weather.errors.geolocationFailed'),
           );
           setIsSearchingLocation(false);
         },
       );
     } else {
-      setSearchLocationError('Geolocation tidak didukung oleh browser ini.');
+      setSearchLocationError(t('weather.errors.geolocationUnsupported'));
     }
   };
 
@@ -622,38 +631,38 @@ export default function PrakiraanCuacaPage() {
   const weatherLayerConfigs = [
     {
       key: 'clouds',
-      label: 'Awan',
+      label: t('weather.layers.clouds'),
       icon: Cloud,
       color: 'text-gray-400',
-      description: 'Tutupan awan',
+      description: t('weather.layers.cloudCover'),
     },
     {
       key: 'precipitation',
-      label: 'Curah Hujan',
+      label: t('weather.layers.precipitation'),
       icon: CloudRain,
       color: 'text-blue-400',
-      description: 'Intensitas hujan',
+      description: t('weather.layers.rainIntensity'),
     },
     {
       key: 'temperature',
-      label: 'Suhu',
+      label: t('weather.layers.temperature'),
       icon: Thermometer,
       color: 'text-red-400',
-      description: 'Distribusi suhu',
+      description: t('weather.layers.tempDistribution'),
     },
     {
       key: 'wind',
-      label: 'Angin',
+      label: t('weather.layers.wind'),
       icon: Wind,
       color: 'text-green-400',
-      description: 'Kecepatan angin',
+      description: t('weather.layers.windSpeed'),
     },
     {
       key: 'pressure',
-      label: 'Tekanan',
+      label: t('weather.layers.pressure'),
       icon: Gauge,
       color: 'text-purple-400',
-      description: 'Tekanan atmosfer',
+      description: t('weather.layers.atmPressure'),
     },
   ];
 
@@ -672,10 +681,10 @@ export default function PrakiraanCuacaPage() {
               </div>
               <div>
                 <h1 className="text-xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-cyan-600 dark:from-white dark:via-blue-100 dark:to-cyan-100 bg-clip-text text-transparent">
-                  Prakiraan Cuaca
+                  {t('weather.pageTitle')}
                 </h1>
                 <p className="text-slate-500 dark:text-slate-400 text-xs hidden md:block">
-                  Monitoring cuaca real-time dengan visualisasi interaktif
+                  {t('weather.pageSubtitle')}
                 </p>
               </div>
             </div>
@@ -689,7 +698,7 @@ export default function PrakiraanCuacaPage() {
                 ) : (
                   <AlertTriangle className="w-3 h-3 mr-1.5" />
                 )}
-                {API_KEY ? 'Online' : 'API Key Error'}
+                {API_KEY ? t('weather.statusOnline') : t('weather.statusError')}
               </Badge>
               <Button
                 variant="ghost"
@@ -720,13 +729,13 @@ export default function PrakiraanCuacaPage() {
               <CardHeader>
                 <CardTitle className="text-slate-900 dark:text-white flex items-center space-x-2">
                   <Search className="w-5 h-5 text-blue-500 dark:text-blue-400" />
-                  <span>Pencarian Lokasi</span>
+                  <span>{t('weather.searchLocation')}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="relative">
                   <Input
-                    placeholder="Cari kota atau wilayah..."
+                    placeholder={t('weather.searchPlaceholder')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyPress={(e) =>
@@ -745,7 +754,7 @@ export default function PrakiraanCuacaPage() {
                     disabled={isSearchingLocation || !searchQuery.trim()}
                     className="w-full inline-flex items-center justify-center rounded-xl font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500/50 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg shadow-blue-500/25 px-4 py-2 text-sm"
                   >
-                    <Search className="w-4 h-4 mr-2" /> Cari
+                    <Search className="w-4 h-4 mr-2" /> {t('weather.searchButton')}
                   </Button>
                   <Button
                     onClick={handleGetCurrentLocation}
@@ -777,7 +786,7 @@ export default function PrakiraanCuacaPage() {
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-slate-900 dark:text-white flex items-center space-x-2">
                     <Layers className="w-5 h-5 text-purple-500 dark:text-purple-400" />
-                    <span>Layer Peta</span>
+                    <span>{t('weather.mapLayers')}</span>
                   </CardTitle>
                   <Button
                     variant="ghost"
@@ -849,7 +858,7 @@ export default function PrakiraanCuacaPage() {
                   <CardTitle className="text-slate-900 dark:text-white flex items-center space-x-2 truncate">
                     <Globe className="w-5 h-5 text-blue-500 dark:text-blue-400 flex-shrink-0" />
                     <span className="truncate">
-                      {selectedLocation?.name || 'Peta Cuaca Interaktif'}
+                      {selectedLocation?.name || t('weather.interactiveMap')}
                     </span>
                   </CardTitle>
                 </div>
@@ -862,8 +871,8 @@ export default function PrakiraanCuacaPage() {
                   className="absolute top-[78px] left-[10px] z-[1000] w-8 h-8 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 rounded-sm flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-lg"
                   aria-label={
                     isMapFullscreen
-                      ? 'Keluar dari layar penuh'
-                      : 'Masuk ke layar penuh'
+                      ? t('weather.exitFullscreen')
+                      : t('weather.enterFullscreen')
                   }
                 >
                   {isMapFullscreen ? (
@@ -896,8 +905,7 @@ export default function PrakiraanCuacaPage() {
                       >
                         <AlertTriangle className="w-4 h-4" />
                         <AlertDescription className="text-sm">
-                          API Key OpenWeatherMap tidak valid. Silakan periksa
-                          file .env.local Anda.
+                          {t('weather.invalidApiKey')}
                         </AlertDescription>
                       </Alert>
                     </div>
@@ -929,7 +937,8 @@ export default function PrakiraanCuacaPage() {
                 <CardHeader>
                   <CardTitle className="text-slate-900 dark:text-white flex items-center space-x-2">
                     <Leaf className="w-5 h-5 text-green-500 dark:text-white" />
-                    <span>Kualitas Udara</span>
+                    {/* Fix: use airQuality.title directly if it is root, OR check i18 structure. */}
+                    <span>{t('airQuality.title')}</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
@@ -941,16 +950,16 @@ export default function PrakiraanCuacaPage() {
                           AQI: {currentWeatherData.airQuality.aqi}
                         </p>
                         <p className="text-md text-slate-500 dark:text-gray-300">
-                          Level: {currentWeatherData.airQuality.level}
+                          {t('airQuality.level')}: {t(`airQuality.${currentWeatherData.airQuality.level}`)}
                         </p>
                       </div>
                     </div>
                     <p className="text-sm text-slate-500 dark:text-gray-400 text-right">
-                      Polutan Utama: {currentWeatherData.airQuality.pollutant}
+                      {t('airQuality.mainPollutant')}: {currentWeatherData.airQuality.pollutant}
                     </p>
                   </div>
                   <p className="text-sm text-slate-600 dark:text-gray-200 border-t border-slate-200 dark:border-slate-700 pt-4 mt-4">
-                    Rekomendasi: {currentWeatherData.airQuality.recommendation}
+                    {t('airQuality.recommendation')}: {t(`airQuality.${currentWeatherData.airQuality.recommendation}`)}
                   </p>
                 </CardContent>
               </Card>
@@ -960,18 +969,18 @@ export default function PrakiraanCuacaPage() {
                 <CardHeader>
                   <CardTitle className="text-slate-900 dark:text-white flex items-center space-x-2">
                     <Compass className="w-5 h-5 text-cyan-500 dark:text-cyan-400" />
-                    <span>Informasi Lokasi</span>
+                    <span>{t('weather.locationInfo')}</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
                   <div className="flex justify-between py-2 border-b border-slate-200 dark:border-slate-700/30">
-                    <span className="text-slate-500 dark:text-slate-400">Latitude</span>
+                    <span className="text-slate-500 dark:text-slate-400">{t('weather.latitude')}</span>
                     <span className="text-slate-900 dark:text-white font-medium font-mono">
                       {selectedLocation.latitude.toFixed(4)}°
                     </span>
                   </div>
                   <div className="flex justify-between py-2">
-                    <span className="text-slate-500 dark:text-slate-400">Longitude</span>
+                    <span className="text-slate-500 dark:text-slate-400">{t('weather.longitude')}</span>
                     <span className="text-slate-900 dark:text-white font-medium font-mono">
                       {selectedLocation.longitude.toFixed(4)}°
                     </span>

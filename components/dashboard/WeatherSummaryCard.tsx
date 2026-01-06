@@ -1,5 +1,6 @@
 import { CloudSun, Sun, CloudRain, Cloud, Thermometer } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 interface WeatherSummaryCardProps {
   weatherSummary: {
@@ -33,12 +34,13 @@ const getWeatherIcon = (iconName: string, size: string = "w-6 h-6") => {
 };
 
 export function WeatherSummaryCard({ weatherSummary }: WeatherSummaryCardProps) {
+  const { t } = useLanguage();
   return (
     <Card className="bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800/50 backdrop-blur-lg rounded-xl shadow-lg dark:shadow-xl overflow-hidden text-slate-900 dark:text-white transition-all duration-300">
       <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800/50">
         <CardTitle className="flex items-center space-x-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
           <Thermometer className="h-5 w-5 text-primary" />
-          <span>Prakiraan Cuaca</span>
+          <span>{t('sidebar.weatherForecast')}</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="p-4 pt-4">

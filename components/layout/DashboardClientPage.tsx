@@ -14,6 +14,7 @@ import Image from 'next/image';
 
 // State Management
 import { useAppStore } from '@/lib/store';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 // UI Components
 import { WeatherDisplay } from '@/components/weather/WeatherDisplay';
@@ -107,6 +108,7 @@ const FloodReportChart = dynamic(
 export function DashboardClientPage({ initialData }) {
   const { selectedLocation, mapBounds, setSelectedLocation, setMapBounds } =
     useAppStore();
+  const { t } = useLanguage();
 
   const [weatherSummary, setWeatherSummary] = useState(
     initialData.weatherSummary || null,
@@ -304,39 +306,39 @@ export function DashboardClientPage({ initialData }) {
   const heroCards = useMemo(
     () => [
       {
-        title: 'Total Wilayah',
-        description: 'Wilayah unik yang dipantau',
+        title: t('landing.totalRegions'),
+        description: t('landing.descTotalRegions'),
         count: initialData.stats.totalRegions,
         icon: MapPin,
         color: 'text-blue-400',
         bgColor: 'bg-blue-500/20',
       },
       {
-        title: 'Peringatan Aktif',
-        description: 'Peringatan real-time saat ini',
+        title: t('landing.activeAlerts'),
+        description: t('landing.descActiveAlerts'),
         count: initialData.stats.activeAlerts,
         icon: Bell,
         color: 'text-amber-400',
         bgColor: 'bg-amber-500/20',
       },
       {
-        title: 'Zona Rawan',
-        description: 'Pos pemantau level Siaga/Awas',
+        title: t('landing.floodZones'),
+        description: t('landing.descFloodZones'),
         count: initialData.stats.floodZones,
         icon: Shield,
         color: 'text-red-400',
         bgColor: 'bg-red-500/20',
       },
       {
-        title: 'Orang Berisiko',
-        description: 'Estimasi populasi terdampak',
+        title: t('landing.peopleAtRisk'),
+        description: t('landing.descPeopleAtRisk'),
         count: formatPopulation(initialData.stats.peopleAtRisk),
         icon: Users,
         color: 'text-purple-400',
         bgColor: 'bg-purple-500/20',
       },
     ],
-    [initialData.stats],
+    [initialData.stats, t],
   );
 
   const sendChatMessage = async (message: string) => {
@@ -521,8 +523,7 @@ export function DashboardClientPage({ initialData }) {
               </div>
 
               <p className="text-lg sm:text-xl md:text-2xl text-white/90 max-w-3xl mx-auto mt-4">
-                Sistem Deteksi Banjir & Monitoring Cuaca Real-time untuk
-                Indonesia
+                {t('landing.heroSubtitle')}
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 max-w-xs sm:max-w-md mx-auto">
@@ -533,7 +534,7 @@ export function DashboardClientPage({ initialData }) {
                     className="w-full sm:w-auto"
                   >
                     <MapPin className="mr-2 h-5 w-5" />
-                    Pilih Lokasi Banjir
+                    {t('landing.selectLocation')}
                   </Button>
                 </Link>
                 <Link href="/peringatan">
@@ -543,7 +544,7 @@ export function DashboardClientPage({ initialData }) {
                     className="bg-transparent text-white border-white/50 hover:bg-white/10 w-full sm:w-auto"
                   >
                     <Bell className="mr-2 h-5 w-5" />
-                    Peringatan Terkini
+                    {t('landing.latestAlerts')}
                   </Button>
                 </Link>
               </div>
@@ -638,17 +639,16 @@ export function DashboardClientPage({ initialData }) {
                   <CardHeader>
                     <CardTitle className="flex items-center space-x-2">
                       <MapPin className="h-8 w-8 text-primary" />
-                      <span className="text-2xl text-slate-900 dark:text-white">Peta Banjir Interaktif</span>
+                      <span className="text-2xl text-slate-900 dark:text-white">{t('landing.interactiveMap')}</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-slate-600 dark:text-slate-400 mb-6">
-                      Visualisasikan data banjir, zona rawan, dan peringatan
-                      secara real-time. Buka peta untuk eksplorasi mendalam.
+                      {t('landing.mapDescription')}
                     </p>
                     <Button size="lg" onClick={() => setMapDrawerOpen(true)}>
                       <Eye className="mr-2 h-5 w-5" />
-                      Buka Peta
+                      {t('landing.openMap')}
                     </Button>
                   </CardContent>
                 </Card>
@@ -665,7 +665,7 @@ export function DashboardClientPage({ initialData }) {
                     <CardTitle className="flex items-center space-x-2">
                       <MapPin className="h-5 w-5 text-primary" />
                       <span className="text-gray-900 dark:text-gray-100">
-                        Peta Banjir -{' '}
+                        {t('dashboard.floodMapTitle')} -{' '}
                         {selectedLocation?.districtName || 'Indonesia'}
                       </span>
                       <Badge variant="success" className="ml-auto">
@@ -678,7 +678,7 @@ export function DashboardClientPage({ initialData }) {
                         className="ml-2"
                       >
                         <RotateCcw className="h-4 w-4 mr-1" />
-                        Perbarui Data
+                        {t('landing.updateData')}
                       </Button>
                     </CardTitle>
                   </CardHeader>
@@ -720,7 +720,7 @@ export function DashboardClientPage({ initialData }) {
               ) : isLoadingWidgets ? (
                 <Card className="flex h-full min-h-[150px] flex-col items-center justify-center p-6 bg-white/80 dark:bg-slate-900/80 border-slate-200/50 dark:border-slate-800/50">
                   <Loader2 className="h-8 w-8 animate-spin text-cyan-400 mb-3" />
-                  <p className="text-slate-900 dark:text-white">Memuat data cuaca...</p>
+                  <p className="text-slate-900 dark:text-white">{t('landing.loadingWeather')}</p>
                 </Card>
               ) : weatherSummary || airQuality ? (
                 <>
@@ -749,11 +749,10 @@ export function DashboardClientPage({ initialData }) {
                 <Card className="flex h-full min-h-[150px] flex-col items-center justify-center text-center p-6 bg-white/80 dark:bg-slate-900/80 border-slate-200/50 dark:border-slate-800/50">
                   <Info className="h-8 w-8 text-yellow-500 dark:text-yellow-400 mb-3" />
                   <h4 className="text-slate-900 dark:text-white font-semibold mb-1">
-                    Data Tidak Tersedia
+                    {t('landing.dataUnavailable')}
                   </h4>
                   <p className="text-slate-500 dark:text-slate-400 text-sm">
-                    Data cuaca atau kualitas udara tidak dapat dimuat untuk
-                    lokasi ini.
+                    {t('landing.unavailableDesc')}
                   </p>
                 </Card>
               )}
@@ -781,11 +780,11 @@ export function DashboardClientPage({ initialData }) {
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center space-x-2">
                     <Bell className="h-5 w-5 text-warning" />
-                    <span>Peringatan Bencana Terkini</span>
+                    <span>{t('landing.latestDisasterAlerts')}</span>
                   </CardTitle>
                   <Link href="/peringatan">
                     <Button variant="outline" size="sm">
-                      <span>Lihat Detail</span>
+                      <span>{t('landing.viewDetail')}</span>
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>

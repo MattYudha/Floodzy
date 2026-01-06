@@ -18,6 +18,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
+import { useLanguage } from '@/src/context/LanguageContext';
 import {
   Popover,
   PopoverContent,
@@ -92,6 +93,7 @@ function RegionSelectField({
 }: RegionSelectFieldProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const isDesktop = useMediaQuery('(min-width: 768px)');
+  const { t } = useLanguage();
 
   const open = isOpen !== undefined ? isOpen : internalOpen;
   const setOpen = onOpenChange || setInternalOpen;
@@ -101,7 +103,7 @@ function RegionSelectField({
       <Command className="bg-transparent">
         <div className="px-3 py-2 border-b border-slate-100 dark:border-gray-700">
           <CommandInput
-            placeholder={`Cari ${placeholder.toLowerCase()}...`}
+            placeholder={`${t('common.searchPlaceholder')}`}
             className="h-9 border-0 bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-0"
             autoFocus={isDesktop}
           />
@@ -184,7 +186,7 @@ function RegionSelectField({
       <div className="flex items-center gap-2 truncate">
         {icon}
         <span className={`truncate ${currentDisplayName ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-gray-400'}`}>
-          {currentDisplayName || `Pilih ${placeholder}`}
+          {currentDisplayName || `${t('landing.selectLocation')} ${placeholder}`}
         </span>
       </div>
       <ChevronDown
@@ -262,6 +264,7 @@ export function RegionDropdown({
   activeFloodCount = 0,
 }: RegionDropdownProps) {
   const router = useRouter();
+  const { t } = useLanguage();
   const [activeField, setActiveField] = useState<'province' | 'regency' | 'district' | null>(null);
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [selectedProvinceCode, setSelectedProvinceCode] = useState<
@@ -468,10 +471,10 @@ export function RegionDropdown({
                 <MapPin className="h-5 w-5 text-blue-500 dark:text-blue-400" />
                 <div>
                   <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white">
-                    Pilih Wilayah
+                    {t('regionSelector.title')}
                   </CardTitle>
                   <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
-                    Pilih dari provinsi hingga kecamatan
+                    {t('regionSelector.subtitle')}
                   </p>
                 </div>
               </div>
@@ -502,7 +505,7 @@ export function RegionDropdown({
               <RegionSelectField
                 selectedValue={selectedProvinceCode}
                 onValueChange={handleProvinceChange}
-                placeholder="Provinsi"
+                placeholder={t('regionSelector.province')}
                 loading={loadingProvinces}
                 disabled={loadingProvinces}
                 data={provinces}
@@ -517,7 +520,7 @@ export function RegionDropdown({
               <RegionSelectField
                 selectedValue={selectedRegencyCode}
                 onValueChange={handleRegencyChange}
-                placeholder="Kabupaten/Kota"
+                placeholder={t('regionSelector.city')}
                 loading={loadingRegencies}
                 disabled={!selectedProvinceCode || loadingRegencies}
                 data={regencies}
@@ -532,7 +535,7 @@ export function RegionDropdown({
               <RegionSelectField
                 selectedValue={selectedDistrictCode}
                 onValueChange={handleDistrictChange}
-                placeholder="Kecamatan"
+                placeholder={t('regionSelector.district')}
                 loading={loadingDistricts}
                 disabled={!selectedRegencyCode || loadingDistricts}
                 data={districts}
@@ -551,24 +554,24 @@ export function RegionDropdown({
                 <div className="flex items-center gap-2 mb-3">
                   <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400" />
                   <h4 className="text-sm font-semibold text-green-600 dark:text-green-400">
-                    Lokasi Berhasil Dipilih
+                    {t('regionSelector.successTitle')}
                   </h4>
                 </div>
                 <div className="space-y-2 text-sm">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 border-b border-green-200/50 dark:border-green-800/50 pb-2 last:border-0 last:pb-0">
-                    <span className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 font-medium">Provinsi</span>
+                    <span className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 font-medium">{t('regionSelector.province')}</span>
                     <span className="text-sm sm:text-sm text-slate-900 dark:text-white font-bold text-left sm:text-right break-words w-full sm:w-auto">
                       {displayProvinceName}
                     </span>
                   </div>
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 border-b border-green-200/50 dark:border-green-800/50 pb-2 last:border-0 last:pb-0">
-                    <span className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 font-medium">Kabupaten/Kota</span>
+                    <span className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 font-medium">{t('regionSelector.city')}</span>
                     <span className="text-sm sm:text-sm text-slate-900 dark:text-white font-bold text-left sm:text-right break-words w-full sm:w-auto">
                       {displayRegencyName}
                     </span>
                   </div>
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
-                    <span className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 font-medium">Kecamatan</span>
+                    <span className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 font-medium">{t('regionSelector.district')}</span>
                     <span className="text-sm sm:text-sm text-slate-900 dark:text-white font-bold text-left sm:text-right break-words w-full sm:w-auto">
                       {displayDistrictName}
                     </span>
@@ -579,7 +582,7 @@ export function RegionDropdown({
                     className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white"
                   >
                     <span className="flex items-center justify-center">
-                      Lihat Peta Banjir
+                      {t('regionSelector.viewFloodMap')}
                       <ArrowRight className="h-4 w-4 ml-2" />
                     </span>
                   </Button>
@@ -597,12 +600,12 @@ export function RegionDropdown({
                 <Map className="h-5 w-5 text-blue-500 dark:text-blue-400 shrink-0" />
                 <div>
                   <CardTitle className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
-                    Monitoring Cuaca
+                    {t('weatherInsight.title')}
                   </CardTitle>
                   <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
                     {selectedLocation?.districtName
-                      ? "Visualisasi cuaca lokasi terpilih"
-                      : "Pilih lokasi untuk melihat detail cuaca"}
+                      ? t('weatherInsight.subtitle')
+                      : t('weatherInsight.subtitle')}
                   </p>
                 </div>
               </div>
@@ -657,7 +660,7 @@ export function RegionDropdown({
                     className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20 w-full sm:w-auto min-w-[140px]"
                   >
                     <Eye className="mr-2 h-4 w-4" />
-                    Buka Peta
+                    {t('landing.openMap')}
                   </Button>
                 </div>
               ) : (

@@ -27,6 +27,8 @@ import { useAlertCount } from '@/components/contexts/AlertCountContext';
 import { CommandMenu } from './CommandMenu';
 import { SearchTrigger } from './SearchTrigger';
 import { WeatherShortcut } from '@/components/weather/WeatherShortcut';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 
 interface HeaderProps {
@@ -36,6 +38,7 @@ interface HeaderProps {
 
 export function Header({ onMenuToggle, isMenuOpen }: HeaderProps) {
   const { theme, setTheme } = useTheme();
+  const { t } = useLanguage();
   const [isCommandOpen, setCommandOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -85,7 +88,7 @@ export function Header({ onMenuToggle, isMenuOpen }: HeaderProps) {
                 className="flex items-center w-full px-3 py-2 text-sm text-muted-foreground bg-transparent border border-border rounded-lg"
               >
                 <Search className="h-4 w-4 mr-3" />
-                <span className="flex-grow text-left">Cari wilayah atau lokasi...</span>
+                <span className="flex-grow text-left">{t('common.searchPlaceholder')}</span>
               </button>
             </div>
           </div>
@@ -131,9 +134,9 @@ export function Header({ onMenuToggle, isMenuOpen }: HeaderProps) {
                   />
                 </div>
                 <div className="hidden sm:block">
-                  <h1 className="text-xl font-bold gradient-text">Floodzie</h1>
+                  <h1 className="text-xl font-bold gradient-text">{t('common.floodzy')}</h1>
                   <p className="text-xs text-muted-foreground">
-                    Sistem Deteksi Banjir
+                    {t('common.floodDetectionSystem')}
                   </p>
                 </div>
               </motion.div>
@@ -149,7 +152,7 @@ export function Header({ onMenuToggle, isMenuOpen }: HeaderProps) {
                 className="flex items-center space-x-2"
               >
                 <Home size={16} />
-                <span>Dashboard</span>
+                <span>{t('common.dashboard')}</span>
               </Button>
             </Link>
             <Link href="/peta-banjir" passHref>
@@ -159,7 +162,7 @@ export function Header({ onMenuToggle, isMenuOpen }: HeaderProps) {
                 className="flex items-center space-x-2"
               >
                 <MapPin size={16} />
-                <span>Peta</span>
+                <span>{t('common.map')}</span>
               </Button>
             </Link>
             <Link href="/peringatan" passHref>
@@ -169,7 +172,7 @@ export function Header({ onMenuToggle, isMenuOpen }: HeaderProps) {
                 className="flex items-center space-x-2"
               >
                 <Bell size={16} />
-                <span>Peringatan</span>
+                <span>{t('common.warnings')}</span>
               </Button>
             </Link>
           </nav>
@@ -205,6 +208,8 @@ export function Header({ onMenuToggle, isMenuOpen }: HeaderProps) {
             >
               <ThemeIcon size={20} />
             </Button>
+
+            <LanguageSwitcher />
 
             <WeatherShortcut />
 

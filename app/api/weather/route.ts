@@ -7,6 +7,7 @@ export async function GET(request: Request) {
   const lat = searchParams.get('lat');
   const lon = searchParams.get('lon');
   const API_KEY = process.env.OPENWEATHER_API_KEY;
+  const lang = searchParams.get('lang') || 'id';
 
   if (!lat || !lon) {
     return NextResponse.json({ error: 'Latitude and longitude are required' }, { status: 400 });
@@ -25,7 +26,7 @@ export async function GET(request: Request) {
     lon,
     appid: API_KEY,
     units: 'metric',
-    lang: 'id',
+    lang: lang,
   };
 
   try {
@@ -44,14 +45,17 @@ export async function GET(request: Request) {
       const aqi = airPollutionResponse.data.list[0].main.aqi;
       const pm2_5 = airPollutionResponse.data.list[0].components.pm2_5;
 
-      let level = "Tidak Diketahui";
-      let recommendation = "Informasi kualitas udara tidak tersedia.";
+      let level = "unavailable";
+      let recommendation = "unavailableRec";
 
-      if (aqi === 1) { level = "Baik"; recommendation = "Nikmati aktivitas di luar ruangan."; }
-      else if (aqi === 2) { level = "Sedang"; recommendation = "Kurangi aktivitas berat di luar ruangan jika Anda sensitif."; }
-      else if (aqi === 3) { level = "Tidak Sehat bagi Kelompok Sensitif"; recommendation = "Kelompok sensitif harus mengurangi aktivitas di luar ruangan."; }
-      else if (aqi === 4) { level = "Tidak Sehat"; recommendation = "Semua orang harus mengurangi aktivitas di luar ruangan."; }
-      else if (aqi === 5) { level = "Sangat Tidak Sehat"; recommendation = "Hindari semua aktivitas di luar ruangan."; }
+      if (aqi === 1) { level = "good"; recommendation = "goodRec"; }
+      else if (aqi === 2) { level = "moderate"; recommendation = "moderateRec"; }
+      else if (aqi === 3) { level = "unhealthy"; recommendation = "unhealthySensitiveRec"; } // Note: "unhealthySensitive" key in i18n
+      else if (aqi === 4) { level = "unhealthy"; recommendation = "unhealthyRec"; }
+      else if (aqi === 5) { level = "veryUnhealthy"; recommendation = "veryUnhealthyRec"; }
+
+      // Additional check for hazardous if aqi > 5 (rare but good to handle)
+      if (aqi > 5) { level = "hazardous"; recommendation = "hazardousRec"; }
 
       airQualityData = {
         aqi: aqi,

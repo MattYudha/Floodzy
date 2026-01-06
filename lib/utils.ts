@@ -41,31 +41,37 @@ export function formatTime(date: string | Date): string {
   });
 }
 
-export function getTimeAgo(date: string | Date): string {
+export function getTimeAgo(date: string | Date, lang: string = 'id'): string {
   const now = new Date();
   const past = new Date(date);
 
   // Jika 'past' tidak valid atau tanggal di masa depan (bisa menyebabkan NaN)
   if (isNaN(past.getTime())) {
-    return 'Waktu tidak valid';
+    return lang === 'en' ? 'Invalid date' : 'Waktu tidak valid';
   }
 
   const diffInSeconds = Math.floor((now.getTime() - past.getTime()) / 1000);
 
   if (diffInSeconds < 0) {
     // Jika tanggal di masa depan
-    return 'Di masa depan';
+    return lang === 'en' ? 'In the future' : 'Di masa depan';
   } else if (diffInSeconds < 60) {
-    return 'Baru saja';
+    return lang === 'en' ? 'Just now' : 'Baru saja';
   } else if (diffInSeconds < 3600) {
     const minutes = Math.floor(diffInSeconds / 60);
-    return `${minutes} menit yang lalu`;
+    return lang === 'en'
+      ? `${minutes} minute${minutes > 1 ? 's' : ''} ago`
+      : `${minutes} menit yang lalu`;
   } else if (diffInSeconds < 86400) {
     const hours = Math.floor(diffInSeconds / 3600);
-    return `${hours} jam yang lalu`;
+    return lang === 'en'
+      ? `${hours} hour${hours > 1 ? 's' : ''} ago`
+      : `${hours} jam yang lalu`;
   } else {
     const days = Math.floor(diffInSeconds / 86400);
-    return `${days} hari yang lalu`;
+    return lang === 'en'
+      ? `${days} day${days > 1 ? 's' : ''} ago`
+      : `${days} hari yang lalu`;
   }
 }
 
@@ -160,25 +166,25 @@ export function sanitizeHtml(html: string): string {
 }
 
 export function copyToClipboard(text: string): Promise<void> {
-    // This function only works in a browser environment
-    if (typeof navigator === 'undefined' || !navigator.clipboard) {
-        if (typeof document === 'undefined') {
-             return Promise.reject('Clipboard API not available');
-        }
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        try {
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            return Promise.resolve();
-        } catch (err) {
-            document.body.removeChild(textArea);
-            return Promise.reject(err);
-        }
+  // This function only works in a browser environment
+  if (typeof navigator === 'undefined' || !navigator.clipboard) {
+    if (typeof document === 'undefined') {
+      return Promise.reject('Clipboard API not available');
     }
-    return navigator.clipboard.writeText(text);
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      return Promise.resolve();
+    } catch (err) {
+      document.body.removeChild(textArea);
+      return Promise.reject(err);
+    }
+  }
+  return navigator.clipboard.writeText(text);
 }
 
 export function downloadFile(
@@ -204,7 +210,7 @@ export function downloadFile(
 export function getDeviceType(): 'mobile' | 'tablet' | 'desktop' {
   // This function only works in a browser environment
   if (typeof window === 'undefined') {
-      return 'desktop';
+    return 'desktop';
   }
   const width = window.innerWidth;
   if (width < 768) return 'mobile';
@@ -215,7 +221,7 @@ export function getDeviceType(): 'mobile' | 'tablet' | 'desktop' {
 export function isTouchDevice(): boolean {
   // This function only works in a browser environment
   if (typeof window === 'undefined' || typeof navigator === 'undefined') {
-      return false;
+    return false;
   }
   return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 }
@@ -223,7 +229,7 @@ export function isTouchDevice(): boolean {
 export function getStorageItem<T>(key: string, defaultValue: T): T {
   // This function only works in a browser environment
   if (typeof localStorage === 'undefined') {
-      return defaultValue;
+    return defaultValue;
   }
   try {
     const item = localStorage.getItem(key);
@@ -236,7 +242,7 @@ export function getStorageItem<T>(key: string, defaultValue: T): T {
 export function setStorageItem<T>(key: string, value: T): void {
   // This function only works in a browser environment
   if (typeof localStorage === 'undefined') {
-      return;
+    return;
   }
   try {
     localStorage.setItem(key, JSON.stringify(value));
@@ -248,7 +254,7 @@ export function setStorageItem<T>(key: string, value: T): void {
 export function removeStorageItem(key: string): void {
   // This function only works in a browser environment
   if (typeof localStorage === 'undefined') {
-      return;
+    return;
   }
   try {
     localStorage.removeItem(key);
@@ -309,7 +315,7 @@ export function normalizeSeries<T extends ChartRow>(
       const v = Number(o[k]);
       o[k] = Number.isFinite(v) ? v : 0;
     }
-        return o as T;
+    return o as T;
   });
 }
 

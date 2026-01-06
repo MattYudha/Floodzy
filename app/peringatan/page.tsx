@@ -21,6 +21,8 @@ import {
   MessageSquare,
 } from 'lucide-react';
 
+import { useLanguage } from '@/src/context/LanguageContext';
+
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -89,6 +91,7 @@ export default function PeringatanPage() {
   const [isNewsLoading, setIsNewsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [newsError, setNewsError] = useState<string | null>(null);
+  const { t, lang } = useLanguage();
 
   // Real-time alert simulation effect
   useEffect(() => {
@@ -122,12 +125,12 @@ export default function PeringatanPage() {
       setNewsReports(reports);
       // Mock summary
       const summaries = reports.reduce((acc, report) => {
-        acc[report.id] = `Ini adalah ringkasan untuk berita berjudul "${report.title}".`;
+        acc[report.id] = t('warnings.summaryTemplate').replace('{title}', report.title);
         return acc;
       }, {} as { [key: string]: string });
       setGeminiNewsSummary(summaries);
     } catch (err: any) {
-      setNewsError(err.message || 'Gagal memuat berita.');
+      setNewsError(err.message || t('warnings.errorNews'));
     } finally {
       setIsNewsLoading(false);
     }
@@ -162,8 +165,12 @@ export default function PeringatanPage() {
     setError(null);
     setGeminiExplanation(null);
     setSelectedAlert(alert);
+    setSelectedAlert(alert);
     setTimeout(() => {
-      setGeminiExplanation(`Analisis untuk ${alert.location}: ${alert.reason}. Potensi dampak meluas ke area ${alert.affectedAreas?.join(', ')}. Rekomendasi: Tingkatkan kewaspadaan dan siapkan jalur evakuasi.`);
+      setGeminiExplanation(t('warnings.analysisResult')
+        .replace('{location}', alert.location)
+        .replace('{reason}', alert.reason)
+        .replace('{areas}', alert.affectedAreas?.join(', ') || ''));
       setIsLoading(false);
     }, 1500);
   };
@@ -181,60 +188,59 @@ export default function PeringatanPage() {
             <ChevronLeft className="h-6 w-6" />
           </Button>
           <div>
-            <h2 className="text-3xl font-bold mb-2 text-slate-900 dark:text-white">Peringatan Bencana Terkini</h2>
-            <p className="text-slate-500 dark:text-gray-400">Monitoring dan analisis peringatan banjir real-time</p>
+            <h2 className="text-3xl font-bold mb-2 text-slate-900 dark:text-white">{t('warnings.title')}</h2>
+            <p className="text-slate-500 dark:text-gray-400">{t('warnings.subtitle')}</p>
           </div>
         </div>
 
-        {/* Statistics Cards */}
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-500 dark:text-gray-400 text-sm">Total Peringatan</p>
+                <p className="text-slate-500 dark:text-gray-400 text-sm">{t('warnings.totalAlerts')}</p>
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">{totalAlerts}</p>
               </div>
               <div className="bg-blue-100 dark:bg-blue-500/10 p-3 rounded-lg"><Bell className="h-6 w-6 text-blue-600 dark:text-blue-400" /></div>
             </div>
-            <div className="mt-4 flex items-center text-sm"><TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400 mr-1" /><span className="text-green-600 dark:text-green-400">Aktif</span></div>
+            <div className="mt-4 flex items-center text-sm"><TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400 mr-1" /><span className="text-green-600 dark:text-green-400">{t('warnings.active')}</span></div>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-500 dark:text-gray-400 text-sm">Tingkat Tinggi</p>
+                <p className="text-slate-500 dark:text-gray-400 text-sm">{t('warnings.highLevel')}</p>
                 <p className="text-2xl font-bold text-red-600 dark:text-red-400">{highAlerts}</p>
               </div>
               <div className="bg-red-100 dark:bg-red-500/10 p-3 rounded-lg"><AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" /></div>
             </div>
-            <div className="mt-4 flex items-center text-sm"><span className="text-red-600 dark:text-red-400">Perlu Tindakan Segera</span></div>
+            <div className="mt-4 flex items-center text-sm"><span className="text-red-600 dark:text-red-400">{t('warnings.immediateAction')}</span></div>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-500 dark:text-gray-400 text-sm">Tingkat Sedang</p>
+                <p className="text-slate-500 dark:text-gray-400 text-sm">{t('warnings.mediumLevel')}</p>
                 <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{mediumAlerts}</p>
               </div>
               <div className="bg-yellow-100 dark:bg-yellow-500/10 p-3 rounded-lg"><Info className="h-6 w-6 text-yellow-600 dark:text-yellow-400" /></div>
             </div>
-            <div className="mt-4 flex items-center text-sm"><span className="text-yellow-600 dark:text-yellow-400">Pantau Terus</span></div>
+            <div className="mt-4 flex items-center text-sm"><span className="text-yellow-600 dark:text-yellow-400">{t('warnings.monitorConstantly')}</span></div>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }} className="bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-500 dark:text-gray-400 text-sm">Tingkat Rendah</p>
+                <p className="text-slate-500 dark:text-gray-400 text-sm">{t('warnings.lowLevel')}</p>
                 <p className="text-2xl font-bold text-green-600 dark:text-green-400">{lowAlerts}</p>
               </div>
               <div className="bg-green-100 dark:bg-green-500/10 p-3 rounded-lg"><Bell className="h-6 w-6 text-green-600 dark:text-green-400" /></div>
             </div>
-            <div className="mt-4 flex items-center text-sm"><span className="text-green-600 dark:text-green-400">Kondisi Stabil</span></div>
+            <div className="mt-4 flex items-center text-sm"><span className="text-green-600 dark:text-green-400">{t('warnings.stableCondition')}</span></div>
           </motion.div>
         </div>
 
         <Tabs defaultValue="alerts" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6 bg-slate-100 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 p-1">
-            <TabsTrigger value="alerts" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-slate-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=inactive]:text-slate-500 dark:data-[state=inactive]:text-gray-400"><Bell className="w-4 h-4 mr-2" /> Peringatan</TabsTrigger>
-            <TabsTrigger value="news" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-slate-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=inactive]:text-slate-500 dark:data-[state=inactive]:text-gray-400"><Newspaper className="w-4 h-4 mr-2" /> Berita Regional</TabsTrigger>
+            <TabsTrigger value="alerts" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-slate-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=inactive]:text-slate-500 dark:data-[state=inactive]:text-gray-400"><Bell className="w-4 h-4 mr-2" /> {t('warnings.alertsTab')}</TabsTrigger>
+            <TabsTrigger value="news" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-slate-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=inactive]:text-slate-500 dark:data-[state=inactive]:text-gray-400"><Newspaper className="w-4 h-4 mr-2" /> {t('warnings.newsTab')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="alerts">
@@ -263,19 +269,19 @@ export default function PeringatanPage() {
                     <p className="text-slate-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">{alert.reason}</p>
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div className="bg-slate-100 dark:bg-gray-700/50 rounded-lg p-3">
-                        <div className="flex items-center space-x-2 mb-1"><Users className="h-4 w-4 text-blue-600 dark:text-blue-400" /><span className="text-xs text-slate-500 dark:text-gray-400">Terpengaruh</span></div>
+                        <div className="flex items-center space-x-2 mb-1"><Users className="h-4 w-4 text-blue-600 dark:text-blue-400" /><span className="text-xs text-slate-500 dark:text-gray-400">{t('warnings.affected')}</span></div>
                         <span className="text-sm font-medium text-slate-900 dark:text-white">{alert.estimatedPopulation?.toLocaleString('id-ID')}</span>
                       </div>
                       <div className="bg-slate-100 dark:bg-gray-700/50 rounded-lg p-3">
-                        <div className="flex items-center space-x-2 mb-1"><Droplets className="h-4 w-4 text-cyan-600 dark:text-cyan-400" /><span className="text-xs text-slate-500 dark:text-gray-400">Severity</span></div>
+                        <div className="flex items-center space-x-2 mb-1"><Droplets className="h-4 w-4 text-cyan-600 dark:text-cyan-400" /><span className="text-xs text-slate-500 dark:text-gray-400">{t('warnings.severity')}</span></div>
                         <span className="text-sm font-medium text-slate-900 dark:text-white">{alert.severity}/10</span>
                       </div>
                     </div>
                     <div className="mb-4">
-                      <p className="text-xs text-slate-500 dark:text-gray-400 mb-2">Wilayah Terdampak:</p>
+                      <p className="text-xs text-slate-500 dark:text-gray-400 mb-2">{t('warnings.affectedRegions')}</p>
                       <div className="flex flex-wrap gap-1">
                         {alert.affectedAreas?.slice(0, 3).map((area, areaIndex) => (<span key={areaIndex} className="bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-gray-300 text-xs px-2 py-1 rounded">{area}</span>))}
-                        {alert.affectedAreas && alert.affectedAreas.length > 3 && (<span className="text-xs text-slate-500 dark:text-gray-400">+{alert.affectedAreas.length - 3} lainnya</span>)}
+                        {alert.affectedAreas && alert.affectedAreas.length > 3 && (<span className="text-xs text-slate-500 dark:text-gray-400">+{alert.affectedAreas.length - 3} {t('warnings.others')}</span>)}
                       </div>
                     </div>
                     <button
@@ -284,7 +290,7 @@ export default function PeringatanPage() {
                       disabled={isLoading && selectedAlert?.id === alert.id}
                     >
                       {isLoading && selectedAlert?.id === alert.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4" />}
-                      <span>Lihat Penjelasan Detail</span>
+                      <span>{t('warnings.viewDetail')}</span>
                       <ChevronRight className="h-4 w-4" />
                     </button>
                   </motion.div>
@@ -295,7 +301,7 @@ export default function PeringatanPage() {
             {selectedAlert && (
               <div className="bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Detail Peringatan: {selectedAlert.location}</h3>
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{t('warnings.detailTitle')}: {selectedAlert.location}</h3>
                   <div className={`flex items-center space-x-2 px-4 py-2 rounded-full border ${getLevelColor(selectedAlert.level)}`}>
                     {getLevelIcon(selectedAlert.level)}
                     <span className="font-medium">{selectedAlert.level}</span>
@@ -305,13 +311,13 @@ export default function PeringatanPage() {
                   <div className="flex items-center justify-center py-12">
                     <div className="text-center">
                       <Loader2 className="h-8 w-8 animate-spin text-cyan-600 dark:text-cyan-400 mx-auto mb-4" />
-                      <p className="text-lg text-slate-600 dark:text-gray-300">Memuat analisis mendalam...</p>
-                      <p className="text-sm text-slate-500 dark:text-gray-400 mt-2">Menganalisis data dari berbagai sumber</p>
+                      <p className="text-lg text-slate-600 dark:text-gray-300">{t('warnings.loadingAnalysis')}</p>
+                      <p className="text-sm text-slate-500 dark:text-gray-400 mt-2">{t('warnings.analyzingData')}</p>
                     </div>
                   </div>
                 ) : error ? (
                   <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-lg p-4">
-                    <div className="flex items-center space-x-2 mb-2"><AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" /><span className="text-red-600 dark:text-red-400 font-medium">Error</span></div>
+                    <div className="flex items-center space-x-2 mb-2"><AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" /><span className="text-red-600 dark:text-red-400 font-medium">{t('warnings.error')}</span></div>
                     <p className="text-red-800 dark:text-red-300">{error}</p>
                   </div>
                 ) : geminiExplanation ? (
@@ -319,39 +325,39 @@ export default function PeringatanPage() {
                     <div className="prose prose-invert max-w-none"><div className="whitespace-pre-line text-slate-700 dark:text-gray-200 leading-relaxed">{geminiExplanation}</div></div>
                   </div>
                 ) : (
-                  <div className="text-center py-8"><Info className="h-12 w-12 text-slate-400 dark:text-gray-400 mx-auto mb-4" /><p className="text-slate-500 dark:text-gray-400">Pilih peringatan untuk melihat analisis mendalam</p></div>
+                  <div className="text-center py-8"><Info className="h-12 w-12 text-slate-400 dark:text-gray-400 mx-auto mb-4" /><p className="text-slate-500 dark:text-gray-400">{t('warnings.selectAlert')}</p></div>
                 )}
               </div>
             )}
           </TabsContent>
 
           <TabsContent value="news">
-            <h3 className="text-2xl font-bold mb-4 flex items-center space-x-2 text-slate-900 dark:text-white"><Newspaper className="h-6 w-6 text-orange-600 dark:text-orange-400" /><span>Berita & Laporan Regional</span></h3>
-            <p className="text-slate-500 dark:text-gray-400 mb-6">Ringkasan berita terkait bencana dari berbagai sumber, ditenagai oleh Gemini.</p>
+            <h3 className="text-2xl font-bold mb-4 flex items-center space-x-2 text-slate-900 dark:text-white"><Newspaper className="h-6 w-6 text-orange-600 dark:text-orange-400" /><span>{t('warnings.regionalNews')}</span></h3>
+            <p className="text-slate-500 dark:text-gray-400 mb-6">{t('warnings.newsSubtitle')}</p>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {isNewsLoading ? (
-                <div className="col-span-full text-center text-slate-500 dark:text-gray-400 py-8"><Loader2 className="h-10 w-10 animate-spin text-orange-600 dark:text-orange-400 mx-auto mb-4" /><p>Memuat dan merangkum berita mohon tungggu beberapa menit...</p></div>
+                <div className="col-span-full text-center text-slate-500 dark:text-gray-400 py-8"><Loader2 className="h-10 w-10 animate-spin text-orange-600 dark:text-orange-400 mx-auto mb-4" /><p>{t('warnings.loadingNews')}</p></div>
               ) : newsError ? (
                 <div className="col-span-full bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-lg p-4">
-                  <div className="flex items-center space-x-2 mb-2"><AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" /><span className="text-red-600 dark:text-red-400 font-medium">Error Memuat Berita</span></div>
+                  <div className="flex items-center space-x-2 mb-2"><AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" /><span className="text-red-600 dark:text-red-400 font-medium">{t('warnings.errorNews')}</span></div>
                   <p className="text-red-800 dark:text-red-300">{newsError}</p>
                 </div>
               ) : newsReports.length === 0 ? (
-                <div className="col-span-full text-center text-slate-500 dark:text-gray-400 py-8"><Info className="h-12 w-12 text-slate-400 dark:text-gray-400 mx-auto mb-4" /><p>Tidak ada berita atau laporan yang tersedia saat ini.</p></div>
+                <div className="col-span-full text-center text-slate-500 dark:text-gray-400 py-8"><Info className="h-12 w-12 text-slate-400 dark:text-gray-400 mx-auto mb-4" /><p>{t('warnings.noNews')}</p></div>
               ) : (
                 newsReports.map((report) => (
                   <motion.div key={report.id} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl p-6 shadow-sm">
                     <div className="flex items-center justify-between mb-3"><h4 className="text-lg font-semibold text-slate-900 dark:text-white">{report.title}</h4><Badge variant="secondary" className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-gray-300">{report.source}</Badge></div>
-                    <p className="text-slate-500 dark:text-gray-400 text-sm mb-3"><Clock className="inline-block h-3 w-3 mr-1" /> {new Date(report.timestamp).toLocaleString('id-ID')}</p>
-                    <div className="flex items-center space-x-2 text-cyan-600 dark:text-cyan-400 mb-3"><MessageSquare className="h-5 w-5" /><span className="text-base font-medium">Ringkasan Gemini:</span></div>
+                    <p className="text-slate-500 dark:text-gray-400 text-sm mb-3"><Clock className="inline-block h-3 w-3 mr-1" /> {new Date(report.timestamp).toLocaleString(lang === 'en' ? 'en-US' : 'id-ID')}</p>
+                    <div className="flex items-center space-x-2 text-cyan-600 dark:text-cyan-400 mb-3"><MessageSquare className="h-5 w-5" /><span className="text-base font-medium">{t('warnings.geminiSummary')}</span></div>
                     <div className="bg-slate-50 dark:bg-gray-700/50 rounded-lg p-4 mb-4">
                       {geminiNewsSummary[report.id] ? (
                         <p className="text-sm text-slate-700 dark:text-gray-300 whitespace-pre-line">{geminiNewsSummary[report.id]}</p>
                       ) : (
-                        <div className="flex items-center text-slate-500 dark:text-gray-400 text-sm"><Loader2 className="h-4 w-4 animate-spin mr-2" /><span>Merangkum...</span></div>
+                        <div className="flex items-center text-slate-500 dark:text-gray-400 text-sm"><Loader2 className="h-4 w-4 animate-spin mr-2" /><span>{t('warnings.summarizing')}</span></div>
                       )}
                     </div>
-                    {report.url && (<a href={report.url} target="_blank" rel="noopener noreferrer" className="text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 flex items-center text-sm">Baca Selengkapnya <ChevronRight className="h-4 w-4 ml-1" /></a>)}
+                    {report.url && (<a href={report.url} target="_blank" rel="noopener noreferrer" className="text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 flex items-center text-sm">{t('warnings.readMore')} <ChevronRight className="h-4 w-4 ml-1" /></a>)}
                   </motion.div>
                 ))
               )}

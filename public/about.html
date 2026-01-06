@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floodzy | The Early Warning System</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display+SC:wght@700;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            /* Colors */
+            --bg-void: #050507;
+            --text-main: #E1E3E8;
+            --text-muted: #9499A6;
+
+            --cyan: #2EF2FF;
+            --cyan-glow: rgba(46, 242, 255, 0.4);
+
+            --red: #FF3B30;
+            --red-glow: rgba(255, 59, 48, 0.4);
+
+            /* Fonts */
+            --font-body: 'Space Grotesk', system-ui, sans-serif;
+            --font-display: 'Outfit', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Z-Index Layers */
+            --z-bg: 0;
+            --z-rain: 5;
+            --z-scene: 10;
+            --z-water: 20;
+            --z-ui: 50;
+            --z-cursor: 100;
+        }
+
+        /* RESET */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            cursor: none;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            transition: transform 0.1s;
+        }
+
+        /* MICRO SHAKE - FEATURE ADDITION */
+        body.failure {
+            animation: micro-shake 0.3s infinite;
+        }
+
+        @keyframes micro-shake {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(1px, -1px);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        /* CURSOR */
+        #cursor-dot,
+        #cursor-ring {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: var(--z-cursor);
+            border-radius: 50%;
+            display: none;
+        }
+
+        #cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+            transform: translate(-50%, -50%);
+        }
+
+        #cursor-ring {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--cyan-glow);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, border-color 0.3s;
+            will-change: transform;
+        }
+
+        body.sentinel-active #cursor-ring {
+            width: 80px;
+            height: 80px;
+            border: 2px dashed var(--red);
+            background: rgba(255, 59, 48, 0.05);
+            animation: spin 4s linear infinite;
+        }
+
+        body.sentinel-active #cursor-dot {
+            background: var(--red);
+            box-shadow: 0 0 20px var(--red);
+        }
+
+        @keyframes spin {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        @media (pointer: coarse) {
+
+            *,
+            *::before,
+            *::after {
+                cursor: auto !important;
+            }
+
+            #cursor-dot,
+            #cursor-ring {
+                display: none !important;
+            }
+        }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 2rem;
+            z-index: var(--z-ui);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(5, 5, 7, 0.95), transparent);
+            pointer-events: auto;
+        }
+
+        /* DRAMATIC LOGO */
+        .floodzy-logo {
+            font-family: 'Playfair Display SC', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: rgba(46, 242, 255, 0.3);
+            position: relative;
+            text-decoration: none;
+            overflow: hidden;
+            -webkit-box-reflect: below -8px linear-gradient(transparent, rgba(0, 0, 0, 0.3));
+            background-image: linear-gradient(to top, #2EF2FF 50%, rgba(46, 242, 255, 0.3) 50%);
+            background-size: 100% 200%;
+            background-position: 0% 0%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: flood-fill 3s ease-out forwards;
+        }
+
+        @keyframes flood-fill {
+            0% {
+                background-position: 0% 0%;
+            }
+
+            100% {
+                background-position: 0% 100%;
+            }
+        }
+
+        .floodzy-logo::after {
+            content: 'FLOODZY';
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(46, 242, 255, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            animation: glow-in 2s 1s forwards;
+        }
+
+        @keyframes glow-in {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* VISUAL CANVAS (RAIN) */
+        #visual-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: var(--z-rain);
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 2s;
+        }
+
+        /* UTILS */
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .mono {
+            font-family: var(--font-mono);
+            letter-spacing: -0.05em;
+        }
+
+        .text-cyan {
+            color: var(--cyan);
+            text-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        .text-red {
+            color: var(--red);
+            text-shadow: 0 0 10px var(--red-glow);
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: var(--font-display);
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            margin-left: 2rem;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: var(--cyan);
+        }
+
+        /* === SCENE 1: HERO (UPGRADED) === */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #hero-title {
+            transition: opacity 0.5s;
+        }
+
+        .hero-subtitle {
+            transition: opacity 0.5s;
+            opacity: 1;
+        }
+
+        /* HERO LENS EFFECT */
+        .hero-lens {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 30%, rgba(46, 242, 255, 0.35), rgba(46, 242, 255, 0.05) 40%, transparent 60%);
+            opacity: 0;
+            filter: blur(0px);
+            transition: opacity 0.8s ease, filter 1s ease;
+            z-index: 8;
+            pointer-events: none;
+        }
+
+        .hero-submerge {
+            position: absolute;
+            inset: 0;
+            backdrop-filter: blur(0px) saturate(100%);
+            transition: backdrop-filter 1s ease;
+            z-index: 7;
+            pointer-events: none;
+        }
+
+        /* Triggered Classes */
+        .hero.entering .hero-lens {
+            opacity: 1;
+            filter: blur(8px);
+        }
+
+        .hero.entering .hero-submerge {
+            backdrop-filter: blur(12px) saturate(140%);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 1rem 2rem;
+            background: rgba(46, 242, 255, 0.05);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .btn:hover {
+            background: var(--cyan);
+            color: #000;
+            box-shadow: 0 0 30px var(--cyan-glow);
+        }
+
+        /* === DIRECTOR'S CUT STAGE SCENES === */
+        #director-stage {
+            position: relative;
+            height: 600vh;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #sticky-viewport {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            background: radial-gradient(circle at 50% 10%, #1a1d2e 0%, #050507 80%);
+        }
+
+        /* City */
+        .skyline {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%230a0c12' fill-opacity='1' d='M0,224L60,213.3C120,203,240,181,360,181.3C480,181,600,203,720,192C840,181,960,139,1080,128C1200,117,1320,139,1380,149.3L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            opacity: 0.5;
+        }
+
+        /* Props */
+        .scenery-obj {
+            position: absolute;
+            bottom: 35%;
+            transition: transform 2s ease;
+            transform-origin: top center;
+            z-index: 5;
+        }
+
+        .scenery-obj svg {
+            fill: #232736;
+            stroke: #555;
+            height: 100%;
+        }
+
+        #obj-fence {
+            left: 15%;
+            width: 150px;
+            height: 60px;
+        }
+
+        #obj-tree {
+            right: 20%;
+            width: 90px;
+            height: 160px;
+        }
+
+        .fence-drift {
+            transform: translateX(200px) rotate(15deg) translateY(100px);
+            opacity: 0.5;
+        }
+
+        .tree-fall {
+            transform: rotate(85deg) translateX(50px) translateY(50px);
+            transform-origin: bottom center;
+        }
+
+        /* Sinking Letters */
+        #sinking-text-container {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 1rem;
+            z-index: var(--z-scene);
+        }
+
+        .sink-char {
+            font-family: var(--font-display);
+            font-size: 5rem;
+            font-weight: 800;
+            color: #FFF;
+            transition: all 1s ease;
+        }
+
+        .drowning {
+            transform: translateY(200px) rotate(20deg);
+            opacity: 0;
+            filter: blur(10px);
+        }
+
+        /* Rescue */
+        #rescue-cord {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            width: 2px;
+            height: 50vh;
+            background: linear-gradient(to bottom, var(--cyan), transparent);
+            transition: top 1s ease-out;
+            z-index: var(--z-ui);
+            cursor: help;
+        }
+
+        #rescue-drone {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: top 1s ease-out, transform 2s ease-in-out;
+            z-index: var(--z-ui);
+        }
+
+        .drone-light {
+            animation: blink 0.5s infinite;
+            fill: var(--red);
+        }
+
+        /* Water */
+        .water-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(to top, rgba(46, 242, 255, 0.5), rgba(46, 242, 255, 0.05));
+            /* border-top: 3px solid rgba(46, 242, 255, 0.9); REMOVED */
+            box-shadow: 0 -10px 40px rgba(46, 242, 255, 0.5);
+            backdrop-filter: blur(4px);
+            transition: height 0.1s linear;
+            overflow: visible;
+            /* Allow wave to stick out top */
+            z-index: var(--z-water);
+        }
+
+        /* PROCEDURAL CANVAS WAVE */
+        #wave-canvas {
+            position: absolute;
+            top: -60px;
+            /* Center wave on water surface */
+            left: 0;
+            width: 100%;
+            height: 120px;
+            pointer-events: none;
+            z-index: 30;
+        }
+
+        .water-noise {
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E");
+            opacity: 0.4;
+            mix-blend-mode: overlay;
+            animation: water-drift 20s linear infinite;
+        }
+
+        @keyframes water-drift {
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 200px 0;
+            }
+        }
+
+        #hud-overlay {
+            position: absolute;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 60;
+        }
+
+        .system-grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(46, 242, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(46, 242, 255, 0.1) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0;
+            transition: opacity 1s;
+            z-index: 25;
+            pointer-events: none;
+        }
+
+        /* === SPLIT === */
+        #split-section {
+            display: grid;
+            grid-template-columns: 1fr 1px 1fr;
+            border-top: 1px solid #222;
+            min-height: 80vh;
+            overflow: hidden;
+        }
+
+        .split-content {
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .split-left {
+            justify-content: flex-start;
+            padding-top: 15vh;
+            text-align: right;
+            background: #08080a;
+        }
+
+        .split-right {
+            justify-content: flex-end;
+            padding-bottom: 20vh;
+            text-align: left;
+            background: var(--bg-void);
+        }
+
+        .split-divider {
+            background: var(--cyan);
+            height: 100%;
+            box-shadow: 0 0 15px var(--cyan);
+            opacity: 0.5;
+        }
+
+        /* === PLAYGROUND === */
+        .playground-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 3rem;
+            margin-top: 4rem;
+            background: rgba(10, 12, 18, 0.6);
+            border: 1px solid rgba(46, 242, 255, 0.1);
+            padding: 3rem;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .tech-corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--cyan);
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .tech-corner.tl {
+            top: -1px;
+            left: -1px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .tech-corner.tr {
+            top: -1px;
+            right: -1px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .tech-corner.bl {
+            bottom: -1px;
+            left: -1px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .tech-corner.br {
+            bottom: -1px;
+            right: -1px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .playground-container:hover .tech-corner {
+            opacity: 1;
+            box-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        #sim-map {
+            background: linear-gradient(rgba(46, 242, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(46, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-color: #08090f;
+            height: 350px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(46, 242, 255, 0.1);
+        }
+
+        .radar-scan {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(46, 242, 255, 0.1) 60deg, transparent 60.1deg);
+            transform-origin: top left;
+            animation: radar-spin 8s linear infinite;
+            pointer-events: none;
+        }
+
+        .node {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(46, 242, 255, 0.2);
+            border: 1px solid var(--cyan);
+            transform: translate(-50%, -50%);
+            transition: background 0.5s, border-color 0.5s, transform 0.3s;
+        }
+
+        .node::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid var(--cyan);
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .node.pulse {
+            animation: node-pulse 3s infinite;
+        }
+
+        .node.ripple::after {
+            animation: node-ripple 1s ease-out;
+        }
+
+        .node.warning {
+            background: rgba(255, 214, 10, 0.2);
+            border-color: #FFD60A;
+        }
+
+        .node.critical {
+            background: rgba(255, 59, 48, 0.5);
+            border-color: var(--red);
+            box-shadow: 0 0 15px var(--red);
+            animation: critical-pulse 0.5s infinite alternate;
+        }
+
+        .map-hud {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            text-align: right;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--cyan);
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        @keyframes radar-spin {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        @keyframes node-pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        @keyframes node-ripple {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(3);
+            }
+        }
+
+        @keyframes critical-pulse {
+            from {
+                opacity: 0.5;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .shaking {
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(5deg);
+            }
+
+            75% {
+                transform: rotate(-5deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        /* === SUNRISE (FINAL) === */
+        #final-sunrise {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at 50% 100%, rgba(46, 242, 255, 0.1) 0%, transparent 60%);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 0;
+            padding-bottom: 4rem;
+        }
+
+        .sun-orb {
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #FFD60A, transparent 70%);
+            position: absolute;
+            bottom: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: all 2.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            filter: blur(40px);
+            z-index: 1;
+        }
+
+        .sun-orb.rise {
+            bottom: -50px;
+            opacity: 1;
+        }
+
+        /* FEATURE ADDITION: Final Node & Network */
+        .final-node {
+            position: relative;
+            width: 14px;
+            height: 14px;
+            background: var(--cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 30px var(--cyan);
+            margin: 2rem auto;
+            animation: pulse-node 2s infinite;
+            z-index: 10;
+        }
+
+        @keyframes pulse-node {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.8);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .final-network {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle at 50% 50%, rgba(46, 242, 255, 0.15), transparent 60%);
+            opacity: 0;
+            transition: opacity 2s ease;
+            z-index: 5;
+        }
+
+        /* === OPS FOOTER (ADDED) === */
+        .ops-footer {
+            border-top: 1px solid rgba(46, 242, 255, 0.2);
+            background: #020202;
+            padding: 4rem 0 2rem;
+            position: relative;
+            z-index: 50;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-link {
+            display: block;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-link:hover {
+            color: var(--cyan);
+            letter-spacing: 1px;
+        }
+
+        .system-status-light {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--cyan);
+            margin-right: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- CURSOR -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- RAIN -->
+    <canvas id="visual-canvas"></canvas>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo">
+            <!-- Replaced Text with Dramatic Logo -->
+            <a href="/" class="floodzy-logo">FLOODZY</a>
+        </div>
+        <nav>
+            <a href="/" class="nav-link">HOME</a>
+            <a href="/peta-banjir" class="nav-link">DASHBOARD</a>
+        </nav>
+    </header>
+
+    <!-- SCENE 1: HERO (UPDATED WITH LENS) -->
+    <section class="hero">
+        <div class="hero-lens" id="hero-lens"></div>
+        <div class="hero-submerge" id="hero-submerge"></div>
+
+        <div class="container" style="position: relative; z-index: 20;">
+            <!-- Updated Copy -->
+            <h1 id="hero-title" style="font-size: clamp(3rem, 8vw, 7rem);">Welcome to Floodzy World</h1>
+            <p class="mono text-cyan" id="hero-status" style="margin-bottom: 2rem;">Simulation Initializing...</p>
+            <div class="mono" style="opacity: 0.5;">↓ SCROLL TO BEGIN</div>
+        </div>
+    </section>
+
+    <!-- SCROLLYTELLING STAGE -->
+    <div id="director-stage">
+        <div id="sticky-viewport">
+            <!-- HUD -->
+            <div id="hud-overlay">
+                <div class="mono text-cyan" id="zone-display" style="background: #000; padding: 5px 10px;">ZONE:
+                    MONITORING</div>
+                <h2 id="status-display" style="font-size: 2.5rem; margin-top: 10px;">NORMAL</h2>
+            </div>
+
+            <!-- CITY -->
+            <div class="skyline"></div>
+
+            <!-- PROPS -->
+            <div class="scenery-obj" id="obj-fence">
+                <svg viewBox="0 0 150 60">
+                    <path
+                        d="M10,60 L10,10 M30,60 L30,10 M50,60 L50,10 M70,60 L70,10 M90,60 L90,10 M110,60 L110,10 M130,60 L130,10 M0,20 L150,20 M0,50 L150,50"
+                        stroke="#555" stroke-width="2" />
+                </svg>
+            </div>
+            <div class="scenery-obj" id="obj-tree">
+                <svg viewBox="0 0 80 180">
+                    <path d="M40,180 L40,100 M40,100 L10,60 M40,100 L70,60 M40,80 L20,40 M40,80 L60,40" stroke="#555"
+                        stroke-width="4" />
+                    <circle cx="40" cy="40" r="30" fill="#232736" stroke="#555" />
+                </svg>
+            </div>
+
+            <!-- SINKING TEXT -->
+            <div id="sinking-text-container">
+                <span class="sink-char">F</span>
+                <span class="sink-char">L</span>
+                <span class="sink-char">O</span>
+                <span class="sink-char">O</span>
+                <span class="sink-char">D</span>
+                <span class="sink-char">Z</span>
+                <span class="sink-char">Y</span>
+            </div>
+
+            <!-- RESCUE SYSTEM -->
+            <div id="rescue-cord" title="Evacuation Window Open"></div>
+            <div id="rescue-drone">
+                <svg width="60" height="40" viewBox="0 0 60 40">
+                    <path d="M10,20 L50,20 M0,10 L20,20 L0,30 M60,10 L40,20 L60,30" stroke="#333" fill="none" />
+                    <circle cx="30" cy="20" r="5" fill="#111" stroke="var(--cyan)" />
+                    <circle cx="30" cy="20" r="2" class="drone-light" />
+                </svg>
+            </div>
+
+            <!-- WATER & GRID -->
+            <div class="water-overlay" id="water-level">
+                <canvas id="wave-canvas"></canvas>
+                <div class="water-noise"></div>
+            </div>
+            <div class="system-grid-overlay" id="intervention-grid"></div>
+        </div>
+    </div>
+
+    <!-- SCENE 8: SPLIT NARRATIVE -->
+    <section id="split-section">
+        <div class="split-content split-left">
+            <h3 class="text-red">MANUAL CHAOS</h3>
+            <p class="text-muted" style="font-size: 1.5rem; max-width: 400px; margin-left: auto;">
+                "Fragmented data reporting delays critical response. Manual observation creates blind spots when minutes
+                matter."
+            </p>
+        </div>
+        <div class="split-divider"></div>
+        <div class="split-content split-right">
+            <h3 class="text-cyan">SYSTEM CLARITY</h3>
+            <p style="font-size: 1.5rem; max-width: 400px;">
+                "Real-time sensor fusion eliminates latency. Floodzy predicts impact magnitude before the storm peaks."
+            </p>
+        </div>
+    </section>
+
+    <!-- SCENE: MID HERO (PREDICT SURGE) -->
+    <section class="container" style="padding: 4rem 0 6rem 0; position: relative; z-index: 20; text-align: center;">
+        <div class="mono text-cyan" style="margin-bottom: 1.5rem; letter-spacing: 2px;">:: SYSTEM STATUS: ONLINE</div>
+
+        <h2 style="font-size: clamp(3.5rem, 6vw, 5.5rem); line-height: 1.1; margin-bottom: 2rem;">
+            Predict the Surge.<br>
+            <span style="color: #666;">Before it Strikes.</span>
+        </h2>
+
+        <p class="text-muted" style="font-size: 1.25rem; max-width: 700px; margin: 0 auto 3rem; line-height: 1.6;">
+            Advanced flood intelligence for a changing climate. Combining satellite altimetry, ML forecasting, and
+            real-time ground telemetry.
+        </p>
+
+        <a href="#" class="btn"
+            style="padding: 1rem 2.5rem; border-color: var(--cyan); background: rgba(46,242,255,0.1);">
+            LAUNCH CONSOLE <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" style="margin-left:8px;">
+                <path d="M7 17l9.2-9.2M17 17V7H7" />
+            </svg>
+        </a>
+    </section>
+
+    <!-- SCENE 9: PLAYGROUND -->
+    <section class="container" style="padding: 6rem 0;">
+        <div class="mono text-cyan">> THREAT_PLAYGROUND</div>
+        <h2>Control the Chaos</h2>
+
+        <div class="playground-container">
+            <div class="tech-corner tl"></div>
+            <div class="tech-corner tr"></div>
+            <div class="tech-corner bl"></div>
+            <div class="tech-corner br"></div>
+
+            <div id="sim-map">
+                <div class="radar-scan"></div>
+                <div class="map-hud">
+                    LAT: -6.2088<br>LON: 106.8456<br>SENSORS: <span id="sensor-count">12</span> LIVE<br>SYNC: ACTIVE
+                </div>
+            </div>
+
+            <div>
+                <div style="margin-bottom: 2rem;">
+                    <div style="display: flex; justify-content: space-between;"><span class="mono">RAIN
+                            INTENSITY</span><span class="mono text-cyan" id="rain-val">20%</span></div>
+                    <input type="range" id="rain-slider" min="0" max="100" value="20"
+                        style="width: 100%; margin-top: 10px;">
+                </div>
+                <div>
+                    <div style="display: flex; justify-content: space-between;"><span class="mono">RIVER
+                            LEVEL</span><span class="mono text-red" id="river-val">SAFE</span></div>
+                    <input type="range" id="river-slider" min="0" max="100" value="10"
+                        style="width: 100%; margin-top: 10px;">
+                </div>
+                <p class="mono text-muted" style="font-size: 0.8rem; margin-top: 2rem;">ADJUST SLIDERS TO SIMULATE
+                    SENSOR FEEDBACK.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCENE 10: DEPLOYMENT STATS (RESTORED) -->
+    <section class="container" style="padding: 6rem 0; position: relative; z-index: 20;">
+        <div class="stats-grid">
+            <!-- Left: Narrative -->
+            <div>
+                <div class="mono text-cyan" style="margin-bottom: 1rem;">01 :: THE PROBLEM</div>
+                <h2 style="font-size: clamp(2.5rem, 5vw, 3.5rem); margin-bottom: 3rem; line-height: 1.1;">Water Doesn't
+                    Wait.<br>Neither Should You.</h2>
+
+                <div
+                    style="background: rgba(255,255,255,0.03); border-left: 2px solid #555; padding: 2rem; margin-bottom: 2rem;">
+                    <h4 style="margin-bottom: 0.5rem; color: #FFF;">Latency Kills Response</h4>
+                    <p class="text-muted">Traditional manual gauges have a 4-hour delay loop. Floodzy cuts this to 30ms
+                        utilizing direct IoT uplinks.</p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.03); border-left: 2px solid #555; padding: 2rem;">
+                    <h4 style="margin-bottom: 0.5rem; color: #FFF;">Invisible Threats</h4>
+                    <p class="text-muted">Rain forecasts are not flood forecasts. We model terrain hydrology to predict
+                        impact, not just precipitation.</p>
+                </div>
+            </div>
+
+            <!-- Right: Stats Panel -->
+            <div
+                style="background: #0B0D13; border: 1px solid rgba(46,242,255,0.2); padding: 3rem; border-radius: 4px; position: relative;">
+                <div class="mono text-cyan" style="margin-bottom: 2rem;">> DEPLOYMENT_STATS</div>
+
+                <div
+                    style="font-size: clamp(4rem, 8vw, 6rem); font-weight: 800; line-height: 1; color: #FFF; font-family: var(--font-display);">
+                    3h</div>
+                <div class="text-muted" style="margin-bottom: 4rem;">Early Warning Lead Time</div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div
+                        style="background: rgba(46, 242, 255, 0.05); border-bottom: 2px solid var(--cyan); padding: 1.5rem; height: 100px; display: flex; align-items: end;">
+                        <span class="mono text-cyan" style="font-size: 0.8rem;">RIVER_GAUGE</span>
+                    </div>
+                    <div
+                        style="background: rgba(255, 59, 48, 0.05); border-bottom: 2px solid var(--red); padding: 1.5rem; height: 100px; display: flex; align-items: end;">
+                        <span class="mono text-red" style="font-size: 0.8rem;">ALERT_RISK</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .stats-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+                align-items: start;
+            }
+
+            @media (max-width: 768px) {
+                .stats-grid {
+                    grid-template-columns: 1fr;
+                    gap: 2rem;
+                }
+            }
+        </style>
+    </section>
+
+    <!-- SCENE 11: SUNRISE (UPDATED WITH QUIET MOMENT) -->
+    <section id="final-sunrise">
+        <div class="sun-orb"></div>
+        <div class="final-network"></div>
+        <div class="final-node"></div>
+
+        <div class="container" style="position: relative; z-index: 20;">
+            <p class="mono" style="font-size: 1.2rem; margin-bottom: 0.5rem;">YOU CAN'T STOP THE RAIN.</p>
+            <p class="mono text-red" style="font-size: 1.2rem; margin-bottom: 2rem;">BUT YOU CAN SEE IT COMING.</p>
+            <p class="mono text-cyan" style="margin-top:1rem; font-size: 1.5rem; max-width: 600px; margin: 0 auto;">
+                FLOODZY IS THE DIFFERENCE BETWEEN WARNING AND LOSS.
+            </p>
+            <a href="/peta-banjir" class="btn" style="margin-top: 3rem;">OPEN DASHBOARD</a>
+        </div>
+    </section>
+
+    <footer class="ops-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="logo mono text-cyan" style="margin-bottom: 1rem;">FLOODZY_INTEL</div>
+                    <p class="text-muted" style="font-size: 0.9rem; max-width: 300px;">
+                        Advanced hydrological predictive system for urban resilience.
+                    </p>
+                    <div style="margin-top: 1rem; display: flex; align-items: center;">
+                        <span class="system-status-light"></span>
+                        <span class="mono" style="font-size: 0.8rem; color: var(--cyan);">SYSTEM OPERATIONAL</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="mono text-main" style="margin-bottom: 1rem;">// NAVIGATION</h4>
+                    <a href="/" class="footer-link">HOME_BASE</a>
+                    <a href="/peta-banjir" class="footer-link">LIVE_DASHBOARD</a>
+                    <a href="/prakiraan-cuaca" class="footer-link">WEATHER_INTEL</a>
+                </div>
+
+                <div>
+                    <h4 class="mono text-main" style="margin-bottom: 1rem;">// CONNECT</h4>
+                    <a href="#" class="footer-link">GITHUB_REPO</a>
+                    <a href="#" class="footer-link">CONTACT_HQ</a>
+                    <p class="mono text-muted" style="margin-top: 1rem; font-size: 0.8rem;">
+                        JAKARTA • INDONESIA
+                        <br>LAT: -6.2088 | LON: 106.8456
+                    </p>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; text-align: center;">
+                <p class="mono text-muted" style="font-size: 0.75rem;">
+                    © 2026 FLOODZY SYSTEMS. ALL RIGHTS RESERVED. | <span
+                        class="text-cyan">SECURE_CONNECTION_ESTABLISHED</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // === CANVAS SETUP (GLOBAL) ===
+        const rainCanvas = document.getElementById('visual-canvas');
+        const rainCtx = rainCanvas.getContext('2d');
+        const waveCanvas = document.getElementById('wave-canvas');
+        const waveCtx = waveCanvas.getContext('2d');
+
+        let width, height;
+
+        // === RESIZE HANDLER ===
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+
+            // Rain Canvas
+            rainCanvas.width = width;
+            rainCanvas.height = height;
+
+            // Wave Canvas
+            if (waveCanvas) {
+                waveCanvas.width = width;
+                waveCanvas.height = 120;
+            }
+        }
+        window.addEventListener('resize', resize);
+        resize(); // INITIALIZE DIMENSIONS IMMEDIATELY
+
+        // === RAIN ENGINE ===
+        const rains = [];
+        class Drop {
+            constructor() { this.init(); }
+            init() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.speed = Math.random() * 8 + 5;
+                this.len = Math.random() * 30 + 10;
+                this.alpha = Math.random() * 0.2 + 0.05;
+            }
+            update(intensity) {
+                this.y += this.speed + (intensity / 5);
+                if (this.y > height) { this.y = -20; this.x = Math.random() * width; }
+            }
+            draw() {
+                rainCtx.strokeStyle = `rgba(46, 242, 255, ${this.alpha})`;
+                rainCtx.lineWidth = 1;
+                rainCtx.beginPath(); rainCtx.moveTo(this.x, this.y); rainCtx.lineTo(this.x, this.y + this.len); rainCtx.stroke();
+            }
+        }
+        for (let i = 0; i < 100; i++) rains.push(new Drop());
+
+        let globalRain = 20;
+        function animateRain() {
+            rainCtx.clearRect(0, 0, width, height);
+            rains.forEach(r => { r.update(globalRain); r.draw(); });
+            requestAnimationFrame(animateRain);
+        }
+        animateRain();
+
+        // === WAVE ENGINE (PROCEDURAL) ===
+        let waveTime = 0;
+        function drawWave(level = 20) {
+            if (!waveCtx) return;
+            waveCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+
+            const baseHeight = waveCanvas.height * 0.5;
+            const amp = 10 + (level * 0.3); // Dynamic Amplitude
+
+            waveCtx.beginPath();
+            waveCtx.moveTo(0, baseHeight);
+
+            // optimized loop
+            for (let x = 0; x <= waveCanvas.width; x += 2) {
+                const y =
+                    Math.sin(x * 0.01 + waveTime) * amp +
+                    Math.sin(x * 0.02 + waveTime * 1.5) * (amp * 0.5) +
+                    Math.sin(x * 0.005 + waveTime * 0.5) * (amp * 0.2);
+                waveCtx.lineTo(x, baseHeight + y);
+            }
+
+            waveCtx.lineTo(waveCanvas.width, waveCanvas.height);
+            waveCtx.lineTo(0, waveCanvas.height);
+            waveCtx.closePath();
+
+            const grad = waveCtx.createLinearGradient(0, 0, 0, waveCanvas.height);
+            grad.addColorStop(0, 'rgba(46, 242, 255, 0.9)');
+            grad.addColorStop(1, 'rgba(46, 242, 255, 0.1)');
+
+            waveCtx.fillStyle = grad;
+            waveCtx.shadowColor = 'rgba(46, 242, 255, 0.8)';
+            waveCtx.shadowBlur = 15;
+            waveCtx.fill();
+
+            // Foam
+            waveCtx.globalCompositeOperation = 'source-atop';
+            waveCtx.fillStyle = 'rgba(255,255,255,0.3)';
+            if (level > 60) waveCtx.fillRect(0, 0, waveCanvas.width, 15);
+            waveCtx.globalCompositeOperation = 'source-over';
+        }
+
+        function loopWave() {
+            waveTime += 0.02;
+            drawWave(globalRain);
+            requestAnimationFrame(loopWave);
+        }
+        loopWave();
+
+
+        // === HERO TRANSITION (LENS EFFECT) ===
+        const hero = document.querySelector('.hero');
+        const heroTitle = document.getElementById('hero-title');
+        const heroStatus = document.getElementById('hero-status');
+        let heroTriggered = false;
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 40 && !heroTriggered) {
+                hero.classList.add('entering');
+                heroTriggered = true;
+
+                setTimeout(() => {
+                    heroTitle.style.opacity = 0;
+                    heroStatus.style.opacity = 0;
+                    setTimeout(() => {
+                        heroTitle.innerText = "Predict the Surge.";
+                        heroStatus.innerText = "Director's Cut Simulation";
+                        heroTitle.style.opacity = 1;
+                        heroStatus.style.opacity = 1;
+                    }, 500);
+                }, 800);
+            }
+        });
+
+        // === SCROLL DIRECTOR ===
+        const stage = document.getElementById('director-stage');
+        const water = document.getElementById('water-level');
+        const chars = document.querySelectorAll('.sink-char');
+        const cord = document.getElementById('rescue-cord');
+        const drone = document.getElementById('rescue-drone');
+        const grid = document.getElementById('intervention-grid');
+        const status = document.getElementById('status-display');
+        const hud = document.getElementById('zone-display');
+        const fence = document.getElementById('obj-fence');
+        const tree = document.getElementById('obj-tree');
+
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => { handleScroll(); ticking = false; });
+                ticking = true;
+            }
+        });
+
+        function easeInOut(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+
+        function handleScroll() {
+            const rect = stage.getBoundingClientRect();
+            let rawP = (window.innerHeight - rect.top) / rect.height;
+            rawP = Math.max(0, Math.min(1, rawP));
+            const p = easeInOut(rawP);
+
+            // Micro-Shake Logic (Implemented)
+            if (p > 0.45 && p < 0.7) document.body.classList.add('failure');
+            else document.body.classList.remove('failure');
+
+            if (p < 0.2) {
+                setZone("MONITORING", "NORMAL", "#FFF");
+                water.style.height = (p * 100) + '%';
+                globalRain = 30; resetProps(); resetSink();
+            } else if (p < 0.45) {
+                setZone("WARNING", "RISING", "#FFD60A");
+                water.style.height = (p * 120) + '%';
+                fence.classList.add('shaking'); globalRain = 60; resetProps();
+            } else if (p < 0.70) {
+                setZone("CRITICAL", "FAILURE", "#FF3B30");
+                water.style.height = '90%'; globalRain = 100;
+                fence.className = 'scenery-obj fence-drift'; tree.className = 'scenery-obj tree-fall';
+                chars.forEach((c, i) => setTimeout(() => c.classList.add('drowning'), i * 100));
+            } else if (p < 0.90) {
+                setZone("DEPLOYMENT", "RESCUE", "#2EF2FF");
+                water.style.height = '80%'; globalRain = 50;
+                cord.style.top = '0'; drone.style.top = '50%';
+            } else {
+                setZone("SYSTEM", "INTERVENTION", "#2EF2FF");
+                grid.style.opacity = 0.8;
+                water.style.height = '40%';
+                chars.forEach(c => c.classList.remove('drowning'));
+                drone.style.top = '-100px'; cord.style.top = '-100px';
+            }
+        }
+
+        function setZone(z, s, c) { hud.innerText = `ZONE: ${z}`; status.innerText = s; status.style.color = c; }
+        function resetSink() { chars.forEach(c => c.classList.remove('drowning')); }
+        function resetProps() { fence.className = 'scenery-obj'; tree.className = 'scenery-obj'; }
+
+        // === SUNRISE CLOSURE ===
+        const sunSection = document.getElementById('final-sunrise');
+        const sunOrb = document.querySelector('.sun-orb');
+        const network = document.querySelector('.final-network');
+
+        const obs = new IntersectionObserver(e => {
+            if (e[0].isIntersecting) {
+                sunOrb.classList.add('rise');
+                network.style.opacity = 1;
+                rainCanvas.style.opacity = 0; // Correctly referencing rainCanvas now
+            } else {
+                rainCanvas.style.opacity = 1;
+            }
+        }, { threshold: 0.5 });
+        obs.observe(sunSection);
+
+        // === CURSOR & PLAYGROUND ===
+        const playground = document.querySelector('.playground-container');
+        if (playground) {
+            playground.addEventListener('mouseenter', () => document.body.classList.add('sentinel-active'));
+            playground.addEventListener('mouseleave', () => document.body.classList.remove('sentinel-active'));
+        }
+
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0, isCursorActive = false;
+
+        document.addEventListener('mousemove', e => {
+            if (window.matchMedia('(pointer: coarse)').matches) return;
+            mouseX = e.clientX; mouseY = e.clientY;
+            dot.style.display = 'block';
+            dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+            if (!isCursorActive) { isCursorActive = true; ring.style.display = 'block'; ringX = mouseX; ringY = mouseY; requestAnimationFrame(cursorLoop); }
+        });
+        function cursorLoop() {
+            ringX += (mouseX - ringX) * 0.15; ringY += (mouseY - ringY) * 0.15;
+            ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
+            requestAnimationFrame(cursorLoop);
+        }
+
+        const map = document.getElementById('sim-map');
+        const sensorCount = document.getElementById('sensor-count');
+        const nodes = [];
+
+        for (let i = 0; i < 12; i++) {
+            let n = document.createElement('div');
+            let type = Math.random() > 0.5 ? 'RIVER' : 'RAIN';
+            n.className = 'node pulse'; n.dataset.type = type;
+            n.style.left = (10 + Math.random() * 80) + '%'; n.style.top = (10 + Math.random() * 80) + '%';
+            n.style.animationDelay = Math.random() + 's';
+            map.appendChild(n); nodes.push(n);
+        }
+
+        const rainSlider = document.getElementById('rain-slider');
+        const riverSlider = document.getElementById('river-slider');
+        const riverLabel = document.getElementById('river-val');
+
+        rainSlider.addEventListener('input', (e) => {
+            document.getElementById('rain-val').innerText = e.target.value + '%';
+            setTimeout(() => {
+                const val = parseInt(e.target.value); globalRain = val;
+                // Ripple effect on nodes
+                nodes.forEach(n => { if (n.dataset.type === 'RAIN' && val > 50 && Math.random() > 0.6) { n.classList.add('ripple'); setTimeout(() => n.classList.remove('ripple'), 1000); } });
+            }, 100);
+        });
+
+        riverSlider.addEventListener('input', (e) => {
+            setTimeout(() => {
+                const val = parseInt(e.target.value);
+                let status = "SAFE", colorClass = "", activeSensors = 12;
+                if (val < 40) { status = "SAFE"; colorClass = ""; }
+                else if (val < 80) { status = "WARNING"; colorClass = "warning"; }
+                else { status = "CRITICAL"; colorClass = "critical"; activeSensors = Math.floor(12 * 0.6); }
+
+                riverLabel.innerText = status;
+                riverLabel.className = 'mono ' + (status === 'SAFE' ? 'text-cyan' : (status === 'WARNING' ? 'text-warning' : 'text-red'));
+                sensorCount.innerText = activeSensors;
+
+                nodes.forEach(n => {
+                    n.className = 'node ' + colorClass;
+                    if (status === 'CRITICAL') n.classList.add('critical'); else n.classList.add('pulse');
+                });
+            }, 150);
+        });
+    </script>
+</body>
+
+</html>

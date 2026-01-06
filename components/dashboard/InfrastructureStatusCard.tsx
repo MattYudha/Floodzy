@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/input';
+import { useLanguage } from '@/src/context/LanguageContext';
 // Removed Table components as we are using CSS Grid for layout
 import { useVirtualizer } from '@tanstack/react-virtual';
 
@@ -74,23 +75,25 @@ const DetailPopup = ({ item, onClose }: { item: WaterLevelPost | PumpData, onClo
   let title: string;
   let lastUpdated: string;
 
+  const { t, lang } = useLanguage();
+
   if (isWaterLevel) {
     title = item.name;
-    lastUpdated = getTimeAgo(item.timestamp || new Date().toISOString()); // Provide default for timestamp
+    lastUpdated = getTimeAgo(item.timestamp || new Date().toISOString(), lang); // Provide default for timestamp
   } else {
     title = (item as PumpData).nama_infrastruktur;
-    lastUpdated = getTimeAgo(new Date((item as PumpData).updated_at || new Date().getTime())); // Use updated_at for PumpData
+    lastUpdated = getTimeAgo(new Date((item as PumpData).updated_at || new Date().getTime()), lang); // Use updated_at for PumpData
   }
 
   const details = isWaterLevel
     ? [
       { label: "Tinggi Air", value: `${item.water_level} ${item.unit}`, icon: <Waves className="w-4 h-4 text-slate-400" /> },
-      { label: "Status", value: item.status, icon: <ShieldCheck className="w-4 h-4 text-slate-400" /> },
+      { label: t('infrastructure.status'), value: item.status, icon: <ShieldCheck className="w-4 h-4 text-slate-400" /> },
       { label: "ID Sensor", value: item.id, icon: <Info className="w-4 h-4 text-slate-400" /> },
     ]
     : [
-      { label: "Lokasi", value: (item as PumpData).lokasi || 'N/A', icon: <MapPin className="w-4 h-4 text-slate-400" /> },
-      { label: "Status Pompa", value: (item as PumpData).kondisi_bangunan, icon: <ShieldCheck className="w-4 h-4 text-slate-400" /> },
+      { label: t('infrastructure.location'), value: (item as PumpData).lokasi || 'N/A', icon: <MapPin className="w-4 h-4 text-slate-400" /> },
+      { label: t('infrastructure.pumpSystemStatus'), value: (item as PumpData).kondisi_bangunan, icon: <ShieldCheck className="w-4 h-4 text-slate-400" /> },
       { label: "Kapasitas", value: `${(item as PumpData).kapasitas_liter_per_detik} L/detik`, icon: <Droplets className="w-4 h-4 text-slate-400" /> },
       { label: "ID Pompa", value: (item as PumpData).id, icon: <Info className="w-4 h-4 text-slate-400" /> },
     ];
@@ -144,6 +147,7 @@ const DetailPopup = ({ item, onClose }: { item: WaterLevelPost | PumpData, onClo
 
 // Main component with new layout
 export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: InfrastructureStatusCardProps) {
+  const { t, lang } = useLanguage();
   // State for popup/modal
   const [selectedItem, setSelectedItem] = useState<WaterLevelPost | PumpData | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -212,13 +216,13 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
                 <Activity className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Pantauan Infrastruktur Kritis</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Klik untuk melihat detail data real-time</p>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t('infrastructure.criticalInfrastructure')}</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t('infrastructure.clickDetail')}</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-sm text-green-600 dark:text-green-400 font-medium">Live Data</span>
+              <span className="text-sm text-green-600 dark:text-green-400 font-medium">{t('infrastructure.liveData')}</span>
             </div>
           </CardTitle>
         </CardHeader>
@@ -231,7 +235,7 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
                 <div className="flex items-center justify-between p-4 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700/80 cursor-pointer transition-colors border border-slate-300 dark:border-slate-700 shadow-sm">
                   <div className="flex items-center space-x-3">
                     <Waves className="h-6 w-6 text-sky-500 dark:text-sky-400" />
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Lihat Status Tinggi Air</h3>
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{t('infrastructure.viewWaterLevel')}</h3>
                   </div>
                   <ChevronsUpDown className="h-5 w-5 text-slate-500 dark:text-slate-400" />
                 </div>
@@ -250,8 +254,7 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
                       <div className="mt-4 flex flex-col">
                         <div className="relative mb-4">
                           <Input
-                            type="text"
-                            placeholder="Cari pos air..."
+                            placeholder={t('infrastructure.searchWaterPost')}
                             value={waterLevelSearchTerm}
                             onChange={(e) => setWaterLevelSearchTerm(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 rounded-lg bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-700/50 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
@@ -259,10 +262,10 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
                           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                         </div>
                         <div className="grid grid-cols-4 gap-4 px-2 pb-2 text-sm font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700/50">
-                          <div className="whitespace-nowrap">Pos</div>
-                          <div className="whitespace-nowrap">Tinggi</div>
-                          <div className="whitespace-nowrap">Status</div>
-                          <div className="whitespace-nowrap">Update</div>
+                          <div className="whitespace-nowrap">{t('infrastructure.station')}</div>
+                          <div className="whitespace-nowrap">{t('infrastructure.height')}</div>
+                          <div className="whitespace-nowrap">{t('infrastructure.status')}</div>
+                          <div className="whitespace-nowrap">{t('infrastructure.lastUpdate')}</div>
                         </div>
                         <div
                           ref={waterLevelParentRef}
@@ -298,7 +301,7 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
                                       {getStatusIcon(post.status)} {post.status}
                                     </Badge>
                                   </div>
-                                  <span className="text-slate-500 dark:text-slate-400 text-sm whitespace-nowrap truncate">{getTimeAgo(post.timestamp)}</span>
+                                  <span className="text-slate-500 dark:text-slate-400 text-sm whitespace-nowrap truncate">{getTimeAgo(post.timestamp, lang)}</span>
                                 </div>
                               );
                             })}
@@ -306,7 +309,7 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
                               <div className="grid grid-cols-4 text-center text-slate-500 dark:text-slate-400 py-4">
                                 <div className="col-span-4 flex flex-col items-center justify-center">
                                   <Search className="h-6 w-6 mb-2" />
-                                  Tidak ada data pos air yang ditemukan.
+                                  {t('dashboard.selectRegionForWaterLevel')}
                                 </div>
                               </div>
                             )}
@@ -325,7 +328,7 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
                 <div className="flex items-center justify-between p-4 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700/80 cursor-pointer transition-colors border border-slate-300 dark:border-slate-700 shadow-sm">
                   <div className="flex items-center space-x-3">
                     <Zap className="h-6 w-6 text-amber-500 dark:text-amber-400" />
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Lihat Status Pompa Banjir</h3>
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{t('infrastructure.viewPumpStatus')}</h3>
                   </div>
                   <ChevronsUpDown className="h-5 w-5 text-slate-500 dark:text-slate-400" />
                 </div>
@@ -344,8 +347,7 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
                       <div className="mt-4 flex flex-col">
                         <div className="relative mb-4">
                           <Input
-                            type="text"
-                            placeholder="Cari pompa..."
+                            placeholder={t('infrastructure.searchPump')}
                             value={pumpSearchTerm}
                             onChange={(e) => setPumpSearchTerm(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 rounded-lg bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-700/50 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
@@ -353,9 +355,9 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
                           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                         </div>
                         <div className="grid grid-cols-3 gap-4 px-2 pb-2 text-sm font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700/50">
-                          <div className="whitespace-nowrap">Nama Pompa</div>
-                          <div className="whitespace-nowrap">Lokasi</div>
-                          <div className="whitespace-nowrap">Status</div>
+                          <div className="whitespace-nowrap">{t('infrastructure.pumpName')}</div>
+                          <div className="whitespace-nowrap">{t('infrastructure.location')}</div>
+                          <div className="whitespace-nowrap">{t('infrastructure.status')}</div>
                         </div>
                         <div
                           ref={pumpParentRef}
@@ -398,7 +400,7 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
                               <div className="grid grid-cols-3 text-center text-slate-500 dark:text-slate-400 py-4">
                                 <div className="col-span-3 flex flex-col items-center justify-center">
                                   <Search className="h-6 w-6 mb-2" />
-                                  Tidak ada data pompa yang ditemukan.
+                                  {t('dashboard.selectRegionForPumps')}
                                 </div>
                               </div>
                             )}
@@ -417,19 +419,19 @@ export function InfrastructureStatusCard({ waterLevelPosts, pumpStatusData }: In
           <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700/50">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
-                <p className="text-sm text-slate-500 dark:text-slate-400">Pos Air Dipantau</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{t('infrastructure.monitoredWaterPosts')}</p>
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">{waterLevelPosts.length}</p>
               </div>
               <div className="text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
-                <p className="text-sm text-slate-500 dark:text-slate-400">Total Pompa</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{t('infrastructure.totalRegistered')}</p>
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">{pumpStatusData.length}</p>
               </div>
               <div className="text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
                 <p className="text-2xl font-bold text-emerald-500 dark:text-emerald-400">{pumpStatusData.filter(p => p.kondisi_bangunan?.toLowerCase() === 'aktif').length}</p>
-                <div className="text-sm text-slate-500 dark:text-slate-400">Aktif</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">{t('infrastructure.active')}</div>
               </div>
               <div className="text-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
-                <p className="text-sm text-slate-500 dark:text-slate-400">Lokasi Siaga</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{t('landing.floodZones')}</p>
                 <p className="text-2xl font-bold text-amber-500 dark:text-amber-400">{waterLevelPosts.filter(p => p.status?.toLowerCase().includes('siaga')).length}</p>
               </div>
             </div>

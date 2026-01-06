@@ -66,7 +66,9 @@ export interface FloodAlert {
   regionId: string;
   level: 'info' | 'warning' | 'danger' | 'critical';
   title: string;
+  titleEn?: string; // English translation
   message: string;
+  messageEn?: string; // English translation
   timestamp: string;
   isActive: boolean;
   affectedAreas: string[];

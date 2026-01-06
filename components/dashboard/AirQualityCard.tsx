@@ -1,5 +1,6 @@
 import { Wind, Leaf, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 interface AirQualityCardProps {
   airQuality: {
@@ -11,6 +12,8 @@ interface AirQualityCardProps {
 }
 
 export function AirQualityCard({ airQuality }: AirQualityCardProps) {
+  const { t } = useLanguage();
+
   if (!airQuality || !airQuality.level) {
     // Return a placeholder or loading state instead of null
     return (
@@ -20,13 +23,13 @@ export function AirQualityCard({ airQuality }: AirQualityCardProps) {
             <div className="p-2 bg-slate-100 dark:bg-gray-500/20 rounded-lg border border-slate-200 dark:border-gray-400/30">
               <Leaf className="h-5 w-5 text-slate-500 dark:text-gray-400" />
             </div>
-            <span>Kualitas Udara</span>
+            <span>{t('airQuality.title')}</span>
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4 pt-4 space-y-4">
           <div className="flex items-center justify-center h-24">
             <Loader2 className="h-8 w-8 animate-spin text-cyan-500 dark:text-cyan-400" />
-            <p className="ml-2 text-slate-500 dark:text-gray-400">Memuat data kualitas udara...</p>
+            <p className="ml-2 text-slate-500 dark:text-gray-400">{t('landing.loadingWeather')}</p>
           </div>
         </CardContent>
       </Card>
@@ -71,43 +74,43 @@ export function AirQualityCard({ airQuality }: AirQualityCardProps) {
       case 'baik':
       case 'good':
         return {
-          description: 'Udara sangat bersih dan aman untuk dihirup. Polusi udara sangat rendah dan tidak menimbulkan risiko kesehatan sama sekali.',
-          recommendation: 'Nikmati semua aktivitas di luar ruangan tanpa khawatir. Ini adalah kondisi udara yang ideal!',
+          description: t('airQuality.goodDesc'),
+          recommendation: t('airQuality.goodRec'),
         };
       case 'sedang':
       case 'moderate':
         return {
-          description: 'Kualitas udara masih dapat diterima, tetapi ada sedikit polusi. Bagi sebagian kecil orang yang sangat sensitif terhadap polusi udara (misalnya, penderita asma atau penyakit pernapasan lainnya), mungkin ada sedikit kekhawatiran kesehatan.',
-          recommendation: 'Kebanyakan orang bisa beraktivitas normal. Namun, jika Anda termasuk kelompok sensitif, sebaiknya kurangi aktivitas fisik yang berat di luar ruangan.',
+          description: t('airQuality.moderateDesc'),
+          recommendation: t('airQuality.moderateRec'),
         };
       case 'tidak sehat untuk kelompok sensitif':
       case 'unhealthy for sensitive groups':
         return {
-          description: 'Udara mulai tidak sehat. Orang-orang dengan masalah pernapasan atau jantung, anak-anak, dan lansia mungkin mulai merasakan dampaknya. Masyarakat umum mungkin tidak terlalu terpengaruh.',
-          recommendation: 'Jika Anda termasuk kelompok sensitif, batasi waktu Anda di luar ruangan, terutama saat beraktivitas berat. Pertimbangkan untuk menggunakan masker.',
+          description: t('airQuality.unhealthySensitiveDesc'),
+          recommendation: t('airQuality.unhealthySensitiveRec'),
         };
       case 'tidak sehat':
       case 'unhealthy':
         return {
-          description: 'Kualitas udara sudah cukup buruk sehingga semua orang mungkin mulai merasakan efek kesehatan. Kelompok sensitif akan merasakan dampak yang lebih serius.',
-          recommendation: 'Semua orang disarankan untuk mengurangi aktivitas di luar ruangan. Kelompok sensitif harus menghindari semua aktivitas di luar ruangan.',
+          description: t('airQuality.unhealthyDesc'),
+          recommendation: t('airQuality.unhealthyRec'),
         };
       case 'sangat tidak sehat':
       case 'very unhealthy':
         return {
-          description: 'Ini adalah kondisi udara yang sangat berbahaya. Risiko kesehatan sangat tinggi bagi seluruh populasi.',
-          recommendation: 'Hindari semua aktivitas di luar ruangan. Tetaplah di dalam ruangan dengan jendela tertutup dan gunakan pembersih udara jika ada.',
+          description: t('airQuality.veryUnhealthyDesc'),
+          recommendation: t('airQuality.veryUnhealthyRec'),
         };
       case 'berbahaya':
       case 'hazardous':
         return {
-          description: 'Kondisi udara darurat. Udara sangat beracun dan dapat menyebabkan efek kesehatan yang parah bagi semua orang.',
-          recommendation: 'Seluruh populasi harus menghindari semua aktivitas di luar ruangan. Ini adalah situasi yang sangat serius.',
+          description: t('airQuality.hazardousDesc'),
+          recommendation: t('airQuality.hazardousRec'),
         };
       default:
         return {
-          description: 'Informasi kualitas udara tidak tersedia.',
-          recommendation: 'Tidak ada rekomendasi spesifik saat ini.',
+          description: t('airQuality.unavailableDesc'),
+          recommendation: t('airQuality.unavailableRec'),
         };
     }
   };
@@ -122,7 +125,7 @@ export function AirQualityCard({ airQuality }: AirQualityCardProps) {
           <div className="p-2 bg-emerald-100 dark:bg-emerald-500/20 rounded-lg border border-emerald-200 dark:border-emerald-400/30">
             <Leaf className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <span>Kualitas Udara</span>
+          <span>{t('airQuality.title')}</span>
         </CardTitle>
       </CardHeader>
 
@@ -148,7 +151,7 @@ export function AirQualityCard({ airQuality }: AirQualityCardProps) {
         {/* Pollutant Info */}
         <div className="bg-slate-50 dark:bg-slate-700/30 rounded-lg p-3 border border-slate-200 dark:border-slate-600/30">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-500 dark:text-gray-400">Polutan Utama</span>
+            <span className="text-sm text-slate-500 dark:text-gray-400">{t('airQuality.mainPollutant')}</span>
             <span className="text-sm font-medium text-slate-900 dark:text-white">{airQuality.pollutant}</span>
           </div>
         </div>
@@ -158,9 +161,9 @@ export function AirQualityCard({ airQuality }: AirQualityCardProps) {
           <div className="flex items-start space-x-2">
             <div className="w-1.5 h-1.5 bg-teal-500 dark:bg-teal-400 rounded-full mt-2 flex-shrink-0"></div>
             <div>
-              <p className="text-xs text-slate-500 dark:text-gray-400 mb-1">Deskripsi</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400 mb-1">{t('airQuality.description')}</p>
               <p className="text-sm text-slate-700 dark:text-gray-200 leading-relaxed">{detailedAqiInfo.description}</p>
-              <p className="text-xs text-slate-500 dark:text-gray-400 mt-2 mb-1">Rekomendasi</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400 mt-2 mb-1">{t('airQuality.recommendation')}</p>
               <p className="text-sm text-slate-700 dark:text-gray-200 leading-relaxed">{detailedAqiInfo.recommendation}</p>
             </div>
           </div>

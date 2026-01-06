@@ -19,6 +19,7 @@ import {
   MapPin,
   TrendingUp,
   Loader,
+  Info,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/badge';
@@ -26,9 +27,11 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { cn } from '@/lib/utils';
 import { useAlertCount } from '@/components/contexts/AlertCountContext';
 
+import { useLanguage } from '@/src/context/LanguageContext';
+
 interface NavItem {
   id: string;
-  label: string;
+  label: string; // This will now be the dictionary key suffix
   href: string;
   icon: React.ElementType;
   color?: string;
@@ -37,7 +40,7 @@ interface NavItem {
 
 interface QuickActionItem {
   id: string;
-  label: string;
+  label: string; // Dictionary key suffix
   icon: React.ElementType;
   color?: string;
   href?: string;
@@ -47,66 +50,73 @@ interface QuickActionItem {
 const navigationItems: NavItem[] = [
   {
     id: 'home',
-    label: 'Dashboard',
+    label: 'dashboard',
     href: '/',
     icon: Home,
     color: 'text-primary',
   },
   {
     id: 'map',
-    label: 'Monitoring Banjir',
+    label: 'floodMonitoring',
     href: '/peta-banjir',
     icon: Map,
     color: 'text-blue-500',
   },
   {
     id: 'weather',
-    label: 'Prakiraan Cuaca',
+    label: 'weatherForecast',
     href: '/prakiraan-cuaca',
     icon: Cloud,
     color: 'text-sky-500',
   },
   {
     id: 'alerts',
-    label: 'Peringatan',
+    label: 'alerts',
     href: '/peringatan',
     icon: Bell,
     color: 'text-warning',
   },
   {
     id: 'report-flood',
-    label: 'Lapor Banjir',
+    label: 'reportFlood',
     href: '/lapor-banjir',
     icon: AlertTriangle,
     color: 'text-red-500',
   },
   {
     id: 'evacuation-info',
-    label: 'Info Evakuasi',
+    label: 'evacuationInfo',
     href: '/info-evakuasi',
     icon: Users,
     color: 'text-purple-500',
   },
   {
     id: 'sensor-data',
-    label: 'Data Sensor',
+    label: 'sensorData',
     href: '/data-sensor',
     icon: TrendingUp,
     color: 'text-green-500',
   },
   {
     id: 'stats',
-    label: 'Statistik Data',
+    label: 'statistics',
     href: '/statistika',
     icon: BarChart,
     color: 'text-green-500',
+  },
+  {
+    id: 'about',
+    label: 'aboutFloodzy',
+    href: '/about.html',
+    icon: Info,
+    color: 'text-cyan-500',
   },
 ];
 
 const quickActions: QuickActionItem[] = [
   {
     id: 'current-weather',
-    label: 'Cuaca Sekarang',
+    label: 'currentWeather',
     icon: Cloud,
     color: 'text-sky-500',
     onClick: () => { },
@@ -129,6 +139,7 @@ export function Sidebar({
   onOpenWeatherPopup, // Destructure new prop
 }: SidebarProps) {
   const router = useRouter();
+  const { t } = useLanguage();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { highAlertCount, loadingAlerts } = useAlertCount();
   const [isPending, startTransition] = useTransition();
@@ -195,8 +206,8 @@ export function Sidebar({
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1 }}
             >
-              <h2 className="text-lg font-semibold">Navigasi</h2>
-              <p className="text-sm text-muted-foreground">Sistem Monitoring</p>
+              <h2 className="text-lg font-semibold">{t('sidebar.navigation')}</h2>
+              <p className="text-sm text-muted-foreground">{t('sidebar.monitoringSystem')}</p>
             </motion.div>
           )}
           {!isMobile && (
@@ -253,7 +264,8 @@ export function Sidebar({
                   )}
                   {!isCollapsed && (
                     <>
-                      <span className="ml-3">{item.label}</span>
+
+                      <span className="ml-3">{t(`sidebar.${item.label}`)}</span>
                       {badgeValue !== undefined && badgeValue > 0 && (
                         <Badge variant="danger" size="sm" className="ml-auto">
                           {badgeValue}
@@ -286,7 +298,7 @@ export function Sidebar({
               transition={{ delay: 0.2 }}
               className="text-sm font-medium text-muted-foreground mb-3"
             >
-              Aksi Cepat
+              {t('sidebar.quickActions')}
             </motion.h3>
           )}
           <div
@@ -309,7 +321,7 @@ export function Sidebar({
                   onClick={action.id === 'current-weather' ? onOpenWeatherPopup : action.onClick}
                 >
                   <action.icon className={cn('h-4 w-4', action.color)} />
-                  {!isCollapsed && <span className="ml-2">{action.label}</span>}
+                  {!isCollapsed && <span className="ml-2">{t(`sidebar.${action.label}`)}</span>}
                 </Button>
               </motion.div>
             ))}
@@ -326,7 +338,7 @@ export function Sidebar({
             onClick={() => handleNavigate('/settings')}
           >
             <Settings className="h-4 w-4 text-muted-foreground" />
-            {!isCollapsed && <span className="ml-3">Pengaturan</span>}
+            {!isCollapsed && <span className="ml-3">{t('sidebar.settings')}</span>}
           </Button>
         </div>
       </motion.aside>
