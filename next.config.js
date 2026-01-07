@@ -12,6 +12,14 @@ const withPWA = require('next-pwa')({
 const nextConfig = {
   output: 'standalone',
   experimental: { instrumentationHook: true },
+  async rewrites() {
+    return [
+      {
+        source: '/about',
+        destination: '/about.html',
+      },
+    ];
+  },
   // Konfigurasi Webpack yang sudah ada
   webpack: (config, { isServer }) => {
     // Konfigurasi ini hanya berlaku untuk build sisi server,

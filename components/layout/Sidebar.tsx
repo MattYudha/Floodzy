@@ -109,7 +109,7 @@ const navigationItems: NavItem[] = [
   {
     id: 'about',
     label: 'aboutFloodzy',
-    href: '/about.html',
+    href: '/about.html?mode=read',
     icon: Info,
     color: 'text-cyan-500',
   },
