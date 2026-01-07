@@ -86,13 +86,19 @@ export default function ClientLayoutWrapper({
     }
   };
 
+  // Logika 'isMapPage'
+  const pathname = usePathname();
+  const isLandingPage = pathname === '/';
+  const isContactPage = pathname === '/contact';
+  const isMapPage = pathname === '/peta-banjir';
+
+  if (isLandingPage || isContactPage) {
+    return <>{children}</>;
+  }
+
   if (showSplash) {
     return <SplashScreen isFadingOut={isFadingOut} />;
   }
-
-  // Logika 'isMapPage'
-  const pathname = usePathname();
-  const isMapPage = pathname === '/peta-banjir';
 
   return (
     <div className="flex min-h-screen bg-transparent">

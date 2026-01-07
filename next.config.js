@@ -15,12 +15,8 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/about',
-        destination: '/about.html',
-      },
-      {
-        source: '/contact',
-        destination: '/contact.html',
+        source: '/',
+        destination: '/landing.html',
       },
     ];
   },
