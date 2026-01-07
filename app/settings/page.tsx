@@ -28,6 +28,7 @@ import {
   Map,
 } from 'lucide-react';
 
+import { useLanguage } from '@/src/context/LanguageContext';
 import { useTheme } from '@/hooks/useTheme';
 import { SelectedLocation } from '@/types/location';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -54,31 +55,16 @@ interface UserPreferences {
   preferences_data: UserPreferencesData;
 }
 
-const NOTIFICATION_LEVELS = [
-  {
-    id: 'danger',
-    label: 'Bahaya (Siaga 1 & 2)',
-    color: 'from-red-500 to-red-600',
-  },
-  {
-    id: 'warning',
-    label: 'Peringatan (Siaga 3)',
-    color: 'from-yellow-500 to-orange-500',
-  },
-  {
-    id: 'info',
-    label: 'Informasi',
-    color: 'from-blue-500 to-cyan-500',
-  },
-];
+// NOTIFICATION_LEVELS removed from here to be memoized inside component for translation
 
 const initialPreferences: UserPreferences = {
   default_location: null,
   preferences_data: {
-    notificationPrefs: NOTIFICATION_LEVELS.reduce(
-      (acc, level) => ({ ...acc, [level.id]: true }),
-      {} as Record<string, boolean>
-    ),
+    notificationPrefs: {
+      danger: true,
+      warning: true,
+      info: true,
+    },
     fontSize: 'normal',
     reduceMotion: false,
     dataUpdateInterval: 15,
@@ -91,6 +77,7 @@ const initialPreferences: UserPreferences = {
 };
 
 export default function SettingsPage() {
+  const { t } = useLanguage();
   const { theme, setTheme } = useTheme();
   const [preferences, setPreferences] = useState<UserPreferences>(initialPreferences);
   const [loading, setLoading] = useState(true);
@@ -98,6 +85,24 @@ export default function SettingsPage() {
   const [editingName, setEditingName] = useState('');
   const [newFavoriteLocationName, setNewFavoriteLocationName] = useState('');
   const [newFavoriteLocationCoords, setNewFavoriteLocationCoords] = useState<SelectedLocation | null>(null);
+
+  const NOTIFICATION_LEVELS = [
+    {
+      id: 'danger',
+      label: t('settings.notifications.levels.danger'),
+      color: 'from-red-500 to-red-600',
+    },
+    {
+      id: 'warning',
+      label: t('settings.notifications.levels.warning'),
+      color: 'from-yellow-500 to-orange-500',
+    },
+    {
+      id: 'info',
+      label: t('settings.notifications.levels.info'),
+      color: 'from-blue-500 to-cyan-500',
+    },
+  ];
 
   // Function to save preferences to local storage
   const savePreferencesToLocalStorage = useCallback((updatedPrefs: UserPreferences) => {
@@ -271,7 +276,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center">
-        <div className="text-slate-600 dark:text-slate-400">Memuat pengaturan...</div>
+        <div className="text-slate-600 dark:text-slate-400">{t('settings.loading')}</div>
       </div>
     );
   }
@@ -287,9 +292,9 @@ export default function SettingsPage() {
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-400 dark:to-blue-400 bg-clip-text text-transparent">
-                Pengaturan
+                {t('settings.title')}
               </h1>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Personalisasi pengalaman Floodzy Anda</p>
+              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t('settings.subtitle')}</p>
             </div>
           </div>
         </div>
@@ -305,12 +310,12 @@ export default function SettingsPage() {
                 <div className="p-2.5 bg-gradient-to-r from-emerald-500 to-green-500 rounded-lg mr-3 shadow-md shadow-emerald-500/20">
                   <MapPin className="w-5 h-5 text-white" />
                 </div>
-                Tentukan Lokasi Wilayah Yang Akan Ditampilkan Saat Aplikasi Dimulai
+                {t('settings.defaultLocation.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
               <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 leading-relaxed">
-                Pilih lokasi default yang akan dimuat saat aplikasi dimulai.
+                {t('settings.defaultLocation.description')}
               </p>
               <div className="space-y-4">
                 <RegionDropdown
@@ -321,7 +326,7 @@ export default function SettingsPage() {
                   <div className="p-3 bg-gradient-to-r from-emerald-500/10 to-green-500/10 border border-emerald-500/20 rounded-lg">
                     <div className="flex items-center">
                       <Check className="w-4 h-4 text-emerald-400 mr-2 flex-shrink-0" />
-                      <span className="text-emerald-400 text-sm font-medium">Tersimpan: {preferences.default_location.districtName}</span>
+                      <span className="text-emerald-400 text-sm font-medium">{t('settings.defaultLocation.saved').replace('{location}', preferences.default_location.districtName)}</span>
                     </div>
                   </div>
                 )}
@@ -336,11 +341,11 @@ export default function SettingsPage() {
                 <div className="p-2.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg mr-3 shadow-md shadow-purple-500/20">
                   <MapPin className="w-5 h-5 text-white" />
                 </div>
-                Lokasi Favorit
+                {t('settings.favoriteLocations.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 leading-relaxed">Tambahkan lokasi favorit Anda untuk akses cepat.</p>
+              <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 leading-relaxed">{t('settings.favoriteLocations.description')}</p>
               <div className="space-y-3 mb-6">
                 {preferences.preferences_data.favoriteLocations.map((loc, index) => (
                   <div key={index} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/20 rounded-lg border border-slate-200 dark:border-slate-600/30 hover:border-slate-300 dark:hover:border-slate-500/50 transition-all">
@@ -358,7 +363,7 @@ export default function SettingsPage() {
                         </div>
                         <div className="flex items-center space-x-1 ml-3">
                           <button onClick={() => startEditing(index, loc.name || loc.districtName || '')} className="p-1.5 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-400/10 rounded-md"><Edit3 className="w-4 h-4" /></button>
-                          <button onClick={() => handleLoadFavoriteLocation(loc)} className="p-1.5 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-400/10 rounded-md" title="Muat Lokasi"><Map className="w-4 h-4" /></button>
+                          <button onClick={() => handleLoadFavoriteLocation(loc)} className="p-1.5 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-400/10 rounded-md" title={t('settings.favoriteLocations.load')}><Map className="w-4 h-4" /></button>
                           <button onClick={() => handleRemoveFavoriteLocation(index)} className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-400/10 rounded-md"><Trash2 className="w-4 h-4" /></button>
                         </div>
                       </>
@@ -367,11 +372,11 @@ export default function SettingsPage() {
                 ))}
               </div>
               <div className="space-y-3 p-4 bg-slate-50 dark:bg-slate-700/10 border border-slate-200 dark:border-slate-600/20 rounded-lg">
-                <input type="text" placeholder="Nama Lokasi (mis. Rumah, Kantor)" value={newFavoriteLocationName} onChange={(e) => setNewFavoriteLocationName(e.target.value)} className="w-full p-3 bg-white dark:bg-slate-700/30 border border-slate-300 dark:border-slate-600/50 rounded-lg text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-400 text-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none" />
+                <input type="text" placeholder={t('settings.favoriteLocations.placeholder')} value={newFavoriteLocationName} onChange={(e) => setNewFavoriteLocationName(e.target.value)} className="w-full p-3 bg-white dark:bg-slate-700/30 border border-slate-300 dark:border-slate-600/50 rounded-lg text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-400 text-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none" />
                 <RegionDropdown onSelectDistrict={setNewFavoriteLocationCoords} selectedLocation={newFavoriteLocationCoords} />
                 <button onClick={handleAddFavoriteLocation} disabled={!newFavoriteLocationName || !newFavoriteLocationCoords} className="w-full flex items-center justify-center space-x-2 p-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg text-sm font-medium hover:from-cyan-600 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed">
                   <Plus className="w-4 h-4" />
-                  <span>Tambah Lokasi Favorit</span>
+                  <span>{t('settings.favoriteLocations.addButton')}</span>
                 </button>
               </div>
             </CardContent>
@@ -383,16 +388,16 @@ export default function SettingsPage() {
             <Card className="bg-white dark:bg-slate-800/40 backdrop-blur-sm border border-slate-200 dark:border-slate-700/50 rounded-xl shadow-sm dark:shadow-none transition-all duration-300">
               <CardHeader className="border-b border-slate-200 dark:border-slate-700/30 p-6">
                 <CardTitle className="flex items-center text-lg font-semibold text-slate-800 dark:text-slate-100">
-                  <div className="p-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg mr-3 shadow-md shadow-indigo-500/20"><Palette className="w-5 h-5 text-white" /></div> Tampilan
+                  <div className="p-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg mr-3 shadow-md shadow-indigo-500/20"><Palette className="w-5 h-5 text-white" /></div> {t('settings.appearance.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/20 border border-slate-100 dark:border-slate-700/30">
-                  <Label htmlFor="theme-toggle" className="flex flex-col space-y-1 cursor-pointer"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><Moon className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> Mode Gelap</span><span className="text-xs text-slate-500 dark:text-slate-400">Sesuaikan tampilan aplikasi</span></Label>
+                  <Label htmlFor="theme-toggle" className="flex flex-col space-y-1 cursor-pointer"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><Moon className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> {t('settings.appearance.darkMode')}</span><span className="text-xs text-slate-500 dark:text-slate-400">{t('settings.appearance.darkModeDesc')}</span></Label>
                   <div className="flex items-center space-x-3"><Sun className="w-4 h-4 text-slate-500 dark:text-slate-400" /><Switch id="theme-toggle" checked={theme === 'dark'} onCheckedChange={(isDark) => setTheme(isDark ? 'dark' : 'light')} /><Moon className="w-4 h-4 text-slate-500 dark:text-slate-400" /></div>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/20 border border-slate-100 dark:border-slate-700/30">
-                  <Label htmlFor="high-contrast-toggle" className="flex flex-col space-y-1 cursor-pointer"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><Monitor className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> Mode Kontras Tinggi</span><span className="text-xs text-slate-500 dark:text-slate-400">Tingkatkan kontras warna</span></Label>
+                  <Label htmlFor="high-contrast-toggle" className="flex flex-col space-y-1 cursor-pointer"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><Monitor className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> {t('settings.appearance.highContrast')}</span><span className="text-xs text-slate-500 dark:text-slate-400">{t('settings.appearance.highContrastDesc')}</span></Label>
                   <Switch id="high-contrast-toggle" checked={theme === 'high-contrast'} onCheckedChange={(checked) => setTheme(checked ? 'high-contrast' : 'system')} />
                 </div>
               </CardContent>
@@ -402,20 +407,20 @@ export default function SettingsPage() {
             <Card className="bg-white dark:bg-slate-800/40 backdrop-blur-sm border border-slate-200 dark:border-slate-700/50 rounded-xl shadow-sm dark:shadow-none transition-all duration-300">
               <CardHeader className="border-b border-slate-200 dark:border-slate-700/30 p-6">
                 <CardTitle className="flex items-center text-lg font-semibold text-slate-800 dark:text-slate-100">
-                  <div className="p-2.5 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-lg mr-3 shadow-md shadow-teal-500/20"><Accessibility className="w-5 h-5 text-white" /></div> Aksesibilitas
+                  <div className="p-2.5 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-lg mr-3 shadow-md shadow-teal-500/20"><Accessibility className="w-5 h-5 text-white" /></div> {t('settings.accessibility.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/20 border border-slate-100 dark:border-slate-700/30">
-                  <Label className="flex flex-col space-y-1"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><Type className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> Ukuran Font</span><span className="text-xs text-slate-500 dark:text-slate-400">Sesuaikan ukuran teks</span></Label>
+                  <Label className="flex flex-col space-y-1"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><Type className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> {t('settings.accessibility.fontSize')}</span><span className="text-xs text-slate-500 dark:text-slate-400">{t('settings.accessibility.fontSizeDesc')}</span></Label>
                   <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-600/30 rounded-lg p-1">
-                    <button onClick={() => handleFontSizeChange('small')} className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${preferences.preferences_data.fontSize === 'small' ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-600/50'}`}>Kecil</button>
-                    <button onClick={() => handleFontSizeChange('normal')} className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${preferences.preferences_data.fontSize === 'normal' ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-600/50'}`}>Normal</button>
-                    <button onClick={() => handleFontSizeChange('large')} className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${preferences.preferences_data.fontSize === 'large' ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-600/50'}`}>Besar</button>
+                    <button onClick={() => handleFontSizeChange('small')} className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${preferences.preferences_data.fontSize === 'small' ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-600/50'}`}>{t('settings.accessibility.sizes.small')}</button>
+                    <button onClick={() => handleFontSizeChange('normal')} className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${preferences.preferences_data.fontSize === 'normal' ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-600/50'}`}>{t('settings.accessibility.sizes.normal')}</button>
+                    <button onClick={() => handleFontSizeChange('large')} className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${preferences.preferences_data.fontSize === 'large' ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-600/50'}`}>{t('settings.accessibility.sizes.large')}</button>
                   </div>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/20 border border-slate-100 dark:border-slate-700/30">
-                  <Label htmlFor="reduce-motion-toggle" className="flex flex-col space-y-1 cursor-pointer"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><MousePointer className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> Kurangi Gerakan</span><span className="text-xs text-slate-500 dark:text-slate-400">Kurangi animasi dan efek</span></Label>
+                  <Label htmlFor="reduce-motion-toggle" className="flex flex-col space-y-1 cursor-pointer"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><MousePointer className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> {t('settings.accessibility.reduceMotion')}</span><span className="text-xs text-slate-500 dark:text-slate-400">{t('settings.accessibility.reduceMotionDesc')}</span></Label>
                   <Switch id="reduce-motion-toggle" checked={preferences.preferences_data.reduceMotion} onCheckedChange={handleReduceMotionChange} />
                 </div>
               </CardContent>
@@ -425,12 +430,12 @@ export default function SettingsPage() {
             <Card className="bg-white dark:bg-slate-800/40 backdrop-blur-sm border border-slate-200 dark:border-slate-700/50 rounded-xl shadow-sm dark:shadow-none transition-all duration-300">
               <CardHeader className="border-b border-slate-200 dark:border-slate-700/30 p-6">
                 <CardTitle className="flex items-center text-lg font-semibold text-slate-800 dark:text-slate-100">
-                  <div className="p-2.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg mr-3 shadow-md shadow-orange-500/20"><Globe className="w-5 h-5 text-white" /></div> Pengaturan Peta
+                  <div className="p-2.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg mr-3 shadow-md shadow-orange-500/20"><Globe className="w-5 h-5 text-white" /></div> {t('settings.map.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/20 border border-slate-100 dark:border-slate-700/30">
-                  <Label htmlFor="marker-clustering-toggle" className="flex flex-col space-y-1 cursor-pointer"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><Eye className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> Klasterisasi Marker</span><span className="text-xs text-slate-500 dark:text-slate-400">Kelompokkan penanda banjir</span></Label>
+                  <Label htmlFor="marker-clustering-toggle" className="flex flex-col space-y-1 cursor-pointer"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><Eye className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> {t('settings.map.clustering')}</span><span className="text-xs text-slate-500 dark:text-slate-400">{t('settings.map.clusteringDesc')}</span></Label>
                   <Switch id="marker-clustering-toggle" checked={preferences.preferences_data.markerClustering} onCheckedChange={handleMarkerClusteringChange} />
                 </div>
               </CardContent>
@@ -440,22 +445,22 @@ export default function SettingsPage() {
             <Card className="bg-white dark:bg-slate-800/40 backdrop-blur-sm border border-slate-200 dark:border-slate-700/50 rounded-xl shadow-sm dark:shadow-none transition-all duration-300">
               <CardHeader className="border-b border-slate-200 dark:border-slate-700/30 p-6">
                 <CardTitle className="flex items-center text-lg font-semibold text-slate-800 dark:text-slate-100">
-                  <div className="p-2.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg mr-3 shadow-md shadow-blue-500/20"><Database className="w-5 h-5 text-white" /></div> Data & Sinkronisasi
+                  <div className="p-2.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg mr-3 shadow-md shadow-blue-500/20"><Database className="w-5 h-5 text-white" /></div> {t('settings.data.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/20 border border-slate-100 dark:border-slate-700/30">
-                  <Label htmlFor="data-update-interval" className="flex flex-col space-y-1"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><Database className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> Interval Pembaruan</span><span className="text-xs text-slate-500 dark:text-slate-400">Atur frekuensi pembaruan</span></Label>
+                  <Label htmlFor="data-update-interval" className="flex flex-col space-y-1"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><Database className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> {t('settings.data.updateInterval')}</span><span className="text-xs text-slate-500 dark:text-slate-400">{t('settings.data.updateIntervalDesc')}</span></Label>
                   <select id="data-update-interval" value={preferences.preferences_data.dataUpdateInterval} onChange={(e) => handleDataUpdateIntervalChange(parseInt(e.target.value))} className="bg-white dark:bg-slate-600/50 border border-slate-200 dark:border-slate-500 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-200 focus:border-cyan-500 focus:outline-none">
-                    <option value={15}>15 Menit</option><option value={30}>30 Menit</option><option value={60}>1 Jam</option><option value={0}>Saat Dibuka</option>
+                    <option value={15}>{t('settings.data.intervals.min15')}</option><option value={30}>{t('settings.data.intervals.min30')}</option><option value={60}>{t('settings.data.intervals.hour1')}</option><option value={0}>{t('settings.data.intervals.onOpen')}</option>
                   </select>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/20 border border-slate-100 dark:border-slate-700/30">
-                  <Label htmlFor="sync-only-on-wifi" className="flex flex-col space-y-1 cursor-pointer"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><Wifi className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> Hanya via Wi-Fi</span><span className="text-xs text-slate-500 dark:text-slate-400">Hemat data seluler</span></Label>
+                  <Label htmlFor="sync-only-on-wifi" className="flex flex-col space-y-1 cursor-pointer"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><Wifi className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> {t('settings.data.wifiOnly')}</span><span className="text-xs text-slate-500 dark:text-slate-400">{t('settings.data.wifiOnlyDesc')}</span></Label>
                   <Switch id="sync-only-on-wifi" checked={preferences.preferences_data.syncOnlyOnWifi} onCheckedChange={handleSyncOnlyOnWifiChange} />
                 </div>
                 <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/20 border border-slate-100 dark:border-slate-700/30">
-                  <Label htmlFor="offline-mode" className="flex flex-col space-y-1 cursor-pointer"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><Smartphone className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> Mode Offline</span><span className="text-xs text-slate-500 dark:text-slate-400">Akses data tanpa internet</span></Label>
+                  <Label htmlFor="offline-mode" className="flex flex-col space-y-1 cursor-pointer"><span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200"><Smartphone className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> {t('settings.data.offlineMode')}</span><span className="text-xs text-slate-500 dark:text-slate-400">{t('settings.data.offlineModeDesc')}</span></Label>
                   <Switch id="offline-mode" checked={preferences.preferences_data.offlineMode} onCheckedChange={handleOfflineModeChange} />
                 </div>
               </CardContent>
@@ -465,11 +470,11 @@ export default function SettingsPage() {
             <Card className="xl:col-span-2 bg-white dark:bg-slate-800/40 backdrop-blur-sm border border-slate-200 dark:border-slate-700/50 rounded-xl shadow-sm dark:shadow-none transition-all duration-300">
               <CardHeader className="border-b border-slate-200 dark:border-slate-700/30 p-6">
                 <CardTitle className="flex items-center text-lg font-semibold text-slate-800 dark:text-slate-100">
-                  <div className="p-2.5 bg-gradient-to-r from-pink-500 to-rose-500 rounded-lg mr-3 shadow-md shadow-pink-500/20"><Bell className="w-5 h-5 text-white" /></div> Preferensi Notifikasi
+                  <div className="p-2.5 bg-gradient-to-r from-pink-500 to-rose-500 rounded-lg mr-3 shadow-md shadow-pink-500/20"><Bell className="w-5 h-5 text-white" /></div> {t('settings.notifications.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
-                <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Pilih jenis peringatan yang ingin Anda lihat di dasbor.</p>
+                <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">{t('settings.notifications.description')}</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   {NOTIFICATION_LEVELS.map((level) => (
                     <div key={level.id} className="p-4 bg-slate-50 dark:bg-slate-700/10 border border-slate-200 dark:border-slate-600/20 rounded-lg hover:border-slate-300 dark:hover:border-slate-500/40">
@@ -486,9 +491,9 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/20 border border-slate-100 dark:border-slate-700/30">
                   <Label htmlFor="notification-sound-toggle" className="flex flex-col space-y-1 cursor-pointer">
                     <span className="flex items-center text-sm font-medium text-slate-800 dark:text-slate-200">
-                      {preferences.preferences_data.notificationSoundEnabled ? <Volume2 className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> : <VolumeX className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" />}Suara Notifikasi
+                      {preferences.preferences_data.notificationSoundEnabled ? <Volume2 className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> : <VolumeX className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" />}{t('settings.notifications.sound')}
                     </span>
-                    <span className="text-xs text-slate-500 dark:text-slate-400">Aktifkan suara untuk notifikasi</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">{t('settings.notifications.soundDesc')}</span>
                   </Label>
                   <Switch id="notification-sound-toggle" checked={preferences.preferences_data.notificationSoundEnabled} onCheckedChange={handleNotificationSoundChange} />
                 </div>

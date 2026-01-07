@@ -29,7 +29,10 @@ const DynamicMapPicker = dynamic(
 import { motion } from 'framer-motion'; // Import motion
 import Image from 'next/image';
 
+import { useLanguage } from '@/src/context/LanguageContext';
+
 export default function LaporBanjirPage() {
+  const { t } = useLanguage();
   // --- STATE MANAGEMENT ---
   const [location, setLocation] = useState<string>('');
   const [manualLocationInput, setManualLocationInput] = useState<string>(''); // New state for manual input
@@ -109,10 +112,10 @@ export default function LaporBanjirPage() {
         setLatitude(parseFloat(lat));
         setLongitude(parseFloat(lon));
         setLocation(display_name);
-        setMessage('Lokasi ditemukan di peta.');
+        setMessage(t('reportFlood.locationFound'));
         setMessageType('success');
       } else {
-        setMessage('Lokasi tidak ditemukan. Coba kata kunci lain.');
+        setMessage(t('reportFlood.locationNotFound'));
         setMessageType('error');
       }
     } catch (error: any) {
@@ -162,7 +165,7 @@ export default function LaporBanjirPage() {
 
     if (!validationResult.success) {
       setErrors(validationResult.error.issues);
-      setMessage('Validasi gagal. Periksa kembali input Anda.');
+      setMessage(t('reportFlood.validationError'));
       setMessageType('error');
       setLoading(false);
       return;
@@ -229,9 +232,9 @@ export default function LaporBanjirPage() {
 
       // Map API risk labels to more descriptive, user-friendly strings for display
       const riskLabelMap: { [key: string]: string } = {
-        'HIGH': 'Risiko Tinggi',
-        'MED': 'Risiko Medium',
-        'LOW': 'Risiko Rendah',
+        'HIGH': t('reportFlood.riskHigh'),
+        'MED': t('reportFlood.riskMedium'),
+        'LOW': t('reportFlood.riskLow'),
       };
 
       // Use the map to get the descriptive label, with a fallback to the original label
@@ -240,7 +243,7 @@ export default function LaporBanjirPage() {
       // Set the descriptive label for display in the UI
       setPredictionRiskLabel(descriptiveRiskLabel);
 
-      setMessage('Laporan berhasil dikirim!');
+      setMessage(t('reportFlood.success'));
       setMessageType('success');
 
       let photoUrl = '';
@@ -336,8 +339,8 @@ export default function LaporBanjirPage() {
             <Droplets className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">Floodzie</h1>
-            <p className="text-xs sm:text-sm text-cyan-600 dark:text-cyan-400">Sistem Deteksi Banjir</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">{t('common.floodzy')}</h1>
+            <p className="text-xs sm:text-sm text-cyan-600 dark:text-cyan-400">{t('reportFlood.subtitle')}</p>
           </div>
         </div>
         <motion.div
@@ -348,11 +351,10 @@ export default function LaporBanjirPage() {
         >
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle className="w-5 h-5 text-orange-500 dark:text-orange-400" />
-            <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white">Lapor Banjir</h2>
+            <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white">{t('reportFlood.title')}</h2>
           </div>
           <p className="text-slate-600 dark:text-slate-400">
-            Laporkan kondisi banjir di wilayah Anda untuk membantu monitoring
-            real-time
+            {t('reportFlood.formDesc')}
           </p>
         </motion.div>
       </motion.div>
@@ -385,8 +387,8 @@ export default function LaporBanjirPage() {
                   </div>
                   {predictionResult !== null && predictionRiskLabel !== null && messageType === 'success' && (
                     <div className="mt-2 text-sm">
-                      <p>Prediksi Risiko: <span className="font-bold">{predictionRiskLabel}</span></p>
-                      <p>Probabilitas Banjir: <span className="font-bold">{(predictionResult * 100).toFixed(2)}%</span></p>
+                      <p>{t('reportFlood.predictionRisk')}: <span className="font-bold">{predictionRiskLabel}</span></p>
+                      <p>{t('reportFlood.predictionProb')}: <span className="font-bold">{(predictionResult * 100).toFixed(2)}%</span></p>
                     </div>
                   )}
                 </motion.div>
@@ -401,7 +403,7 @@ export default function LaporBanjirPage() {
               >
                 <label className="flex items-center gap-2 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
                   <MapPin className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-                  Lokasi Kejadian <span className="text-red-500 dark:text-red-400">*</span>
+                  {t('reportFlood.location')} <span className="text-red-500 dark:text-red-400">*</span>
                 </label>
                 <DynamicMapPicker
                   currentPosition={[latitude, longitude]} // Pass current lat/lng
@@ -423,7 +425,7 @@ export default function LaporBanjirPage() {
                         handleSearchLocation();
                       }
                     }}
-                    placeholder="Cari lokasi secara manual (contoh: Jakarta Pusat)"
+                    placeholder={t('reportFlood.locationPlaceholder')}
                     className={`w-full bg-slate-50 dark:bg-slate-700/80 border rounded-lg px-3 py-2 sm:px-4 sm:py-3 pr-12 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:border-cyan-500 dark:focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 dark:focus:ring-cyan-400/20 transition-all ${getErrorMessage('location') ? 'border-red-500' : 'border-slate-300 dark:border-slate-500/50'}`}
                   />
                   <button
@@ -445,8 +447,7 @@ export default function LaporBanjirPage() {
                   <p className="text-red-400 text-xs mt-1">{getErrorMessage('longitude')}</p>
                 )}
                 <p className="text-xs text-slate-500">
-                  Geser marker di peta, klik tombol GPS, atau cari lokasi secara
-                  manual.
+                  {t('reportFlood.mapHint')}
                 </p>
               </motion.div>
 
@@ -459,7 +460,7 @@ export default function LaporBanjirPage() {
               >
                 <label className="flex items-center gap-2 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
                   <Droplets className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                  Tinggi Air <span className="text-red-500 dark:text-red-400">*</span>
+                  {t('reportFlood.waterLevel')} <span className="text-red-500 dark:text-red-400">*</span>
                 </label>
                 <div className={`grid grid-cols-1 sm:grid-cols-2 gap-2 ${getErrorMessage('water_level') ? 'border border-red-500 rounded-lg p-2' : ''}`}>
                   {waterLevelOptions.map((option) => (
@@ -479,7 +480,7 @@ export default function LaporBanjirPage() {
                           <span
                             className={`text-sm sm:text-base font-medium ${waterLevel === option.value ? 'text-cyan-700 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}
                           >
-                            {option.label}
+                            {t(`reportFlood.waterLevelOptions.${option.value}`)}
                           </span>
                           <span className={`text-xs sm:text-sm ${option.color}`}>
                             {option.height}
@@ -503,7 +504,7 @@ export default function LaporBanjirPage() {
               >
                 <label className="flex items-center gap-2 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
                   <Camera className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 dark:text-green-400" />
-                  Unggah Foto (Opsional)
+                  {t('reportFlood.photo')}
                 </label>
                 <div className="relative">
                   <input
@@ -531,7 +532,7 @@ export default function LaporBanjirPage() {
                             {selectedPhoto.file.name}
                           </p>
                           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                            Klik untuk mengganti foto
+                            {t('reportFlood.photoChange')}
                           </p>
                         </div>
                       </div>
@@ -539,10 +540,10 @@ export default function LaporBanjirPage() {
                       <div className="text-center">
                         <Camera className="w-6 h-6 sm:w-8 sm:h-8 text-slate-400 mx-auto mb-2" />
                         <p className="text-slate-500 dark:text-slate-400">
-                          Klik untuk memilih foto
+                          {t('reportFlood.photoPlaceholder')}
                         </p>
                         <p className="text-xs sm:text-sm text-slate-400 dark:text-slate-500">
-                          PNG, JPG hingga 10MB
+                          {t('reportFlood.photoFormats')}
                         </p>
                       </div>
                     )}
@@ -558,10 +559,10 @@ export default function LaporBanjirPage() {
                 className="space-y-2"
               >
                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                  Deskripsi Singkat
+                  {t('reportFlood.descLabel')}
                 </label>
                 <textarea
-                  placeholder="Berikan detail tambahan tentang kondisi banjir (arus air, penyebab, dll)..."
+                  placeholder={t('reportFlood.descPlaceholder')}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
@@ -581,12 +582,11 @@ export default function LaporBanjirPage() {
               >
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
-                    <User className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Nama Pelapor
-                    (Opsional)
+                    <User className="w-4 h-4 text-purple-600 dark:text-purple-400" /> {t('reportFlood.reporterName')}
                   </label>
                   <input
                     type="text"
-                    placeholder="Nama lengkap"
+                    placeholder={t('reportFlood.reporterName')}
                     value={reporterName}
                     onChange={(e) => setReporterName(e.target.value)}
                     className={`w-full bg-slate-50 dark:bg-slate-700/50 border rounded-lg px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:border-cyan-500 dark:focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 dark:focus:ring-cyan-400/20 transition-all ${getErrorMessage('reporter_name') ? 'border-red-500' : 'border-slate-300 dark:border-slate-600'}`}
@@ -597,12 +597,11 @@ export default function LaporBanjirPage() {
                 </div>
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
-                    <Phone className="w-4 h-4 text-orange-500 dark:text-orange-400" /> Kontak
-                    (Opsional)
+                    <Phone className="w-4 h-4 text-orange-500 dark:text-orange-400" /> {t('reportFlood.reporterContact')}
                   </label>
                   <input
                     type="text"
-                    placeholder="No. HP atau Email"
+                    placeholder={t('reportFlood.reporterContact')}
                     value={reporterContact}
                     onChange={(e) => setReporterContact(e.target.value)}
                     className={`w-full bg-slate-50 dark:bg-slate-700/50 border rounded-lg px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:border-cyan-500 dark:focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 dark:focus:ring-cyan-400/20 transition-all ${getErrorMessage('reporter_contact') ? 'border-red-500' : 'border-slate-300 dark:border-slate-600'}`}
@@ -625,11 +624,11 @@ export default function LaporBanjirPage() {
                 {loading ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />{' '}
-                    Mengirim Laporan...
+                    {t('reportFlood.submitting')}
                   </>
                 ) : (
                   <>
-                    <Send className="w-5 h-5" /> Kirim Laporan
+                    <Send className="w-5 h-5" /> {t('reportFlood.submitButton')}
                   </>
                 )}
               </motion.button>
@@ -647,13 +646,13 @@ export default function LaporBanjirPage() {
           >
             <div className="flex items-center gap-2 mb-3">
               <Clock className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
-              <h3 className="text-base sm:text-lg font-medium text-slate-900 dark:text-white">Waktu Saat Ini</h3>
+              <h3 className="text-base sm:text-lg font-medium text-slate-900 dark:text-white">{t('reportFlood.timeTitle')}</h3>
             </div>
             <p className="text-xl sm:text-2xl font-bold text-cyan-600 dark:text-cyan-400">
               {getCurrentTime()}
             </p>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-              WIB - Zona Waktu Indonesia
+              {t('reportFlood.timeZone')}
             </p>
           </motion.div>
           <motion.div
@@ -662,7 +661,7 @@ export default function LaporBanjirPage() {
             transition={{ duration: 0.5, delay: 0.6 }}
             className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700 rounded-xl p-4"
           >
-            <h3 className="text-base sm:text-lg font-medium text-slate-900 dark:text-white mb-3">Panduan Pelaporan</h3>
+            <h3 className="text-base sm:text-lg font-medium text-slate-900 dark:text-white mb-3">{t('reportFlood.guideTitle')}</h3>
             <ul className="space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
               <motion.li
                 initial={{ opacity: 0, x: 20 }}
@@ -671,7 +670,7 @@ export default function LaporBanjirPage() {
                 className="flex items-start gap-2"
               >
                 <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-cyan-400 rounded-full mt-2 flex-shrink-0" />
-                Pastikan lokasi yang dilaporkan akurat
+                {t('reportFlood.guide1')}
               </motion.li>
               <motion.li
                 initial={{ opacity: 0, x: 20 }}
@@ -680,7 +679,7 @@ export default function LaporBanjirPage() {
                 className="flex items-start gap-2"
               >
                 <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-cyan-400 rounded-full mt-2 flex-shrink-0" />
-                Pilih tinggi air sesuai kondisi sebenarnya
+                {t('reportFlood.guide2')}
               </motion.li>
               <motion.li
                 initial={{ opacity: 0, x: 20 }}
@@ -689,7 +688,7 @@ export default function LaporBanjirPage() {
                 className="flex items-start gap-2"
               >
                 <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-cyan-400 rounded-full mt-2 flex-shrink-0" />
-                Sertakan foto untuk validasi data
+                {t('reportFlood.guide3')}
               </motion.li>
               <motion.li
                 initial={{ opacity: 0, x: 20 }}
@@ -698,7 +697,7 @@ export default function LaporBanjirPage() {
                 className="flex items-start gap-2"
               >
                 <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-cyan-400 rounded-full mt-2 flex-shrink-0" />
-                Deskripsi detail membantu tim respons
+                {t('reportFlood.guide4')}
               </motion.li>
             </ul>
           </motion.div>
@@ -710,7 +709,7 @@ export default function LaporBanjirPage() {
           >
             <h3 className="text-base sm:text-lg font-medium text-slate-900 dark:text-white mb-3 flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 text-green-600 dark:text-green-400" />
-              Kontak Darurat
+              {t('reportFlood.emergencyContact')}
             </h3>
             <div className="space-y-2 text-xs sm:text-sm">
               <div className="flex justify-between">

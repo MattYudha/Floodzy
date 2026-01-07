@@ -590,29 +590,25 @@ export function DashboardClientPage({ initialData }) {
           id="pilih-lokasi"
           className="container mx-auto px-4 py-8 space-y-4"
         >
-          <Card className="bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800/50 backdrop-blur-lg rounded-xl shadow-xl overflow-hidden">
-            <CardContent className="p-4">
-              <RegionDropdown
-                onSelectDistrict={handleRegionSelect}
-                selectedLocation={selectedLocation}
-                currentWeatherData={weatherData}
-                loadingWeather={isLoadingWeather}
-                weatherError={weatherError}
-                onMapClick={handleMapClick}
-                activeFloodCount={initialData.realTimeAlerts?.filter((alert: any) => {
-                  if (!selectedLocation || !selectedLocation.districtName) return false;
-                  const searchName = selectedLocation.districtName.toLowerCase();
+          <RegionDropdown
+            onSelectDistrict={handleRegionSelect}
+            selectedLocation={selectedLocation}
+            currentWeatherData={weatherData}
+            loadingWeather={isLoadingWeather}
+            weatherError={weatherError}
+            onMapClick={handleMapClick}
+            activeFloodCount={initialData.realTimeAlerts?.filter((alert: any) => {
+              if (!selectedLocation || !selectedLocation.districtName) return false;
+              const searchName = selectedLocation.districtName.toLowerCase();
 
-                  // Check matches in location string, affectedAreas array, or regionId
-                  const locationMatch = alert.location?.toLowerCase().includes(searchName);
-                  const areaMatch = alert.affectedAreas?.some((area: string) => area.toLowerCase().includes(searchName));
-                  const regionMatch = alert.regionId === searchName.replace(/\s+/g, '-');
+              // Check matches in location string, affectedAreas array, or regionId
+              const locationMatch = alert.location?.toLowerCase().includes(searchName);
+              const areaMatch = alert.affectedAreas?.some((area: string) => area.toLowerCase().includes(searchName));
+              const regionMatch = alert.regionId === searchName.replace(/\s+/g, '-');
 
-                  return locationMatch || areaMatch || regionMatch;
-                }).length || 0}
-              />
-            </CardContent>
-          </Card>
+              return locationMatch || areaMatch || regionMatch;
+            }).length || 0}
+          />
         </section>
 
         <section className="container mx-auto px-4 py-8 space-y-8">

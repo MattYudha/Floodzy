@@ -24,7 +24,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+// import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'; // Removed unused imports
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CombinedWeatherData } from '@/lib/api';
 // import { WeatherMapIframe } from '@/components/weather/WeatherMapIframe'; // Replaced
@@ -461,19 +461,34 @@ export function RegionDropdown({
 
   return (
     <div className="w-full">
-      {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Form Card */}
-        <Card className="bg-white dark:bg-gray-800 border-slate-200 dark:border-gray-700 shadow-sm">
-          <CardHeader className="border-b border-slate-200 dark:border-gray-700 pb-4">
+      {/* 
+        Responsive Container Strategy:
+        Mobile: Acts as a single Card (bg-card, border, shadow, rounded).
+        Desktop (lg): Resets to transparent/grid, allowing children to be independent cards.
+      */}
+      <div className="
+        bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 shadow-sm rounded-xl overflow-hidden
+        lg:bg-transparent lg:dark:bg-transparent lg:border-none lg:shadow-none lg:overflow-visible
+        lg:grid lg:grid-cols-2 lg:gap-6
+      ">
+
+        {/* =======================
+            SECTION 1: FORM
+           ======================= */}
+        <div className="
+          flex flex-col
+          lg:bg-white lg:dark:bg-gray-800 lg:border lg:border-slate-200 lg:dark:border-gray-700 lg:shadow-sm lg:rounded-xl
+        ">
+          {/* Header */}
+          <div className="p-6 border-b border-slate-200 dark:border-gray-700 pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <MapPin className="h-5 w-5 text-blue-500 dark:text-blue-400" />
                 <div>
-                  <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white">
+                  <h3 className="text-lg font-semibold leading-none tracking-tight">
                     {t('regionSelector.title')}
-                  </CardTitle>
-                  <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     {t('regionSelector.subtitle')}
                   </p>
                 </div>
@@ -492,9 +507,10 @@ export function RegionDropdown({
                 />
               </div>
             </div>
-          </CardHeader>
+          </div>
 
-          <CardContent className="p-4 sm:p-6 space-y-4">
+          {/* Content */}
+          <div className="p-4 sm:p-6 space-y-4">
             {/* Error Messages */}
             {errorProvinces && renderError(errorProvinces)}
             {errorRegencies && renderError(errorRegencies)}
@@ -589,20 +605,31 @@ export function RegionDropdown({
                 </Link>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        {/* Map Card */}
-        <Card className="bg-white dark:bg-gray-800 border-slate-200 dark:border-gray-700 shadow-sm">
-          <CardHeader className="pb-3 px-4 pt-4">
+        {/* =======================
+            DIVIDER (Mobile Only)
+           ======================= */}
+        <div className="h-px bg-slate-200 dark:bg-gray-700 w-full lg:hidden" />
+
+        {/* =======================
+            SECTION 2: MAP
+           ======================= */}
+        <div className="
+          flex flex-col
+          lg:bg-white lg:dark:bg-gray-800 lg:border lg:border-slate-200 lg:dark:border-gray-700 lg:shadow-sm lg:rounded-xl
+        ">
+          {/* Header */}
+          <div className="p-4 pt-4 pb-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <Map className="h-5 w-5 text-blue-500 dark:text-blue-400 shrink-0" />
                 <div>
-                  <CardTitle className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
+                  <h3 className="text-base sm:text-lg font-semibold leading-none tracking-tight">
                     {t('weatherInsight.title')}
-                  </CardTitle>
-                  <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     {selectedLocation?.districtName
                       ? t('weatherInsight.subtitle')
                       : t('weatherInsight.subtitle')}
@@ -627,10 +654,10 @@ export function RegionDropdown({
                 </ToggleGroupItem>
               </ToggleGroup>
             </div>
-          </CardHeader>
+          </div>
 
-          <CardContent className="p-2 pt-0 h-full relative">
-
+          {/* Content */}
+          <div className="p-2 pt-0 h-full relative">
             <div className={`
               h-[400px] lg:h-[500px] relative rounded-md overflow-hidden group 
               ${!isMapOpen ? 'bg-slate-50 dark:bg-slate-800/50 flex flex-col items-center justify-center border border-dashed border-slate-300 dark:border-slate-700' : ''}
@@ -759,10 +786,9 @@ export function RegionDropdown({
                 </DialogContent>
               </Dialog>
             )}
-          </CardContent>
-
-        </Card >
-      </div >
-    </div >
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -26,7 +26,7 @@ import { cn } from '@/lib/utils';
 import { useAlertCount } from '@/components/contexts/AlertCountContext';
 import { CommandMenu } from './CommandMenu';
 import { SearchTrigger } from './SearchTrigger';
-import { WeatherShortcut } from '@/components/weather/WeatherShortcut';
+
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLanguage } from '@/src/context/LanguageContext';
 
@@ -144,38 +144,7 @@ export function Header({ onMenuToggle, isMenuOpen }: HeaderProps) {
           </div>
 
           {/* Navigation - Desktop */}
-          <nav className="hidden md:flex items-center space-x-1">
-            <Link href="/" passHref>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex items-center space-x-2"
-              >
-                <Home size={16} />
-                <span>{t('common.dashboard')}</span>
-              </Button>
-            </Link>
-            <Link href="/peta-banjir" passHref>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex items-center space-x-2"
-              >
-                <MapPin size={16} />
-                <span>{t('common.map')}</span>
-              </Button>
-            </Link>
-            <Link href="/peringatan" passHref>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex items-center space-x-2"
-              >
-                <Bell size={16} />
-                <span>{t('common.warnings')}</span>
-              </Button>
-            </Link>
-          </nav>
+
 
           {/* Search Trigger - Desktop */}
           <div className="hidden md:flex items-center flex-1 justify-center">
@@ -211,7 +180,7 @@ export function Header({ onMenuToggle, isMenuOpen }: HeaderProps) {
 
             <LanguageSwitcher />
 
-            <WeatherShortcut />
+
 
             {/* Notifications */}
             <Link href="/peringatan" passHref>
@@ -236,10 +205,12 @@ export function Header({ onMenuToggle, isMenuOpen }: HeaderProps) {
               </Button>
             </Link>
 
-            {/* User Menu */}
-            <Button variant="ghost" size="icon">
-              <User size={20} />
-            </Button>
+            {/* Settings Link */}
+            <Link href="/settings" passHref>
+              <Button variant="ghost" size="icon">
+                <Settings size={20} />
+              </Button>
+            </Link>
           </div>
         </div>
       </motion.header>

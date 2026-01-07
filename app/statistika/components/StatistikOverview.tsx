@@ -34,6 +34,7 @@ import {
 } from 'recharts';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 // Asumsi tipe data ini ada di file terpisah
 interface StatCard {
@@ -78,14 +79,7 @@ const getChangeIcon = (changeType: 'increase' | 'decrease' | 'neutral') => {
 };
 
 
-// Data pie chart bisa diletakkan di sini karena spesifik untuk overview
-const pieData = [
-  { name: 'Banjir', value: 35, color: '#06B6D4' },
-  { name: 'Gempa', value: 25, color: '#EF4444' },
-  { name: 'Longsor', value: 20, color: '#F59E0B' },
-  { name: 'Tsunami', value: 10, color: '#10B981' },
-  { name: 'Lainnya', value: 10, color: '#8B5CF6' },
-];
+// Pie data moved inside component for translation
 
 interface StatistikOverviewProps {
   // Prop statCards tetap ada, meskipun kita menggunakan data mock untuk demonstrasi
@@ -94,12 +88,22 @@ interface StatistikOverviewProps {
 }
 
 export default function StatistikOverview({ statCards, chartData }: StatistikOverviewProps) {
+  const { t } = useLanguage();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [exportReport, setExportReport] = useState<string | null>(null);
   const [geminiError, setGeminiError] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
+
+  // Data pie chart moved here for translation
+  const pieData = [
+    { name: t('statistika.types.banjir') || 'Banjir', value: 35, color: '#06B6D4' },
+    { name: t('statistika.types.gempa') || 'Gempa', value: 25, color: '#EF4444' },
+    { name: t('statistika.types.tanah longsor') || 'Longsor', value: 20, color: '#F59E0B' },
+    { name: t('statistika.types.tsunami') || 'Tsunami', value: 10, color: '#10B981' },
+    { name: t('statistika.types.lainnya') || 'Lainnya', value: 10, color: '#8B5CF6' },
+  ];
 
   useEffect(() => {
     setIsClient(true);
@@ -110,54 +114,54 @@ export default function StatistikOverview({ statCards, chartData }: StatistikOve
   // Idealnya, data ini datang dari parent component melalui props `statCards`.
   const fullStatCards: StatCard[] = [
     {
-      title: 'Total Insiden',
+      title: t('statistika.overview.stats.totalIncidents'),
       value: '10',
-      description: 'Insiden tercatat',
+      description: t('statistika.overview.stats.descTotalIncidents'),
       icon: <Activity className="w-6 h-6" />,
       color: 'cyan',
       change: 12,
       changeType: 'increase',
     },
     {
-      title: 'Pengungsi',
+      title: t('statistika.overview.stats.evacuees'),
       value: '10.470',
-      description: 'Orang dievakuasi',
+      description: t('statistika.overview.stats.descEvacuees'),
       icon: <Users className="w-6 h-6" />,
       color: 'blue',
       change: 20,
       changeType: 'increase',
     },
     {
-      title: 'Korban Jiwa',
+      title: t('statistika.overview.stats.casualties'),
       value: '89',
-      description: 'Total korban meninggal',
+      description: t('statistika.overview.stats.descCasualties'),
       icon: <AlertCircle className="w-6 h-6" />,
       color: 'red',
       change: 5,
       changeType: 'increase',
     },
     {
-      title: 'Infrastruktur Rusak',
+      title: t('statistika.overview.stats.damagedInfra'),
       value: '1.204',
-      description: 'Bangunan & fasilitas',
+      description: t('statistika.overview.stats.descDamagedInfra'),
       icon: <Zap className="w-6 h-6" />,
       color: 'orange',
       change: 8,
       changeType: 'decrease',
     },
     {
-      title: 'Wilayah Terdampak',
+      title: t('statistika.overview.stats.affectedAreas'),
       value: '78',
-      description: 'Kabupaten/Kota',
+      description: t('statistika.overview.stats.descAffectedAreas'),
       icon: <Globe className="w-6 h-6" />,
       color: 'green',
       change: 3,
       changeType: 'increase',
     },
     {
-      title: 'Tingkat Kesiapsiagaan',
+      title: t('statistika.overview.stats.preparedness'),
       value: '85%',
-      description: 'Skor nasional',
+      description: t('statistika.overview.stats.descPreparedness'),
       icon: <Shield className="w-6 h-6" />,
       color: 'purple',
       change: 2,
@@ -288,14 +292,14 @@ Pastikan setiap bagian analisis disajikan dalam paragraf singkat dan poin-poin y
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center">
             <BarChart3 className="w-7 h-7 mr-3 text-cyan-600 dark:text-cyan-400" />
-            Dashboard Statistik
+            {t('statistika.overview.title')}
           </h2>
           <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span>Real-time Data</span>
+            <span>{t('statistika.overview.realTime')}</span>
           </div>
         </div>
-        <p className="text-slate-500 dark:text-slate-400">Monitoring dan analisis data bencana Indonesia</p>
+        <p className="text-slate-500 dark:text-slate-400">{t('statistika.overview.subtitle')}</p>
       </motion.div>
 
       {/* Stats Grid - Enhanced with 6 cards */}
@@ -375,8 +379,8 @@ Pastikan setiap bagian analisis disajikan dalam paragraf singkat dan poin-poin y
                   <TrendingUp className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
                 </div>
                 <div>
-                  <div className="text-lg font-bold">Tren Insiden Bulanan</div>
-                  <div className="text-xs text-cyan-600 dark:text-cyan-300 font-normal">Analisis pergerakan data periode bulanan</div>
+                  <div className="text-lg font-bold">{t('statistika.overview.charts.trendTitle')}</div>
+                  <div className="text-xs text-cyan-600 dark:text-cyan-300 font-normal">{t('statistika.overview.charts.trendSubtitle')}</div>
                 </div>
                 <div className="ml-auto flex items-center space-x-2">
                   <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
@@ -439,7 +443,7 @@ Pastikan setiap bagian analisis disajikan dalam paragraf singkat dan poin-poin y
                       strokeWidth={3}
                       fillOpacity={1}
                       fill="url(#colorIncidents)"
-                      name="Jumlah Insiden"
+                      name={t('statistika.overview.charts.incidents')}
                     />
                     <Area
                       type="monotone"
@@ -448,7 +452,7 @@ Pastikan setiap bagian analisis disajikan dalam paragraf singkat dan poin-poin y
                       strokeWidth={3}
                       fillOpacity={1}
                       fill="url(#colorSeverity)"
-                      name="Tingkat Keparahan"
+                      name={t('statistika.overview.charts.severity')}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -472,8 +476,8 @@ Pastikan setiap bagian analisis disajikan dalam paragraf singkat dan poin-poin y
                   <PieChart className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div>
-                  <div className="text-lg font-bold">Distribusi Jenis</div>
-                  <div className="text-xs text-purple-600 dark:text-purple-300 font-normal">Kategorisasi insiden bencana</div>
+                  <div className="text-lg font-bold">{t('statistika.overview.charts.distributionTitle')}</div>
+                  <div className="text-xs text-purple-600 dark:text-purple-300 font-normal">{t('statistika.overview.charts.distributionSubtitle')}</div>
                 </div>
                 <div className="ml-auto flex items-center space-x-2">
                   <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
@@ -557,13 +561,13 @@ Pastikan setiap bagian analisis disajikan dalam paragraf singkat dan poin-poin y
                   <Brain className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                 </div>
                 <div>
-                  <div className="text-lg font-bold">AI Insights & Rekomendasi</div>
-                  <div className="text-xs text-amber-600 dark:text-amber-300 font-normal">Analisis cerdas berbasis machine learning</div>
+                  <div className="text-lg font-bold">{t('statistika.overview.aiInsights.title')}</div>
+                  <div className="text-xs text-amber-600 dark:text-amber-300 font-normal">{t('statistika.overview.aiInsights.subtitle')}</div>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
                 <Sparkles className="w-4 h-4 text-amber-500 dark:text-amber-400 animate-pulse" />
-                <span className="text-xs text-amber-600 dark:text-amber-400 font-medium">AI Powered</span>
+                <span className="text-xs text-amber-600 dark:text-amber-400 font-medium">{t('statistika.overview.aiInsights.poweredBy')}</span>
               </div>
             </CardTitle>
           </CardHeader>
@@ -583,15 +587,15 @@ Pastikan setiap bagian analisis disajikan dalam paragraf singkat dan poin-poin y
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-bold text-slate-800 dark:text-white group-hover/insight:text-cyan-600 dark:group-hover/insight:text-cyan-100 transition-colors">Tren Peningkatan Insiden</h4>
+                        <h4 className="font-bold text-slate-800 dark:text-white group-hover/insight:text-cyan-600 dark:group-hover/insight:text-cyan-100 transition-colors">{t('statistika.overview.aiInsights.cards.trend.title')}</h4>
                         <div className="flex items-center space-x-1 text-red-500 dark:text-red-400">
                           <ArrowUpRight className="w-4 h-4" />
                           <span className="text-xs font-semibold">+15%</span>
                         </div>
                       </div>
-                      <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">Data menunjukkan peningkatan insiden di bulan-bulan tertentu. Pertimbangkan untuk meningkatkan kesiapsiagaan di periode tersebut.</p>
+                      <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{t('statistika.overview.aiInsights.cards.trend.desc')}</p>
                       <div className="mt-3 flex items-center space-x-2">
-                        <span className="px-2 py-1 bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-300 text-xs rounded-full">Prioritas Tinggi</span>
+                        <span className="px-2 py-1 bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-300 text-xs rounded-full">{t('statistika.overview.aiInsights.cards.trend.tag')}</span>
                         <Target className="w-3 h-3 text-slate-400" />
                       </div>
                     </div>
@@ -610,15 +614,15 @@ Pastikan setiap bagian analisis disajikan dalam paragraf singkat dan poin-poin y
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-bold text-slate-800 dark:text-white group-hover/insight:text-emerald-600 dark:group-hover/insight:text-emerald-100 transition-colors">Area Berisiko Tinggi</h4>
+                        <h4 className="font-bold text-slate-800 dark:text-white group-hover/insight:text-emerald-600 dark:group-hover/insight:text-emerald-100 transition-colors">{t('statistika.overview.aiInsights.cards.risk.title')}</h4>
                         <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
                           <Shield className="w-4 h-4" />
                           <span className="text-xs font-semibold">3 Zona</span>
                         </div>
                       </div>
-                      <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">Identifikasi lokasi dengan frekuensi insiden tertinggi untuk fokus pada mitigasi dan pembangunan infrastruktur tahan bencana.</p>
+                      <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{t('statistika.overview.aiInsights.cards.risk.desc')}</p>
                       <div className="mt-3 flex items-center space-x-2">
-                        <span className="px-2 py-1 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs rounded-full">Sedang Dipantau</span>
+                        <span className="px-2 py-1 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs rounded-full">{t('statistika.overview.aiInsights.cards.risk.tag')}</span>
                         <Globe className="w-3 h-3 text-slate-400" />
                       </div>
                     </div>
@@ -639,15 +643,15 @@ Pastikan setiap bagian analisis disajikan dalam paragraf singkat dan poin-poin y
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-bold text-slate-800 dark:text-white group-hover/insight:text-rose-600 dark:group-hover/insight:text-rose-100 transition-colors">Edukasi Masyarakat</h4>
+                        <h4 className="font-bold text-slate-800 dark:text-white group-hover/insight:text-rose-600 dark:group-hover/insight:text-rose-100 transition-colors">{t('statistika.overview.aiInsights.cards.education.title')}</h4>
                         <div className="flex items-center space-x-1 text-rose-500 dark:text-rose-400">
                           <TrendingDown className="w-4 h-4" />
                           <span className="text-xs font-semibold">-8%</span>
                         </div>
                       </div>
-                      <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">Insiden dengan korban jiwa atau pengungsi tinggi menunjukkan perlunya edukasi dan simulasi evakuasi yang lebih intensif.</p>
+                      <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{t('statistika.overview.aiInsights.cards.education.desc')}</p>
                       <div className="mt-3 flex items-center space-x-2">
-                        <span className="px-2 py-1 bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-300 text-xs rounded-full">Perlu Tindakan</span>
+                        <span className="px-2 py-1 bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-300 text-xs rounded-full">{t('statistika.overview.aiInsights.cards.education.tag')}</span>
                         <Users className="w-3 h-3 text-slate-400" />
                       </div>
                     </div>
@@ -666,15 +670,15 @@ Pastikan setiap bagian analisis disajikan dalam paragraf singkat dan poin-poin y
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-bold text-slate-800 dark:text-white group-hover/insight:text-amber-600 dark:group-hover/insight:text-amber-100 transition-colors">Integrasi Data</h4>
+                        <h4 className="font-bold text-slate-800 dark:text-white group-hover/insight:text-amber-600 dark:group-hover/insight:text-amber-100 transition-colors">{t('statistika.overview.aiInsights.cards.integration.title')}</h4>
                         <div className="flex items-center space-x-1 text-amber-500 dark:text-amber-400">
                           <Activity className="w-4 h-4" />
                           <span className="text-xs font-semibold">85%</span>
                         </div>
                       </div>
-                      <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">Pertimbangkan untuk mengintegrasikan data dari sumber lain (misalnya, BMKG, data demografi) untuk analisis yang lebih komprehensif.</p>
+                      <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{t('statistika.overview.aiInsights.cards.integration.desc')}</p>
                       <div className="mt-3 flex items-center space-x-2">
-                        <span className="px-2 py-1 bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-300 text-xs rounded-full">Dalam Proses</span>
+                        <span className="px-2 py-1 bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-300 text-xs rounded-full">{t('statistika.overview.aiInsights.cards.integration.tag')}</span>
                         <Brain className="w-3 h-3 text-slate-400" />
                       </div>
                     </div>
@@ -700,7 +704,7 @@ Pastikan setiap bagian analisis disajikan dalam paragraf singkat dan poin-poin y
                 ) : (
                   <Target className="w-5 h-5" />
                 )}
-                <span>{isAnalyzing ? 'Menganalisis...' : 'Lihat Detail Analisis'}</span>
+                <span>{isAnalyzing ? t('statistika.overview.aiInsights.buttons.analyzing') : t('statistika.overview.aiInsights.buttons.analyze')}</span>
               </button>
               <button
                 onClick={handleExportReport}
@@ -712,7 +716,7 @@ Pastikan setiap bagian analisis disajikan dalam paragraf singkat dan poin-poin y
                 ) : (
                   <Brain className="w-5 h-5" />
                 )}
-                <span>{isExporting ? 'Mengekspor...' : 'Export Laporan AI'}</span>
+                <span>{isExporting ? t('statistika.overview.aiInsights.buttons.exporting') : t('statistika.overview.aiInsights.buttons.export')}</span>
               </button>
             </motion.div>
 
@@ -726,7 +730,7 @@ Pastikan setiap bagian analisis disajikan dalam paragraf singkat dan poin-poin y
               >
                 <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-4 flex items-center">
                   <Lightbulb className="w-6 h-6 mr-3 text-amber-500 dark:text-amber-400" />
-                  Hasil Analisis AI
+                  {t('statistika.overview.aiInsights.resultTitle')}
                 </h3>
                 {geminiError ? (
                   <p className="text-red-400 font-medium">{geminiError}</p>

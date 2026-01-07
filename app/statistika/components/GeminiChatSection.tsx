@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useLanguage } from '@/src/context/LanguageContext';
 import Image from 'next/image';
 import {
   Bot,
@@ -42,6 +43,7 @@ export default function GeminiChatSection({
   isGeminiLoading,
   handleGeminiAnalysis,
 }: GeminiChatSectionProps) {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -52,20 +54,20 @@ export default function GeminiChatSection({
   // Pesan selamat datang dengan UI baru
   const welcomeMessage: ChatMessage = useMemo(() => ({
     id: 'welcome',
-    text: '👋 Selamat datang di Floodzie Assistant!\n\nSaya dapat membantu Anda menganalisis:\n• Status banjir real-time\n• Prediksi cuaca dan risiko\n• Rekomendasi tindakan darurat\n• Informasi wilayah terdampak\n\nAda yang ingin Anda tanyakan?',
+    text: t('statistika.gemini.welcome'),
     isUser: false,
     timestamp: new Date(),
     type: 'info',
-  }), []);
+  }), [t]);
 
   // Saran dengan struktur UI baru (array of objects)
   const suggestions = [
-    { text: 'Status banjir wilayah saya', icon: <MapPin className="w-4 h-4" /> },
-    { text: 'Prediksi cuaca hari ini', icon: <Cloud className="w-4 h-4" /> },
-    { text: 'Tingkat risiko banjir', icon: <AlertTriangle className="w-4 h-4" /> },
-    { text: 'Rekomendasi evakuasi', icon: <Activity className="w-4 h-4" /> },
-    { text: 'Analisis trend 5 hari', icon: <TrendingUp className="w-4 h-4" /> },
-    { text: 'Kondisi stasiun pompa', icon: <Droplets className="w-4 h-4" /> }
+    { text: t('statistika.gemini.suggestions.floodStatus'), icon: <MapPin className="w-4 h-4" /> },
+    { text: t('statistika.gemini.suggestions.weather'), icon: <Cloud className="w-4 h-4" /> },
+    { text: t('statistika.gemini.suggestions.risk'), icon: <AlertTriangle className="w-4 h-4" /> },
+    { text: t('statistika.gemini.suggestions.evacuation'), icon: <Activity className="w-4 h-4" /> },
+    { text: t('statistika.gemini.suggestions.trend'), icon: <TrendingUp className="w-4 h-4" /> },
+    { text: t('statistika.gemini.suggestions.pumps'), icon: <Droplets className="w-4 h-4" /> }
   ];
 
   // Inisialisasi dengan pesan selamat datang saat dibuka
@@ -229,8 +231,8 @@ export default function GeminiChatSection({
                         className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
                       >
                         <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${message.isUser
-                            ? 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg'
-                            : 'bg-slate-100 dark:bg-slate-800/80 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700/50'
+                          ? 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg'
+                          : 'bg-slate-100 dark:bg-slate-800/80 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700/50'
                           }`}>
                           {!message.isUser && message.type === 'info' && (
                             <div className="flex items-center space-x-2 mb-2 pb-2 border-b border-slate-600/30">
@@ -259,7 +261,7 @@ export default function GeminiChatSection({
                               <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
                               <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                             </div>
-                            <span className="text-sm text-slate-600 dark:text-slate-300">Menganalisis data sistem...</span>
+                            <span className="text-sm text-slate-600 dark:text-slate-300">{t('statistika.gemini.analyzing')}</span>
                           </div>
                         </div>
                       </motion.div>
@@ -277,7 +279,7 @@ export default function GeminiChatSection({
                     >
                       <p className="text-slate-500 dark:text-slate-400 text-xs mb-3 font-semibold flex items-center">
                         <Zap className="w-3 h-3 mr-1" />
-                        AKSI CEPAT
+                        {t('statistika.gemini.suggestions.quickAction')}
                       </p>
                       <div className="grid grid-cols-2 gap-2">
                         {suggestions.map((suggestion, index) => (
@@ -305,7 +307,7 @@ export default function GeminiChatSection({
                       <div className="flex-1 relative">
                         <input
                           type="text"
-                          placeholder="Tanyakan tentang kondisi banjir, cuaca, atau evakuasi..."
+                          placeholder={t('statistika.gemini.inputPlaceholder')}
                           className="w-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-600/50 focus:border-cyan-500/50 rounded-2xl px-4 py-3 pr-12 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200"
                           value={geminiQuestion}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGeminiQuestion(e.target.value as string)}
@@ -330,7 +332,7 @@ export default function GeminiChatSection({
                     </div>
                     <div className="flex items-center justify-center space-x-2 mt-3 text-xs text-slate-500">
                       <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                      <span>Terhubung ke sistem Floodzie</span>
+                      <span>{t('statistika.gemini.systemInfo')}</span>
                     </div>
                   </div>
                 </>

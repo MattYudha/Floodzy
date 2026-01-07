@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-// import { createSupabaseBrowserClient } from '@/lib/supabase/client'; // REMOVED
 import { format, subHours, getHours } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { Loader2, AlertCircle } from 'lucide-react';
 import { normalizeSeries, ChartRow } from '@/lib/utils';
-import { safeFetch, UserFriendlyError } from '@/lib/error-utils'; // ADDED: Import safeFetch and UserFriendlyError
+import { safeFetch, UserFriendlyError } from '@/lib/error-utils';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 interface FloodReportData {
   hour: string;
@@ -17,6 +17,7 @@ interface FloodReportData {
 const DATA_KEYS = ['count'];
 
 const FloodReportChart: React.FC = () => {
+  const { t } = useLanguage();
   const [chartData, setChartData] = useState<FloodReportData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,14 +26,13 @@ const FloodReportChart: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-      // const supabase = createSupabaseBrowserClient(); // REMOVED
       const twentyFourHoursAgo = subHours(new Date(), 24); // Keep as Date object for comparison
 
       // Fetch data from the new /api/laporan endpoint
       const reports: { id: string; timestamp: string; }[] = await safeFetch(
         '/api/laporan',
         undefined,
-        'Gagal memuat data laporan banjir.'
+        t('sensorData.errorTitle') // Using translated error title as fallback
       );
 
       // Filter reports for the last 24 hours
@@ -76,7 +76,7 @@ const FloodReportChart: React.FC = () => {
       if (err instanceof UserFriendlyError) {
         setError(err.message);
       } else {
-        setError('Terjadi kesalahan tidak terduga saat memuat data.');
+        setError(t('sensorData.errorMessage').replace('{message}', 'Unknown error'));
       }
       console.error('Error fetching hourly flood reports:', err);
     } finally {
@@ -93,48 +93,49 @@ const FloodReportChart: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 text-center">
-        <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-cyan-400 mx-auto mb-3" />
-        <p className="text-sm sm:text-base text-gray-400">Memuat data statistik...</p>
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 text-center shadow-sm">
+        <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-cyan-600 dark:text-cyan-400 mx-auto mb-3" />
+        <p className="text-sm sm:text-base text-slate-500 dark:text-gray-400">{t('sensorData.statistics.title')}...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 text-center">
-        <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 text-red-400 mx-auto mb-3" />
-        <p className="text-sm sm:text-base text-red-400">Gagal memuat statistik: {error}</p>
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 text-center shadow-sm">
+        <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 text-red-500 dark:text-red-400 mx-auto mb-3" />
+        <p className="text-sm sm:text-base text-red-500 dark:text-red-400">{t('sensorData.errorTitle')}: {error}</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
-      <h3 className="text-base sm:text-lg font-semibold text-white mb-4">Laporan Banjir 24 Jam Terakhir</h3>
+    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+      <h3 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white mb-4">{t('sensorData.reports.title')} (24h)</h3>
       <ResponsiveContainer width="100%" height={300}>
         {chartData && chartData.length > 0 ? (
           <BarChart data={chartData} margin={{
             top: 5, right: 10, left: 10, bottom: 5,
           }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#4A5568" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" strokeOpacity={0.3} />
             <XAxis
               dataKey="hour"
-              stroke="#CBD5E0"
+              stroke="#64748b"
               tickFormatter={(tick) => format(new Date().setHours(parseInt(tick.split(':')[0])), 'HH:mm', { locale: id })}
+              fontSize={12}
             />
-            <YAxis stroke="#CBD5E0" />
+            <YAxis stroke="#64748b" fontSize={12} />
             <Tooltip
-              contentStyle={{ backgroundColor: '#2D3748', border: 'none', borderRadius: '8px' }}
-              labelStyle={{ color: '#E2E8F0' }}
-              itemStyle={{ color: '#A0AEC0' }}
-              formatter={(value: number) => [`${value} Laporan`, 'Jumlah']}
+              contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', borderColor: '#e2e8f0', borderRadius: '8px', color: '#0f172a' }}
+              itemStyle={{ color: '#0f172a' }}
+              cursor={{ fill: 'rgba(100, 116, 139, 0.1)' }}
+              formatter={(value: number) => [`${value} ${t('sensorData.charts.reports')}`, t('sensorData.charts.total')]}
             />
-            <Bar dataKey="count" fill="#06B6D4" />
+            <Bar dataKey="count" fill="#06B6D4" radius={[4, 4, 0, 0]} />
           </BarChart>
         ) : (
-          <div className="flex items-center justify-center h-full text-sm sm:text-base text-gray-500">
-            Tidak ada data laporan banjir tersedia.
+          <div className="flex items-center justify-center h-full text-sm sm:text-base text-slate-500">
+            {t('sensorData.charts.noData')}
           </div>
         )}
       </ResponsiveContainer>

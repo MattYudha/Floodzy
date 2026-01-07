@@ -31,7 +31,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 // Types
 interface Alert {
   id: string;
-  level: 'Rendah' | 'Sedang' | 'Tinggi';
+  level: 'low' | 'medium' | 'high';
   location: string;
   timestamp: string;
   reason: string;
@@ -52,21 +52,21 @@ interface NewsReport {
 
 // --- MOCK DATA POOL ---
 const allMockAlerts: Alert[] = [
-  { id: 'alert-1', level: 'Tinggi', location: 'Bendung Katulampa', timestamp: '10:30', reason: 'TMA (Tinggi Muka Air) terpantau 210 cm (Siaga 1), tren naik.', severity: 9, affectedAreas: ['Rawajati', 'Cawang', 'Bidara Cina'], estimatedPopulation: 14850 },
-  { id: 'alert-2', level: 'Sedang', location: 'Pintu Air Manggarai', timestamp: '10:28', reason: 'Ketinggian air 850 cm (Siaga 3), debit air meningkat dari arah Depok.', severity: 7, affectedAreas: ['Bukit Duri', 'Kampung Melayu', 'Grogol'], estimatedPopulation: 8230 },
-  { id: 'alert-3', level: 'Rendah', location: 'Pos Angke Hulu', timestamp: '10:25', reason: 'TMA 150 cm (Siaga 4), kondisi saat ini masih terpantau normal.', severity: 4, affectedAreas: ['Cengkareng', 'Kembangan', 'Pesing'], estimatedPopulation: 2477 },
-  { id: 'alert-4', level: 'Sedang', location: 'Kali Sunter', timestamp: '10:20', reason: 'Terjadi kenaikan debit air signifikan pasca hujan lokal di area hulu.', severity: 6, affectedAreas: ['Kelapa Gading Barat', 'Sunter Jaya'], estimatedPopulation: 6150 },
-  { id: 'alert-5', level: 'Tinggi', location: 'Waduk Pluit', timestamp: '10:15', reason: 'Pompa air diaktifkan untuk mengurangi volume air kiriman dari BKB.', severity: 8, affectedAreas: ['Penjaringan', 'Muara Angke', 'Kapuk Muara'], estimatedPopulation: 11780 },
-  { id: 'alert-6', level: 'Rendah', location: 'Cipinang Hulu', timestamp: '10:10', reason: 'Aliran deras namun masih dalam batas aman, tinggi air 130 cm.', severity: 3, affectedAreas: ['Makasar', 'Cipinang Melayu'], estimatedPopulation: 1520 },
-  { id: 'alert-7', level: 'Tinggi', location: 'Kali Krukut', timestamp: '10:05', reason: 'Luapan air mulai menggenangi Jalan Kemang Raya, lalu lintas terganggu.', severity: 9, affectedAreas: ['Kemang', 'Cipete Selatan', 'Pela Mampang'], estimatedPopulation: 11240 },
-  { id: 'alert-8', level: 'Sedang', location: 'Pesanggrahan', timestamp: '10:00', reason: 'Ketinggian air naik 50cm dalam 1 jam terakhir, warga diimbau waspada.', severity: 7, affectedAreas: ['Bintaro', 'Cipulir', 'Ulujami'], estimatedPopulation: 7490 },
-  { id: 'alert-9', level: 'Tinggi', location: 'Jembatan Ciliwung Depok', timestamp: '09:55', reason: 'Hujan deras di area hulu, debit Ciliwung naik tajam ke level Siaga 2.', severity: 8, affectedAreas: ['Pondok Cina', 'Margonda', 'Beji'], estimatedPopulation: 9300 },
-  { id: 'alert-10', level: 'Rendah', location: 'Kali Bekasi', timestamp: '09:50', reason: 'Status Siaga 4, TMA 310 cm. Kondisi masih aman terkendali.', severity: 2, affectedAreas: ['Bekasi Barat', 'Bekasi Timur'], estimatedPopulation: 3100 },
-  { id: 'alert-11', level: 'Sedang', location: 'Sungai Cisadane, Tangerang', timestamp: '09:45', reason: 'Cisadane meluap di beberapa titik, terutama di area dataran rendah.', severity: 6, affectedAreas: ['Cikokol', 'Karawaci', 'Batuceper'], estimatedPopulation: 5650 },
-  { id: 'alert-12', level: 'Tinggi', location: 'Puncak, Bogor', timestamp: '09:40', reason: 'Peringatan dini dari BMKG: potensi hujan badai dan longsor.', severity: 9, affectedAreas: ['Cisarua', 'Gadog', 'Ciawi'], estimatedPopulation: 10500 },
-  { id: 'alert-13', level: 'Sedang', location: 'Kali Grogol', timestamp: '09:35', reason: 'Ketinggian air waspada (Siaga 3), potensi genangan di underpass.', severity: 7, affectedAreas: ['Grogol', 'Petamburan', 'Jelambar'], estimatedPopulation: 8450 },
-  { id: 'alert-14', level: 'Rendah', location: 'Kali Item', timestamp: '09:30', reason: 'Aliran terpantau normal, tidak ada kenaikan signifikan. TMA 80 cm.', severity: 3, affectedAreas: ['Senen', 'Johar Baru', 'Kemayoran'], estimatedPopulation: 2150 },
-  { id: 'alert-15', level: 'Tinggi', location: 'Banjir Kanal Barat', timestamp: '09:25', reason: 'Pintu air Karet dibuka untuk mengalirkan debit ke laut. Siaga 2.', severity: 8, affectedAreas: ['Tanah Abang', 'Roxy', 'Petojo'], estimatedPopulation: 13200 },
+  { id: 'alert-1', level: 'high', location: 'Bendung Katulampa', timestamp: '10:30', reason: 'TMA (Tinggi Muka Air) terpantau 210 cm (Siaga 1), tren naik.', severity: 9, affectedAreas: ['Rawajati', 'Cawang', 'Bidara Cina'], estimatedPopulation: 14850 },
+  { id: 'alert-2', level: 'medium', location: 'Pintu Air Manggarai', timestamp: '10:28', reason: 'Ketinggian air 850 cm (Siaga 3), debit air meningkat dari arah Depok.', severity: 7, affectedAreas: ['Bukit Duri', 'Kampung Melayu', 'Grogol'], estimatedPopulation: 8230 },
+  { id: 'alert-3', level: 'low', location: 'Pos Angke Hulu', timestamp: '10:25', reason: 'TMA 150 cm (Siaga 4), kondisi saat ini masih terpantau normal.', severity: 4, affectedAreas: ['Cengkareng', 'Kembangan', 'Pesing'], estimatedPopulation: 2477 },
+  { id: 'alert-4', level: 'medium', location: 'Kali Sunter', timestamp: '10:20', reason: 'Terjadi kenaikan debit air signifikan pasca hujan lokal di area hulu.', severity: 6, affectedAreas: ['Kelapa Gading Barat', 'Sunter Jaya'], estimatedPopulation: 6150 },
+  { id: 'alert-5', level: 'high', location: 'Waduk Pluit', timestamp: '10:15', reason: 'Pompa air diaktifkan untuk mengurangi volume air kiriman dari BKB.', severity: 8, affectedAreas: ['Penjaringan', 'Muara Angke', 'Kapuk Muara'], estimatedPopulation: 11780 },
+  { id: 'alert-6', level: 'low', location: 'Cipinang Hulu', timestamp: '10:10', reason: 'Aliran deras namun masih dalam batas aman, tinggi air 130 cm.', severity: 3, affectedAreas: ['Makasar', 'Cipinang Melayu'], estimatedPopulation: 1520 },
+  { id: 'alert-7', level: 'high', location: 'Kali Krukut', timestamp: '10:05', reason: 'Luapan air mulai menggenangi Jalan Kemang Raya, lalu lintas terganggu.', severity: 9, affectedAreas: ['Kemang', 'Cipete Selatan', 'Pela Mampang'], estimatedPopulation: 11240 },
+  { id: 'alert-8', level: 'medium', location: 'Pesanggrahan', timestamp: '10:00', reason: 'Ketinggian air naik 50cm dalam 1 jam terakhir, warga diimbau waspada.', severity: 7, affectedAreas: ['Bintaro', 'Cipulir', 'Ulujami'], estimatedPopulation: 7490 },
+  { id: 'alert-9', level: 'high', location: 'Jembatan Ciliwung Depok', timestamp: '09:55', reason: 'Hujan deras di area hulu, debit Ciliwung naik tajam ke level Siaga 2.', severity: 8, affectedAreas: ['Pondok Cina', 'Margonda', 'Beji'], estimatedPopulation: 9300 },
+  { id: 'alert-10', level: 'low', location: 'Kali Bekasi', timestamp: '09:50', reason: 'Status Siaga 4, TMA 310 cm. Kondisi masih aman terkendali.', severity: 2, affectedAreas: ['Bekasi Barat', 'Bekasi Timur'], estimatedPopulation: 3100 },
+  { id: 'alert-11', level: 'medium', location: 'Sungai Cisadane, Tangerang', timestamp: '09:45', reason: 'Cisadane meluap di beberapa titik, terutama di area dataran rendah.', severity: 6, affectedAreas: ['Cikokol', 'Karawaci', 'Batuceper'], estimatedPopulation: 5650 },
+  { id: 'alert-12', level: 'high', location: 'Puncak, Bogor', timestamp: '09:40', reason: 'Peringatan dini dari BMKG: potensi hujan badai dan longsor.', severity: 9, affectedAreas: ['Cisarua', 'Gadog', 'Ciawi'], estimatedPopulation: 10500 },
+  { id: 'alert-13', level: 'medium', location: 'Kali Grogol', timestamp: '09:35', reason: 'Ketinggian air waspada (Siaga 3), potensi genangan di underpass.', severity: 7, affectedAreas: ['Grogol', 'Petamburan', 'Jelambar'], estimatedPopulation: 8450 },
+  { id: 'alert-14', level: 'low', location: 'Kali Item', timestamp: '09:30', reason: 'Aliran terpantau normal, tidak ada kenaikan signifikan. TMA 80 cm.', severity: 3, affectedAreas: ['Senen', 'Johar Baru', 'Kemayoran'], estimatedPopulation: 2150 },
+  { id: 'alert-15', level: 'high', location: 'Banjir Kanal Barat', timestamp: '09:25', reason: 'Pintu air Karet dibuka untuk mengalirkan debit ke laut. Siaga 2.', severity: 8, affectedAreas: ['Tanah Abang', 'Roxy', 'Petojo'], estimatedPopulation: 13200 },
 ];
 
 const fetchNewsAndReports = async (): Promise<NewsReport[]> => {
@@ -144,18 +144,18 @@ export default function PeringatanPage() {
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'Tinggi': return 'text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-500/10 border-red-200 dark:border-red-500/20';
-      case 'Sedang': return 'text-yellow-700 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-500/10 border-yellow-200 dark:border-yellow-500/20';
-      case 'Rendah': return 'text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-500/10 border-green-200 dark:border-green-500/20';
+      case 'high': return 'text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-500/10 border-red-200 dark:border-red-500/20';
+      case 'medium': return 'text-yellow-700 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-500/10 border-yellow-200 dark:border-yellow-500/20';
+      case 'low': return 'text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-500/10 border-green-200 dark:border-green-500/20';
       default: return 'text-slate-700 dark:text-gray-400 bg-slate-100 dark:bg-gray-500/10 border-slate-200 dark:border-gray-500/20';
     }
   };
 
   const getLevelIcon = (level: string) => {
     switch (level) {
-      case 'Tinggi': return <AlertTriangle className="h-5 w-5" />;
-      case 'Sedang': return <Info className="h-5 w-5" />;
-      case 'Rendah': return <Bell className="h-5 w-5" />;
+      case 'high': return <AlertTriangle className="h-5 w-5" />;
+      case 'medium': return <Info className="h-5 w-5" />;
+      case 'low': return <Bell className="h-5 w-5" />;
       default: return <Bell className="h-5 w-5" />;
     }
   };
@@ -176,9 +176,9 @@ export default function PeringatanPage() {
   };
 
   const totalAlerts = alerts.length;
-  const highAlerts = React.useMemo(() => alerts.filter((a) => a.level === 'Tinggi').length, [alerts]);
-  const mediumAlerts = React.useMemo(() => alerts.filter((a) => a.level === 'Sedang').length, [alerts]);
-  const lowAlerts = React.useMemo(() => alerts.filter((a) => a.level === 'Rendah').length, [alerts]);
+  const highAlerts = React.useMemo(() => alerts.filter((a) => a.level === 'high').length, [alerts]);
+  const mediumAlerts = React.useMemo(() => alerts.filter((a) => a.level === 'medium').length, [alerts]);
+  const lowAlerts = React.useMemo(() => alerts.filter((a) => a.level === 'low').length, [alerts]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-gray-900 text-slate-900 dark:text-white transition-colors duration-300">
@@ -261,7 +261,7 @@ export default function PeringatanPage() {
                     <div className="flex items-center justify-between mb-4">
                       <div className={`flex items-center space-x-2 px-3 py-1 rounded-full border ${getLevelColor(alert.level)}`}>
                         {getLevelIcon(alert.level)}
-                        <span className="text-sm font-medium">{alert.level}</span>
+                        <span className="text-sm font-medium">{t(`common.levels.${alert.level}`)}</span>
                       </div>
                       <div className="flex items-center space-x-1 text-slate-500 dark:text-gray-400 text-sm"><Clock className="h-4 w-4" /><span>{alert.timestamp}</span></div>
                     </div>
@@ -304,7 +304,7 @@ export default function PeringatanPage() {
                   <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{t('warnings.detailTitle')}: {selectedAlert.location}</h3>
                   <div className={`flex items-center space-x-2 px-4 py-2 rounded-full border ${getLevelColor(selectedAlert.level)}`}>
                     {getLevelIcon(selectedAlert.level)}
-                    <span className="font-medium">{selectedAlert.level}</span>
+                    <span className="font-medium">{t(`common.levels.${selectedAlert.level}`)}</span>
                   </div>
                 </div>
                 {isLoading ? (

@@ -22,8 +22,10 @@ import {
   AlertTriangle,
   Gauge,
 } from 'lucide-react';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 export function WeatherPopupContent() {
+  const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [weather, setWeather] = useState<any | null>(null);
@@ -160,10 +162,10 @@ export function WeatherPopupContent() {
           </div>
           <div className="text-center space-y-2">
             <p className="text-base font-medium text-foreground">
-              Mendapatkan data cuaca...
+              {t('currentWeather.loading')}
             </p>
             <p className="text-xs text-muted-foreground">
-              Mohon tunggu sebentar
+              {t('currentWeather.loading')}
             </p>
           </div>
         </div>
@@ -178,7 +180,7 @@ export function WeatherPopupContent() {
           </div>
           <div className="space-y-2 max-w-sm">
             <p className="text-base font-semibold text-destructive">
-              Oops Ada Masalah
+              {t('currentWeather.oops')}
             </p>
             <p className="text-xs text-muted-foreground">{error}</p>
           </div>
@@ -188,7 +190,7 @@ export function WeatherPopupContent() {
             className="group hover:scale-105 transition-transform"
           >
             <RefreshCw className="w-3 h-3 mr-2 group-hover:rotate-180 transition-transform duration-500" />
-            Coba Lagi
+            {t('currentWeather.retry')}
           </Button>
         </div>
       );
@@ -226,7 +228,7 @@ export function WeatherPopupContent() {
               </span>
             </div>
             <p className="text-xs text-blue-200/70 mt-2 font-medium">
-              Suhu Saat Ini
+              {t('currentWeather.currentTemp')}
             </p>
           </div>
           {/* Weather Details Grid */}
@@ -240,7 +242,7 @@ export function WeatherPopupContent() {
                   {weather.main.feels_like.toFixed(1)}°
                 </p>
                 <p className="text-xs font-medium text-blue-200/70 uppercase tracking-wide">
-                  Terasa
+                  {t('currentWeather.feelsLike')}
                 </p>
               </div>
             </div>
@@ -262,7 +264,7 @@ export function WeatherPopupContent() {
                 </div>
                 <p className="font-bold text-lg text-blue-200">{weather.main.humidity}%</p>
                 <p className="text-xs font-medium text-blue-200/70 uppercase tracking-wide">
-                  Lembab
+                  {t('currentWeather.humidity')}
                 </p>
               </div>
             </div>
@@ -283,7 +285,7 @@ export function WeatherPopupContent() {
             <kbd className="px-2 py-1 text-xs font-semibold bg-blue-800/40 border border-blue-700/50 rounded-lg shadow-sm text-blue-200">
               R
             </kbd>
-            <span className="font-medium">untuk memuat ulang data</span>
+            <span className="font-medium">{t('currentWeather.reload')}</span>
           </div>
         </div>
       );
@@ -311,10 +313,10 @@ export function WeatherPopupContent() {
       <Card className="w-full max-w-md backdrop-blur-xl bg-blue-950/30 border border-blue-800/40 shadow-lg transition-all duration-500">
         <CardHeader className="space-y-2 pb-4">
           <CardTitle className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-200 to-blue-500 bg-clip-text text-transparent">
-            Cuaca Sekarang
+            {t('currentWeather.title')}
           </CardTitle>
           <CardDescription className="text-sm text-blue-200/80">
-            Data cuaca real-time berdasarkan lokasi Anda saat ini.
+            {t('currentWeather.description')}
           </CardDescription>
         </CardHeader>
         <CardContent className="pb-4">{renderContent()}</CardContent>

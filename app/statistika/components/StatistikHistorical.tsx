@@ -23,6 +23,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/Button';
 import { HistoricalIncident } from '../statistika.types';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 const getIncidentIcon = (type: string) => {
   switch (type.toLowerCase()) {
@@ -87,6 +88,7 @@ export default function StatistikHistorical({
   viewMode,
   setViewMode,
 }: StatistikHistoricalProps) {
+  const { t, lang } = useLanguage();
   return (
     <motion.div
       key="historical"
@@ -109,11 +111,11 @@ export default function StatistikHistorical({
                   <History className="w-6 h-6 text-indigo-600 dark:text-indigo-300" />
                 </div>
                 <span className="bg-gradient-to-r from-slate-700 to-slate-900 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
-                  Riwayat Insiden
+                  {t('statistika.historical.title')}
                 </span>
               </CardTitle>
               <p className="text-slate-500 dark:text-slate-400 text-sm mt-2 ml-14">
-                {filteredIncidents.length} insiden ditemukan
+                {filteredIncidents.length} {t('statistika.historical.found')}
               </p>
             </motion.div>
 
@@ -130,7 +132,7 @@ export default function StatistikHistorical({
                 </div>
                 <input
                   type="text"
-                  placeholder="Cari lokasi, jenis insiden..."
+                  placeholder={t('statistika.historical.searchPlaceholder')}
                   className="w-full sm:w-72 pl-12 pr-4 py-3 rounded-2xl bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600/50 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-500/50 dark:focus:ring-cyan-400/50 focus:border-cyan-500/50 dark:focus:border-cyan-400/50 focus:bg-white dark:focus:bg-slate-800/70 transition-all duration-300 shadow-sm dark:shadow-lg backdrop-blur-sm"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -147,9 +149,9 @@ export default function StatistikHistorical({
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as 'date' | 'severity' | 'type')}
                   >
-                    <option value="date" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">Tanggal</option>
-                    <option value="severity" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">Keparahan</option>
-                    <option value="type" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">Jenis</option>
+                    <option value="date" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">{t('statistika.historical.sort.date')}</option>
+                    <option value="severity" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">{t('statistika.historical.sort.severity')}</option>
+                    <option value="type" className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">{t('statistika.historical.sort.type')}</option>
                   </select>
                 </div>
 
@@ -209,9 +211,9 @@ export default function StatistikHistorical({
               <div className="w-28 h-28 mx-auto mb-8 rounded-3xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700/50 dark:to-slate-800/50 flex items-center justify-center border border-slate-200 dark:border-slate-600/30 shadow-2xl">
                 <FileSearch className="w-12 h-12 text-slate-400 dark:text-slate-400" />
               </div>
-              <h3 className="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-3">Tidak Ada Insiden Ditemukan</h3>
+              <h3 className="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-3">{t('statistika.historical.noData.title')}</h3>
               <p className="text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
-                Tidak ada data insiden yang sesuai dengan kriteria pencarian Anda. Coba ubah filter atau kata kunci pencarian.
+                {t('statistika.historical.noData.desc')}
               </p>
             </motion.div>
           ) : (
@@ -246,7 +248,7 @@ export default function StatistikHistorical({
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <h3 className="text-lg font-bold text-slate-700 dark:text-slate-100 mb-1 group-hover:text-slate-900 dark:group-hover:text-white transition-colors duration-300">
-                                    {incident.type}
+                                    {t(`statistika.types.${incident.type.toLowerCase()}`) || incident.type}
                                   </h3>
                                   <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center">
                                     <MapPin className="w-4 h-4 mr-1 text-cyan-600 dark:text-cyan-400 flex-shrink-0" />
@@ -257,7 +259,7 @@ export default function StatistikHistorical({
                               <span
                                 className={`px-3 py-1.5 rounded-xl text-xs font-bold border ${severityColors.bg} ${severityColors.text} ${severityColors.border} shadow-lg ${severityColors.glow} whitespace-nowrap`}
                               >
-                                Level {incident.severity}
+                                {t('statistika.historical.card.level')} {incident.severity}
                               </span>
                             </div>
 
@@ -269,7 +271,7 @@ export default function StatistikHistorical({
                               <div className="flex items-center text-sm text-slate-600 dark:text-slate-300">
                                 <Calendar className="w-4 h-4 mr-2 text-purple-600 dark:text-purple-400 flex-shrink-0" />
                                 <span className="font-medium">
-                                  {new Date(incident.date).toLocaleDateString('id-ID', {
+                                  {new Date(incident.date).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', {
                                     year: 'numeric',
                                     month: 'long',
                                     day: 'numeric',
@@ -280,7 +282,7 @@ export default function StatistikHistorical({
                                 <div className="flex items-center text-sm">
                                   <Users className="w-4 h-4 mr-2 text-orange-600 dark:text-orange-400 flex-shrink-0" />
                                   <span className="font-semibold text-orange-700 dark:text-orange-300">
-                                    {incident.evacuees.toLocaleString('id-ID')} Pengungsi
+                                    {incident.evacuees.toLocaleString(lang === 'id' ? 'id-ID' : 'en-US')} {t('statistika.historical.card.evacuees')}
                                   </span>
                                 </div>
                               )}
@@ -325,12 +327,12 @@ export default function StatistikHistorical({
                                 <div className="flex items-start justify-between mb-2">
                                   <div>
                                     <h3 className="text-xl font-bold text-slate-700 dark:text-slate-100 group-hover:text-slate-900 dark:group-hover:text-white transition-colors duration-300 mb-1 truncate">
-                                      {incident.type} di {incident.location}
+                                      {t(`statistika.types.${incident.type.toLowerCase()}`) || incident.type} {t('statistika.historical.card.at')} {incident.location}
                                     </h3>
                                     <div className="flex items-center space-x-4 text-sm text-slate-500 dark:text-slate-400">
                                       <span className="flex items-center">
                                         <Calendar className="w-4 h-4 mr-1 text-purple-600 dark:text-purple-400" />
-                                        {new Date(incident.date).toLocaleDateString('id-ID', {
+                                        {new Date(incident.date).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', {
                                           year: 'numeric',
                                           month: 'long',
                                           day: 'numeric',
@@ -339,7 +341,7 @@ export default function StatistikHistorical({
                                       {incident.evacuees && (
                                         <span className="flex items-center font-medium text-orange-700 dark:text-orange-300">
                                           <Users className="w-4 h-4 mr-1 text-orange-600 dark:text-orange-400" />
-                                          {incident.evacuees.toLocaleString('id-ID')} Pengungsi
+                                          {incident.evacuees.toLocaleString(lang === 'id' ? 'id-ID' : 'en-US')} {t('statistika.historical.card.evacuees')}
                                         </span>
                                       )}
                                     </div>
@@ -347,7 +349,7 @@ export default function StatistikHistorical({
                                   <span
                                     className={`px-3 py-1.5 rounded-xl text-xs font-bold border ${severityColors.bg} ${severityColors.text} ${severityColors.border} shadow-lg ${severityColors.glow} whitespace-nowrap`}
                                   >
-                                    Level {incident.severity}
+                                    {t('statistika.historical.card.level')} {incident.severity}
                                   </span>
                                 </div>
                                 <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed line-clamp-2">

@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { EvacuationLocation } from '@/types'; // Pastikan tipe ini diperbarui di types/index.ts
 import dynamic from 'next/dynamic';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 // Dynamic imports for Leaflet components to avoid SSR issues
 const MapContainer = dynamic<any>(
@@ -46,6 +47,7 @@ const DEFAULT_MAP_CENTER: [number, number] = [-6.2088, 106.8456]; // Jakarta
 const DEFAULT_MAP_ZOOM = 10;
 
 export default function InfoEvakuasiPage() {
+  const { t, lang } = useLanguage();
   const [evacuationLocations, setEvacuationLocations] = useState<EvacuationLocation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -109,26 +111,31 @@ export default function InfoEvakuasiPage() {
 
   const getStatusBadge = (location: EvacuationLocation) => {
     const percentage = (location.capacity_current / location.capacity_total) * 100;
-    if (percentage >= 100) return { text: 'Penuh', color: 'bg-red-500/20 text-red-400 border-red-500/30' };
-    if (percentage >= 70) return { text: 'Hampir Penuh', color: 'bg-orange-500/20 text-orange-400 border-orange-500/30' };
-    return { text: 'Tersedia', color: 'bg-green-500/20 text-green-400 border-green-500/30' };
+    if (percentage >= 100) return { text: t('evacuationInfo.status.full'), color: 'bg-red-500/20 text-red-400 border-red-500/30' };
+    if (percentage >= 70) return { text: t('evacuationInfo.status.almostFull'), color: 'bg-orange-500/20 text-orange-400 border-orange-500/30' };
+    return { text: t('evacuationInfo.status.available'), color: 'bg-green-500/20 text-green-400 border-green-500/30' };
   };
 
   const getOperationalStatusBadge = (status: string) => {
-    switch (status) {
-      case 'Buka dan Menerima Pengungsi':
-        return { text: 'Buka', color: 'bg-green-500/20 text-green-400 border-green-500/30', icon: <CheckCircle className="w-4 h-4" /> };
-      case 'Penuh':
-        return { text: 'Penuh', color: 'bg-red-500/20 text-red-400 border-red-500/30', icon: <XCircle className="w-4 h-4" /> };
-      case 'Tutup Sementara':
-        return { text: 'Tutup', color: 'bg-orange-500/20 text-orange-400 border-orange-500/30', icon: <AlertTriangle className="w-4 h-4" /> };
-      default:
-        return { text: 'N/A', color: 'bg-slate-500/20 text-slate-400 border-slate-500/30', icon: <Info className="w-4 h-4" /> };
+    // Basic mapping based on Indonesian string content, ideally the backend returns a code
+    const lowerStatus = status.toLowerCase();
+    if (lowerStatus.includes('buka') || lowerStatus.includes('open')) {
+      return { text: t('evacuationInfo.status.open'), color: 'bg-green-500/20 text-green-400 border-green-500/30', icon: <CheckCircle className="w-4 h-4" /> };
     }
+    if (lowerStatus.includes('penuh') || lowerStatus.includes('full')) {
+      return { text: t('evacuationInfo.status.full'), color: 'bg-red-500/20 text-red-400 border-red-500/30', icon: <XCircle className="w-4 h-4" /> };
+    }
+    if (lowerStatus.includes('tutup') || lowerStatus.includes('closed')) {
+      return { text: t('evacuationInfo.status.closed'), color: 'bg-orange-500/20 text-orange-400 border-orange-500/30', icon: <AlertTriangle className="w-4 h-4" /> };
+    }
+    return { text: t('evacuationInfo.status.na'), color: 'bg-slate-500/20 text-slate-400 border-slate-500/30', icon: <Info className="w-4 h-4" /> };
   };
 
   const getServiceIcon = (serviceKey: string, status: string) => {
-    const color = status.toLowerCase().includes("tersedia") ? "text-green-400" : "text-red-400";
+    // "Tersedia" is usually hardcoded in API response for now, adjusting logic to be safer
+    const isAvailable = status.toLowerCase().includes("tersedia") || status.toLowerCase().includes("available");
+    const color = isAvailable ? "text-green-400" : "text-red-400";
+
     switch (serviceKey) {
       case 'clean_water': return <Droplets className={`w-5 h-5 ${color}`} />;
       case 'electricity': return <Zap className={`w-5 h-5 ${color}`} />;
@@ -140,19 +147,19 @@ export default function InfoEvakuasiPage() {
   // KOMPONEN BARU: Untuk menampilkan legenda status kapasitas
   const StatusLegend = () => (
     <div className="bg-slate-100 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-600/30 rounded-lg p-3 mb-4 text-xs">
-      <h5 className="font-semibold text-slate-900 dark:text-white mb-2">Keterangan Status Kapasitas:</h5>
+      <h5 className="font-semibold text-slate-900 dark:text-white mb-2">{t('evacuationInfo.list.legendTitle')}</h5>
       <div className="flex flex-col space-y-1.5">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-green-500 flex-shrink-0 border border-slate-300 dark:border-slate-400/50" />
-          <span className="text-slate-600 dark:text-slate-300">Tersedia (di bawah 70%)</span>
+          <span className="text-slate-600 dark:text-slate-300">{t('evacuationInfo.list.legendAvailable')}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-orange-400 flex-shrink-0 border border-slate-300 dark:border-slate-400/50" />
-          <span className="text-slate-600 dark:text-slate-300">Hampir Penuh (70% - 99%)</span>
+          <span className="text-slate-600 dark:text-slate-300">{t('evacuationInfo.list.legendAlmostFull')}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-red-500 flex-shrink-0 border border-slate-300 dark:border-slate-400/50" />
-          <span className="text-slate-600 dark:text-slate-300">Penuh (100%)</span>
+          <span className="text-slate-600 dark:text-slate-300">{t('evacuationInfo.list.legendFull')}</span>
         </div>
       </div>
     </div>
@@ -164,8 +171,8 @@ export default function InfoEvakuasiPage() {
         <div className="flex justify-center items-center min-h-[60vh]">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-cyan-500/30 dark:border-cyan-400/30 border-t-cyan-600 dark:border-t-cyan-400 rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-xl font-medium text-slate-900 dark:text-white">Memuat lokasi evakuasi...</p>
-            <p className="text-slate-500 dark:text-slate-400 mt-2">Mohon tunggu sebentar</p>
+            <p className="text-xl font-medium text-slate-900 dark:text-white">{t('evacuationInfo.loading.title')}</p>
+            <p className="text-slate-500 dark:text-slate-400 mt-2">{t('evacuationInfo.loading.subtitle')}</p>
           </div>
         </div>
       </motion.div>
@@ -178,9 +185,9 @@ export default function InfoEvakuasiPage() {
         <div className="flex flex-col justify-center items-center min-h-[60vh]">
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 rounded-xl p-8 text-center">
             <XCircle className="h-16 w-16 text-red-500 dark:text-red-400 mx-auto mb-4" />
-            <p className="text-xl font-medium text-slate-900 dark:text-white mb-2">Gagal Memuat Data</p>
+            <p className="text-xl font-medium text-slate-900 dark:text-white mb-2">{t('evacuationInfo.error.title')}</p>
             <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
-            <p className="text-slate-500 dark:text-slate-400">Silakan coba lagi nanti</p>
+            <p className="text-slate-500 dark:text-slate-400">{t('evacuationInfo.error.retry')}</p>
           </div>
         </div>
       </motion.div>
@@ -197,7 +204,7 @@ export default function InfoEvakuasiPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Floodzie</h1>
-            <p className="text-cyan-600 dark:text-cyan-400 text-sm">Informasi Lokasi Evakuasi</p>
+            <p className="text-cyan-600 dark:text-cyan-400 text-sm">{t('evacuationInfo.title')}</p>
           </div>
         </div>
       </motion.div>
@@ -210,7 +217,7 @@ export default function InfoEvakuasiPage() {
               <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/20 rounded-lg flex items-center justify-center"><Home className="w-5 h-5 text-blue-600 dark:text-blue-400" /></div>
               <div>
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">{evacuationLocations.length}</p>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Total Lokasi</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">{t('evacuationInfo.stats.totalLocations')}</p>
               </div>
             </div>
           </motion.div>
@@ -219,7 +226,7 @@ export default function InfoEvakuasiPage() {
               <div className="w-10 h-10 bg-green-100 dark:bg-green-500/20 rounded-lg flex items-center justify-center"><Users className="w-5 h-5 text-green-600 dark:text-green-400" /></div>
               <div>
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">{evacuationLocations.reduce((acc, loc) => acc + (loc.capacity_total - loc.capacity_current), 0)}</p>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Kapasitas Tersisa</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">{t('evacuationInfo.stats.remainingCapacity')}</p>
               </div>
             </div>
           </motion.div>
@@ -228,7 +235,7 @@ export default function InfoEvakuasiPage() {
               <div className="w-10 h-10 bg-orange-100 dark:bg-orange-500/20 rounded-lg flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-orange-600 dark:text-orange-400" /></div>
               <div>
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">{evacuationLocations.filter((loc) => (loc.capacity_current / loc.capacity_total) >= 0.7).length}</p>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Hampir Penuh</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">{t('evacuationInfo.stats.almostFull')}</p>
               </div>
             </div>
           </motion.div>
@@ -237,7 +244,7 @@ export default function InfoEvakuasiPage() {
               <div className="w-10 h-10 bg-cyan-100 dark:bg-cyan-500/20 rounded-lg flex items-center justify-center"><Clock className="w-5 h-5 text-cyan-600 dark:text-cyan-400" /></div>
               <div>
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">Live</p>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Update Real-time</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">{t('evacuationInfo.stats.liveUpdate')}</p>
               </div>
             </div>
           </motion.div>
@@ -248,7 +255,7 @@ export default function InfoEvakuasiPage() {
           <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-600/50 rounded-xl p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
               <MapPin className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Peta Lokasi Evakuasi</h3>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{t('evacuationInfo.map.title')}</h3>
             </div>
             <div className="h-[520px] w-full rounded-lg overflow-hidden border border-slate-600/30">
               {L && evacuationIcon && (
@@ -259,7 +266,7 @@ export default function InfoEvakuasiPage() {
                       <Popup>
                         <div className="text-sm">
                           <p className="font-bold">{loc.name}</p>
-                          <button onClick={() => handleLocationClick(loc)} className="text-cyan-500 hover:underline mt-1">Lihat Detail</button>
+                          <button onClick={() => handleLocationClick(loc)} className="text-cyan-500 hover:underline mt-1">{t('evacuationInfo.map.viewDetail')}</button>
                         </div>
                       </Popup>
                     </Marker>
@@ -275,13 +282,13 @@ export default function InfoEvakuasiPage() {
           <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-600/50 rounded-xl p-6">
             <div className="flex items-center gap-2 mb-4">
               <Home className="w-5 h-5 text-blue-500 dark:text-blue-400" />
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Daftar Lokasi</h3>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{t('evacuationInfo.list.title')}</h3>
             </div>
 
             <StatusLegend />
 
             {evacuationLocations.length === 0 && !loading ? (
-              <p className="text-slate-400 text-center py-8">Tidak ada lokasi evakuasi.</p>
+              <p className="text-slate-400 text-center py-8">{t('evacuationInfo.list.noData')}</p>
             ) : (
               <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
                 {evacuationLocations.map((loc, index) => {
@@ -335,7 +342,7 @@ export default function InfoEvakuasiPage() {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <Shield className="w-5 h-5 text-cyan-500 dark:text-cyan-400" />
-                        <span className="text-slate-900 dark:text-white font-medium">Status Operasional</span>
+                        <span className="text-slate-900 dark:text-white font-medium">{t('evacuationInfo.details.operationalStatus')}</span>
                       </div>
                       {selectedLocation.operational_status && (
                         <span className={`px-3 py-1 rounded-full text-sm border flex items-center gap-1.5 ${getOperationalStatusBadge(selectedLocation.operational_status).color}`}>
@@ -348,15 +355,15 @@ export default function InfoEvakuasiPage() {
                     <div className="flex items-center justify-between mt-4 mb-2">
                       <div className="flex items-center gap-2">
                         <Users className="w-5 h-5 text-blue-500 dark:text-blue-400" />
-                        <span className="text-slate-900 dark:text-white font-medium">Kapasitas</span>
+                        <span className="text-slate-900 dark:text-white font-medium">{t('evacuationInfo.details.capacity')}</span>
                       </div>
                       <span className={`px-3 py-1 rounded-full text-sm border ${getStatusBadge(selectedLocation).color}`}>
                         {getStatusBadge(selectedLocation).text}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-500 dark:text-slate-400">Terisi:</span>
-                      <span className="text-slate-900 dark:text-white font-medium">{selectedLocation.capacity_current} / {selectedLocation.capacity_total} orang</span>
+                      <span className="text-slate-500 dark:text-slate-400">{t('evacuationInfo.details.filled')}:</span>
+                      <span className="text-slate-900 dark:text-white font-medium">{selectedLocation.capacity_current} / {selectedLocation.capacity_total}</span>
                     </div>
                     <div className="w-full bg-slate-200 dark:bg-slate-600 rounded-full h-2 mt-2">
                       <div className="bg-gradient-to-r from-cyan-500 to-blue-500 h-2 rounded-full transition-all" style={{ width: `${(selectedLocation.capacity_current / selectedLocation.capacity_total) * 100}%` }} />
@@ -367,7 +374,7 @@ export default function InfoEvakuasiPage() {
                     <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4 border border-slate-200 dark:border-slate-600/30">
                       <h4 className="text-slate-900 dark:text-white font-medium mb-3 flex items-center gap-2">
                         <Info className="w-5 h-5 text-green-500 dark:text-green-400" />
-                        Layanan Esensial
+                        {t('evacuationInfo.details.essentialServices')}
                       </h4>
                       <div className="grid grid-cols-2 gap-2 text-sm">
                         {Object.entries(selectedLocation.essential_services).map(([key, value]) => (
@@ -384,7 +391,7 @@ export default function InfoEvakuasiPage() {
                     <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4 border border-slate-200 dark:border-slate-600/30">
                       <h4 className="text-slate-900 dark:text-white font-medium mb-3 flex items-center gap-2">
                         <CheckCircle className="w-5 h-5 text-blue-500 dark:text-blue-400" />
-                        Fasilitas Lainnya
+                        {t('evacuationInfo.details.facilities')}
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {selectedLocation.facilities.map((facility, idx) => (
@@ -399,30 +406,30 @@ export default function InfoEvakuasiPage() {
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4 space-y-3 border border-slate-200 dark:border-slate-600/30">
                     <h4 className="text-slate-900 dark:text-white font-medium mb-2 flex items-center gap-2">
                       <Phone className="w-5 h-5 text-orange-500 dark:text-orange-400" />
-                      Informasi Kontak
+                      {t('evacuationInfo.details.contactInfo')}
                     </h4>
                     {selectedLocation.contact_person && (
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-500 dark:text-slate-400">Narahubung:</span>
+                        <span className="text-slate-500 dark:text-slate-400">{t('evacuationInfo.details.contactPerson')}:</span>
                         <span className="text-slate-900 dark:text-white">{selectedLocation.contact_person}</span>
                       </div>
                     )}
                     {selectedLocation.contact_phone && (
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-400">Telepon:</span>
+                        <span className="text-slate-400">{t('evacuationInfo.details.phone')}:</span>
                         <a href={`tel:${selectedLocation.contact_phone}`} className="text-cyan-400 hover:text-cyan-300 transition-colors">{selectedLocation.contact_phone}</a>
                       </div>
                     )}
                     <div className="pt-2 border-t border-slate-200 dark:border-slate-700/50 space-y-2">
                       {selectedLocation.last_updated && (
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-slate-500">Update Terakhir:</span>
-                          <span className="text-slate-500 dark:text-slate-400">{new Date(selectedLocation.last_updated).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                          <span className="text-slate-500">{t('evacuationInfo.details.lastUpdated')}:</span>
+                          <span className="text-slate-500 dark:text-slate-400">{new Date(selectedLocation.last_updated).toLocaleString(lang === 'id' ? 'id-ID' : 'en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
                       )}
                       {selectedLocation.verified_by && (
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-slate-500">Terverifikasi oleh:</span>
+                          <span className="text-slate-500">{t('evacuationInfo.details.verifiedBy')}:</span>
                           <span className="text-slate-900 dark:text-white font-medium">{selectedLocation.verified_by}</span>
                         </div>
                       )}
@@ -431,7 +438,7 @@ export default function InfoEvakuasiPage() {
 
                   <button onClick={() => openGoogleMaps(selectedLocation.latitude, selectedLocation.longitude)} className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2">
                     <ExternalLink className="w-5 h-5" />
-                    Navigasi ke Lokasi
+                    {t('evacuationInfo.details.navigate')}
                   </button>
                 </div>
               </div>

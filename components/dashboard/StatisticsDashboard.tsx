@@ -35,6 +35,7 @@ import {
   Cell,
 } from 'recharts';
 import { normalizeSeries, ChartRow } from '@/lib/utils';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 // Helper to generate random data
 const generateRandomData = (days: number) => {
@@ -70,6 +71,7 @@ interface ChartData {
 const DATA_KEYS = ['jumlah', 'resolved'];
 
 const StatisticsDashboard = () => {
+  const { t } = useLanguage();
   const [selectedTimeRange, setSelectedTimeRange] = useState('7d');
   const [isLoading, setIsLoading] = useState(false);
   const [chartData, setChartData] = useState<ChartData>({ line: [], bar: [], pie: [] });
@@ -174,10 +176,10 @@ const StatisticsDashboard = () => {
         <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm text-slate-900 dark:text-white p-3 rounded-lg border border-slate-200 dark:border-slate-600 shadow-lg">
           <p className="font-bold text-cyan-600 dark:text-cyan-400">{label}</p>
           {dataItem.jumlah !== undefined && (
-            <p className="text-sm">{`Laporan: ${dataItem.jumlah}`}</p>
+            <p className="text-sm">{`${t('sensorData.charts.reports')}: ${dataItem.jumlah}`}</p>
           )}
           {dataItem.resolved !== undefined && (
-            <p className="text-sm">{`Terselesaikan: ${dataItem.resolved}`}</p>
+            <p className="text-sm">{`${t('sensorData.charts.resolved')}: ${dataItem.resolved}`}</p>
           )}
         </div>
       );
@@ -193,7 +195,7 @@ const StatisticsDashboard = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="text-xl font-bold text-slate-900 dark:text-white">
-                Statistik Data
+                {t('sensorData.statistics.title')}
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -202,10 +204,10 @@ const StatisticsDashboard = () => {
                 onChange={(e) => setSelectedTimeRange(e.target.value)}
                 className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
-                <option value="24h">24 Jam</option>
-                <option value="7d">7 Hari</option>
-                <option value="30d">30 Hari</option>
-                <option value="90d">90 Hari</option>
+                <option value="24h">{t('sensorData.filter.timeRange.h24')}</option>
+                <option value="7d">{t('sensorData.filter.timeRange.d7')}</option>
+                <option value="30d">{t('sensorData.filter.timeRange.d30')}</option>
+                <option value="90d">{t('sensorData.filter.timeRange.d90')}</option>
               </select>
             </div>
           </div>
@@ -220,7 +222,7 @@ const StatisticsDashboard = () => {
           {/* Bar Chart: Lokasi Paling Rawan */}
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 lg:col-span-1 shadow-sm">
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-              Lokasi Paling Rawan
+              {t('sensorData.charts.mostVulnerable')}
             </h3>
             <div style={{ width: '100%', height: 300 }}>
               <ResponsiveContainer>
@@ -236,11 +238,11 @@ const StatisticsDashboard = () => {
                       content={<CustomTooltip />}
                       cursor={{ fill: 'rgba(100, 116, 139, 0.1)' }}
                     />
-                    <Bar dataKey="jumlah" fill="#2dd4bf" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="jumlah" fill="#2dd4bf" radius={[4, 4, 0, 0]} name={t('sensorData.charts.reports')} />
                   </BarChart>
                 ) : (
                   <div className="flex items-center justify-center h-full text-slate-500">
-                    Tidak ada data tersedia untuk grafik ini.
+                    {t('sensorData.charts.noData')}
                   </div>
                 )}
               </ResponsiveContainer>
@@ -250,7 +252,7 @@ const StatisticsDashboard = () => {
           {/* Line Chart: Tren Kejadian Banjir */}
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 lg:col-span-2 shadow-sm">
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-              Tren Kejadian Banjir
+              {t('sensorData.charts.floodTrend')}
             </h3>
             <div style={{ width: '100%', height: 300 }}>
               <ResponsiveContainer>
@@ -270,17 +272,19 @@ const StatisticsDashboard = () => {
                       stroke="#2dd4bf"
                       strokeWidth={2}
                       activeDot={{ r: 8 }}
+                      name={t('sensorData.charts.reports')}
                     />
                     <Line
                       type="monotone"
                       dataKey="resolved"
                       stroke="#818cf8"
                       strokeWidth={2}
+                      name={t('sensorData.charts.resolved')}
                     />
                   </LineChart>
                 ) : (
                   <div className="flex items-center justify-center h-full text-slate-500">
-                    Tidak ada data tersedia untuk grafik ini.
+                    {t('sensorData.charts.noData')}
                   </div>
                 )}
               </ResponsiveContainer>
@@ -290,7 +294,7 @@ const StatisticsDashboard = () => {
           {/* Pie Chart: Komposisi Laporan */}
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 lg:col-span-1 shadow-sm">
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-              Komposisi Laporan
+              {t('sensorData.charts.reportComposition')}
             </h3>
             <div style={{ width: '100%', height: 300 }}>
               <ResponsiveContainer>
@@ -318,7 +322,7 @@ const StatisticsDashboard = () => {
                   </PieChart>
                 ) : (
                   <div className="flex items-center justify-center h-full text-slate-500">
-                    Tidak ada data tersedia untuk grafik ini.
+                    {t('sensorData.charts.noData')}
                   </div>
                 )}
               </ResponsiveContainer>
@@ -328,7 +332,7 @@ const StatisticsDashboard = () => {
           {/* New Stacked Bar Chart: Laporan Harian & Terselesaikan */}
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 lg:col-span-2 shadow-sm">
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-              Laporan Harian & Terselesaikan
+              {t('sensorData.charts.dailyResolved')}
             </h3>
             <div style={{ width: '100%', height: 300 }}>
               <ResponsiveContainer>
@@ -346,18 +350,18 @@ const StatisticsDashboard = () => {
                       dataKey="jumlah"
                       stackId="a"
                       fill="#2dd4bf"
-                      name="Total Laporan"
+                      name={t('sensorData.charts.total')}
                     />
                     <Bar
                       dataKey="resolved"
                       stackId="a"
                       fill="#818cf8"
-                      name="Terselesaikan"
+                      name={t('sensorData.charts.resolved')}
                     />
                   </BarChart>
                 ) : (
                   <div className="flex items-center justify-center h-full text-slate-500">
-                    Tidak ada data tersedia untuk grafik ini.
+                    {t('sensorData.charts.noData')}
                   </div>
                 )}
               </ResponsiveContainer>
