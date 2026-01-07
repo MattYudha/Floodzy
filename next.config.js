@@ -13,35 +13,36 @@ const nextConfig = {
   output: 'standalone',
   experimental: { instrumentationHook: true },
   async rewrites() {
-    {
-      source: '/about',
+    return [
+      {
+        source: '/about',
         destination: '/about.html',
       },
-    {
-      source: '/contact',
+      {
+        source: '/contact',
         destination: '/contact.html',
       },
     ];
   },
-// Konfigurasi Webpack yang sudah ada
-webpack: (config, { isServer }) => {
-  // Konfigurasi ini hanya berlaku untuk build sisi server,
-  // untuk memberitahu Webpack agar tidak mencoba membundel modul native Node.js
-  if (isServer) {
-    config.externals.push('bufferutil', 'utf-8-validate');
-  }
-  return config;
-},
+  // Konfigurasi Webpack yang sudah ada
+  webpack: (config, { isServer }) => {
+    // Konfigurasi ini hanya berlaku untuk build sisi server,
+    // untuk memberitahu Webpack agar tidak mencoba membundel modul native Node.js
+    if (isServer) {
+      config.externals.push('bufferutil', 'utf-8-validate');
+    }
+    return config;
+  },
 
   images: {
-  remotePatterns: [
-    { protocol: 'https', hostname: 'yqybhgqeejpdgffxzsno.supabase.co', pathname: '/storage/v1/object/public/**' },
-    { protocol: 'https', hostname: 'placehold.co' },
-  ],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'yqybhgqeejpdgffxzsno.supabase.co', pathname: '/storage/v1/object/public/**' },
+      { protocol: 'https', hostname: 'placehold.co' },
+    ],
     formats: ['image/avif', 'image/webp'],
   },
-eslint: {
-  ignoreDuringBuilds: true,
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
