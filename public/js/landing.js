@@ -152,13 +152,18 @@ class Drop {
 
 // === RESIZE HANDLER ===
 function setupCanvas(canvas, ctx, cssW, cssH) {
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    canvas.width = Math.floor(cssW * dpr);
-    canvas.height = Math.floor(cssH * dpr);
+    // SMART OPTIMIZATION: Clamp DPR to 1.5 max for performance.
+    // Retina screens (DPR 3) render 9x pixels. Clamping to 1.5 reduces load by ~75% with minimal visual loss.
+    let targetDpr = window.devicePixelRatio || 1;
+    if (isLowEnd) targetDpr = 1.0;
+    else targetDpr = Math.min(1.5, targetDpr);
+
+    canvas.width = Math.floor(cssW * targetDpr);
+    canvas.height = Math.floor(cssH * targetDpr);
     canvas.style.width = cssW + 'px';
     canvas.style.height = cssH + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    return dpr;
+    ctx.setTransform(targetDpr, 0, 0, targetDpr, 0, 0);
+    return targetDpr;
 }
 
 function syncFishCanvas(force = false) {
@@ -322,8 +327,15 @@ function drawWave(level = 20) {
     grad.addColorStop(0, 'rgba(59, 130, 246, 0.9)');
     grad.addColorStop(1, 'rgba(59, 130, 246, 0.1)');
     waveCtx.fillStyle = grad;
-    waveCtx.shadowColor = 'rgba(59, 130, 246, 0.8)';
-    waveCtx.shadowBlur = 15; // Expensive blur, kept for aesthetics but point count is lower now
+
+    // SMART OPTIMIZATION: Disable expensive shadow blur on low-end
+    if (!isLowEnd) {
+        waveCtx.shadowColor = 'rgba(59, 130, 246, 0.8)';
+        waveCtx.shadowBlur = 15;
+    } else {
+        waveCtx.shadowBlur = 0;
+    }
+
     waveCtx.fill();
 
     waveCtx.globalCompositeOperation = 'source-over';
@@ -423,6 +435,102 @@ function fxLoop() {
 }
 function startFx() { if (!fxRaf) fxRaf = requestAnimationFrame(fxLoop); }
 function stopFx() { if (!fxRaf) return; cancelAnimationFrame(fxRaf); fxRaf = 0; }
+
+
+function rand(a, b) { return a + Math.random() * (b - a); }
+
+function spawnFish() {
+    if (fishes.length >= FISH_MAX) return;
+    const dir = Math.random() > 0.5 ? 1 : -1;
+    const depth = rand(0.2, 1.0);        // 0 dekat kamera, 1 jauh
+    const s = 0.6 + (1.1 - depth) * 0.8; // makin dekat = makin besar
+    fishes.push({
+        x: dir === 1 ? -rand(30, 120) : fishW + rand(30, 120),
+        y: rand(fishH * 0.55, fishH * 0.95), // selalu bawah (lebih natural)
+        dir,
+        depth,
+        s,
+        sp: (0.35 + (1.2 - depth) * 0.9) * (dir),
+        ph: rand(0, Math.PI * 2),
+        wob: rand(0.6, 1.4),
+        life: rand(0.6, 1.0),
+    });
+}
+
+function drawFishShape(ctx, x, y, s, dir, t, depth) {
+    // Silhouette + rim light tipis
+    const bodyL = 26 * s;
+    const bodyH = 10 * s;
+    const tailL = 10 * s;
+
+    const bob = Math.sin(t * 1.2 + depth * 4) * (1.2 * s);
+    const sway = Math.sin(t * 2.4 + depth * 3) * (0.35 * s);
+
+    ctx.save();
+    ctx.translate(x, y + bob);
+    ctx.scale(dir, 1);
+
+    // body
+    ctx.beginPath();
+    ctx.ellipse(0, 0, bodyL * 0.5, bodyH * 0.5, sway, 0, Math.PI * 2);
+
+    // tail
+    ctx.moveTo(-bodyL * 0.55, 0);
+    ctx.lineTo(-bodyL * 0.55 - tailL, -bodyH * 0.35);
+    ctx.lineTo(-bodyL * 0.55 - tailL, bodyH * 0.35);
+    ctx.closePath();
+
+    // fill silhouette (gelap halus supaya “underwater”)
+    ctx.fillStyle = `rgba(0,0,0,${0.10 + (1 - depth) * 0.08})`;
+    ctx.fill();
+
+    // rim light
+    ctx.strokeStyle = `rgba(59,130,246,${0.08 + (1 - depth) * 0.10})`;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+function fishLoop() {
+    if (!fishCtx) { fishRaf = 0; return; }
+
+    // Jangan matikan loop; cukup skip render kalau air tipis
+    if (fishH < 40 || fishW < 40) {
+        fishRaf = requestAnimationFrame(fishLoop);
+        return;
+    }
+
+    fishCtx.clearRect(0, 0, fishW, fishH);
+
+    // spawn rate menyesuaikan intensitas
+    const spawnChance = 0.015 + (globalRain / 100) * 0.02;
+    if (Math.random() < spawnChance) spawnFish();
+
+    const t = performance.now() / 1000;
+
+    for (let i = fishes.length - 1; i >= 0; i--) {
+        const f = fishes[i];
+        f.x += f.sp;
+        f.ph += 0.02 * f.wob;
+
+        // kecilkan “kehadiran” saat CRITICAL biar tidak ramai
+        const fade = (globalRain > 85) ? 0.6 : 1.0;
+
+        fishCtx.globalAlpha = f.life * fade;
+        drawFishShape(fishCtx, f.x, f.y, f.s, f.dir, t + f.ph, f.depth);
+
+        // wrap / kill
+        if (f.dir === 1 && f.x > fishW + 140) fishes.splice(i, 1);
+        else if (f.dir === -1 && f.x < -140) fishes.splice(i, 1);
+    }
+    fishCtx.globalAlpha = 1;
+
+    fishRaf = requestAnimationFrame(fishLoop);
+}
+
+function startFish() { if (!fishRaf) fishRaf = requestAnimationFrame(fishLoop); }
+function stopFish() { if (!fishRaf) return; cancelAnimationFrame(fishRaf); fishRaf = 0; }
 
 // Optimized Splash FX
 function applySplashFX(p) {
