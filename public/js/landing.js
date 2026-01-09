@@ -56,7 +56,41 @@ const FISH_MAX = 10;
 const reduceMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 function shouldAnimate() {
-    return !reduceMotionMQ.matches;
+    return !reduceMotionMQ.matches && localStorage.getItem('floodzy_motion') !== 'off';
+}
+
+// === TOGGLE LOGIC ===
+function toggleMotion() {
+    const isCurrentlyOn = shouldAnimate();
+    const newState = isCurrentlyOn ? 'off' : 'on';
+    localStorage.setItem('floodzy_motion', newState);
+
+    // Update UI
+    const btnText = document.getElementById('anim-status');
+    if (btnText) btnText.innerText = newState === 'on' ? 'ON' : 'OFF';
+
+    if (newState === 'off') {
+        stopRain();
+        stopWave();
+        stopFx();
+        stopFish();
+        stopCursor();
+        document.body.classList.add('reduce-motion');
+    } else {
+        startRain();
+        startWave();
+        startFx();
+        startFish();
+        startCursor();
+        document.body.classList.remove('reduce-motion');
+    }
+}
+
+// Init Button Text
+const savedPref = localStorage.getItem('floodzy_motion');
+if (savedPref === 'off') {
+    const btnText = document.getElementById('anim-status');
+    if (btnText) btnText.innerText = 'OFF';
 }
 
 // === CLASS DEFINITIONS ===
@@ -621,7 +655,7 @@ function handleScroll() {
         resetSink();
     } else if (p < 0.45) {
         // Set seen flag early
-        if (!localStorage.getItem('floodzy_seen')) localStorage.setItem('floodzy_seen', 'yes');
+        // if (!localStorage.getItem('floodzy_seen')) localStorage.setItem('floodzy_seen', 'yes');
         setZone("WARNING", "RISING", "#FFD60A");
         water.style.height = (p * 120) + '%';
         fence.classList.add('shaking');

@@ -99,13 +99,25 @@
     <style>
         :root {
             /* Colors */
-            --bg-void: #050507;
+            --bg-void: #02040a;
+            /* Deeper blue-black */
             --text-main: #E1E3E8;
             --text-muted: #9499A6;
-            --cyan: #2EF2FF;
-            --cyan-glow: rgba(46, 242, 255, 0.4);
+
+            /* Floodzy Blue Scheme */
+            --cyan: #00F0FF;
+            /* Bright Cyan Highlight */
+            --blue-primary: #0066FF;
+            --blue-deep: #001233;
+
+            /* Gradients */
+            --main-gradient: linear-gradient(135deg, #00C6FF 0%, #0072FF 100%);
+            --glow-gradient: radial-gradient(circle, rgba(0, 114, 255, 0.4) 0%, transparent 70%);
+
+            --cyan-glow: rgba(0, 198, 255, 0.5);
             --red: #FF3B30;
             --red-glow: rgba(255, 59, 48, 0.4);
+
             /* Fonts */
             --font-disaster: 'Black Ops One', system-ui, sans-serif;
             --font-body: 'Space Grotesk', system-ui, sans-serif;
@@ -413,7 +425,7 @@
             text-decoration: none;
             overflow: hidden;
             -webkit-box-reflect: below -8px linear-gradient(transparent, rgba(0, 0, 0, 0.3));
-            background-image: linear-gradient(to top, #2EF2FF 50%, rgba(46, 242, 255, 0.3) 50%);
+            background-image: linear-gradient(to top, #00C6FF 50%, rgba(0, 198, 255, 0.3) 50%);
             background-size: 100% 200%;
             background-position: 0% 0%;
             -webkit-background-clip: text;
@@ -591,8 +603,7 @@
         }
 
         .btn:hover {
-            background: var(--cyan);
-            color: #000;
+            opacity: 0.8;
             box-shadow: 0 0 30px var(--cyan-glow);
         }
 
@@ -1341,9 +1352,13 @@
             <!-- Replaced Text with Dramatic Logo -->
             <a href="/" class="floodzy-logo">FLOODZY</a>
         </div>
-        <nav>
-            <a href="/" class="nav-link">HOME</a>
-            <a href="/" class="nav-link">DASHBOARD</a>
+        <nav style="display: flex; align-items: center;">
+            <a href="/" class="nav-link">BERANDA</a>
+            <a href="/dashboard" class="nav-link">DASHBOARD</a>
+            <button id="anim-toggle" class="nav-link"
+                style="background:none; border:none; margin-left:2rem; color:var(--text-muted); cursor:pointer;">
+                ANIMASI: <span id="anim-status" style="color:var(--cyan)">ON</span>
+            </button>
         </nav>
     </header>
     <!-- SCENE 1: HERO (UPDATED WITH LENS) -->
@@ -1352,23 +1367,28 @@
         <div class="hero-submerge" id="hero-submerge"></div>
         <div class="container" style="position: relative; z-index: 20;">
             <!-- Updated Copy -->
-            <h1 id="hero-title" style="font-size: clamp(3rem, 8vw, 7rem);">Welcome to Floodzy World</h1>
-            <p class="mono text-cyan" id="hero-status" style="margin-bottom: 2rem;">Simulation Initializing...</p>
+            <h1 id="hero-title"
+                style="font-size: clamp(3rem, 8vw, 7rem); background: var(--main-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                Selamat Datang di Dunia Floodzy</h1>
+            <p class="mono text-cyan" id="hero-status" style="margin-bottom: 2rem;">Inisialisasi Simulasi...</p>
             <div
                 style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem; position: relative; z-index: 50;">
-                <a href="/" class="btn" onclick="localStorage.setItem('floodzy_seen', 'yes')">OPEN
+                <a href="/dashboard" class="btn" onclick="localStorage.setItem('floodzy_seen', 'yes')"
+                    style="background: var(--main-gradient); border: none; color: white; font-weight: 600;">BUKA
                     DASHBOARD</a>
                 <button
                     onclick="localStorage.setItem('floodzy_seen', 'yes'); document.getElementById('predict-section').scrollIntoView({behavior: 'smooth'})"
-                    class="btn" style="border-style: dashed; padding: 1rem 1.5rem;">SKIP SIMULATION</button>
+                    class="btn" style="border-style: dashed; padding: 1rem 1.5rem;">LEWATI SIMULASI</button>
             </div>
-            <div class="mono" style="opacity: 0.5;">↓ SCROLL TO BEGIN</div>
+            <div class="mono" style="opacity: 0.5;">↓ GULIR UNTUK MULAI</div>
         </div>
     </section>
 
     <!-- ABOUT FLOODZY (SEO & TRUST) -->
     <section class="container" style="padding: 5rem 0; max-width:800px;">
-        <h2 style="text-align:center; margin-bottom:1.5rem;">About Floodzy</h2>
+        <h2
+            style="text-align:center; margin-bottom:1.5rem; background: var(--main-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            Tentang Floodzy</h2>
         <p style="line-height:1.6; color:var(--text-muted); font-size: 1.1rem;">
             Floodzy adalah platform sistem peringatan banjir realtime yang dikembangkan di Indonesia untuk membantu
             pemerintah daerah, BPBD, relawan, dan masyarakat dalam mengantisipasi potensi banjir secara cepat.
@@ -1396,28 +1416,32 @@
     </section>
     <!-- WHAT IS FLOODZY -->
     <section class="container" style="padding: 4rem 0; text-align: center; max-width: 900px;">
-        <h2 style="margin-bottom: 1.5rem;">The Flood Early Warning System</h2>
-        <p class="text-muted" style="font-size: 1.25rem; margin-bottom: 3rem;"> Floodzy is a realtime prediction
-            platform built for BPBD, Government Agencies, and Citizens. We combine ground sensors, satellite data, and
-            machine learning to visualize threats before they happen. </p>
+        <h2 style="margin-bottom: 1.5rem;">Sistem Peringatan Dini Banjir</h2>
+        <p class="text-muted" style="font-size: 1.25rem; margin-bottom: 3rem;"> Floodzy adalah platform prediksi
+            realtime
+            yang dibangun untuk BPBD, Instansi Pemerintah, dan Warga. Kami menggabungkan sensor darat, data satelit, dan
+            machine learning untuk memvisualisasikan ancaman sebelum terjadi. </p>
         <!-- How It Works Cards -->
         <div
             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; text-align: left;">
             <div
-                style="background: rgba(46, 242, 255, 0.05); border: 1px solid rgba(46, 242, 255, 0.2); padding: 2rem;">
-                <div class="mono text-cyan" style="font-size: 1.5rem; margin-bottom: 1rem;">01. DETECT</div>
-                <p class="text-muted">IoT sensors across key waterways transmit water level and rainfall data with
-                    <strong>sub-second updates</strong>.
+                style="background: rgba(0, 198, 255, 0.05); border: 1px solid rgba(0, 198, 255, 0.2); padding: 2rem; border-radius: 8px;">
+                <div class="mono text-cyan" style="font-size: 1.5rem; margin-bottom: 1rem;">01. DETEKSI</div>
+                <p class="text-muted">Sensor IoT di berbagai saluran air mengirimkan data ketinggian air dan curah hujan
+                    dengan
+                    <strong>pembaruan sub-detik</strong>.
                 </p>
             </div>
             <div
-                style="background: rgba(46, 242, 255, 0.05); border: 1px solid rgba(46, 242, 255, 0.2); padding: 2rem;">
-                <div class="mono text-cyan" style="font-size: 1.5rem; margin-bottom: 1rem;">02. PREDICT</div>
-                <p class="text-muted">Our AI model processes topography and hydrology data to forecast flood spread.</p>
+                style="background: rgba(0, 198, 255, 0.05); border: 1px solid rgba(0, 198, 255, 0.2); padding: 2rem; border-radius: 8px;">
+                <div class="mono text-cyan" style="font-size: 1.5rem; margin-bottom: 1rem;">02. PREDIKSI</div>
+                <p class="text-muted">Model AI kami memproses topografi dan hidrologi untuk memprakirakan penyebaran
+                    banjir.</p>
             </div>
-            <div style="background: rgba(255, 59, 48, 0.05); border: 1px solid rgba(255, 59, 48, 0.3); padding: 2rem;">
-                <div class="mono text-red" style="font-size: 1.5rem; margin-bottom: 1rem;">03. ALERT</div>
-                <p class="text-muted">Instant warnings sent to stakeholders and citizens in affected zones.</p>
+            <div
+                style="background: rgba(255, 59, 48, 0.05); border: 1px solid rgba(255, 59, 48, 0.3); padding: 2rem; border-radius: 8px;">
+                <div class="mono text-red" style="font-size: 1.5rem; margin-bottom: 1rem;">03. PERINGATAN</div>
+                <p class="text-muted">Peringatan instan dikirim ke pemangku kepentingan dan warga di zona terdampak.</p>
             </div>
         </div>
     </section>
@@ -1426,8 +1450,8 @@
         <div id="sticky-viewport">
             <!-- HUD -->
             <div id="hud-overlay">
-                <div class="mono text-cyan" id="zone-display" style="background: #000; padding: 5px 10px;">ZONE:
-                    MONITORING</div>
+                <div class="mono text-cyan" id="zone-display" style="background: #000; padding: 5px 10px;">ZONA:
+                    MEMANTAU</div>
                 <h2 id="status-display" style="font-size: 2.5rem; margin-top: 10px;">NORMAL</h2>
             </div>
             <!-- CITY -->
@@ -1479,29 +1503,32 @@
     <!-- SCENE 8: SPLIT NARRATIVE -->
     <section id="split-section">
         <div class="split-content split-left">
-            <h3 class="text-red">MANUAL CHAOS</h3>
-            <p class="text-muted" style="font-size: 1.5rem; max-width: 400px; margin-left: auto;"> "Fragmented data
-                reporting delays critical response. Manual observation creates blind spots when minutes matter." </p>
+            <h3 class="text-red">KEKACAUAN MANUAL</h3>
+            <p class="text-muted" style="font-size: 1.5rem; max-width: 400px; margin-left: auto;"> "Data yang terpecah
+                menunda respons kritis. Pengamatan manual menciptakan titik buta saat waktu sangat berharga." </p>
         </div>
         <div class="split-divider"></div>
         <div class="split-content split-right">
-            <h3 class="text-cyan">SYSTEM CLARITY</h3>
-            <p style="font-size: 1.5rem; max-width: 400px;"> "Real-time sensor fusion eliminates latency. Floodzy
-                predicts impact magnitude before the storm peaks." </p>
+            <h3 class="text-cyan">KEJELASAN SISTEM</h3>
+            <p style="font-size: 1.5rem; max-width: 400px;"> "Fusi sensor real-time menghilangkan latensi. Floodzy
+                memprediksi besarnya dampak sebelum badai memuncak." </p>
         </div>
     </section>
     <!-- SCENE: MID HERO (PREDICT SURGE) -->
     <!-- SCENE: MID HERO (PREDICT SURGE) -->
     <section id="predict-section" class="container"
         style="padding: 4rem 0 6rem 0; position: relative; z-index: 20; text-align: center;">
-        <div class="mono text-cyan" style="margin-bottom: 1.5rem; letter-spacing: 2px;">:: SYSTEM STATUS: ONLINE</div>
-        <h2 style="font-size: clamp(3.5rem, 6vw, 5.5rem); line-height: 1.1; margin-bottom: 2rem;"> Predict the
-            Surge.<br> <span style="color: #666;">Before it Strikes.</span> </h2>
+        <div class="mono text-cyan" style="margin-bottom: 1.5rem; letter-spacing: 2px;">:: STATUS SISTEM: ONLINE</div>
+        <h2
+            style="font-size: clamp(3.5rem, 6vw, 5.5rem); line-height: 1.1; margin-bottom: 2rem; background: var(--main-gradient); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            Prediksi
+            Lonjakan.<br> <span style="color: #666; -webkit-text-fill-color: #666;">Sebelum Terjadi.</span> </h2>
         <p class="text-muted" style="font-size: 1.25rem; max-width: 700px; margin: 0 auto 3rem; line-height: 1.6;">
-            Advanced flood intelligence for a changing climate. Combining satellite altimetry, ML forecasting, and
-            real-time ground telemetry. </p>
+            Intelijen banjir canggih untuk iklim yang berubah. Menggabungkan altimetri satelit, prakiraan ML, dan
+            telemetri darat real-time. </p>
         <a href="#" class="btn"
-            style="padding: 1rem 2.5rem; border-color: var(--cyan); background: rgba(46,242,255,0.1);"> LAUNCH CONSOLE
+            style="padding: 1rem 2.5rem; border-color: var(--cyan); background: rgba(0, 198, 255, 0.1);"> LUNCURKAN
+            KONSOL
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 style="margin-left:8px;">
                 <path d="M7 17l9.2-9.2M17 17V7H7" />
@@ -1509,8 +1536,8 @@
     </section>
     <!-- SCENE 9: PLAYGROUND -->
     <section class="container" style="padding: 6rem 0;">
-        <div class="mono text-cyan">> THREAT_PLAYGROUND</div>
-        <h2>Control the Chaos</h2>
+        <div class="mono text-cyan">> AREA_SIMULASI</div>
+        <h2>Kendalikan Situasi</h2>
         <div class="playground-container">
             <div class="tech-corner tl"></div>
             <div class="tech-corner tr"></div>
@@ -1518,24 +1545,24 @@
             <div class="tech-corner br"></div>
             <div id="sim-map">
                 <div class="radar-scan"></div>
-                <div class="map-hud"> LAT: -6.2088<br>LON: 106.8456<br>SENSORS: <span id="sensor-count">12</span>
-                    LIVE<br>SYNC: ACTIVE </div>
+                <div class="map-hud"> LAT: -6.2088<br>LON: 106.8456<br>SENSOR: <span id="sensor-count">12</span>
+                    AKTIF<br>SYNC: AKTIF </div>
             </div>
             <div>
                 <div style="margin-bottom: 2rem;">
-                    <div style="display: flex; justify-content: space-between;"><span class="mono">RAIN
-                            INTENSITY</span><span class="mono text-cyan" id="rain-val">20%</span></div>
+                    <div style="display: flex; justify-content: space-between;"><span class="mono">INTENSITAS
+                            HUJAN</span><span class="mono text-cyan" id="rain-val">20%</span></div>
                     <input type="range" id="rain-slider" min="0" max="100" value="20"
                         style="width: 100%; margin-top: 10px;">
                 </div>
                 <div>
-                    <div style="display: flex; justify-content: space-between;"><span class="mono">RIVER
-                            LEVEL</span><span class="mono text-red" id="river-val">SAFE</span></div>
+                    <div style="display: flex; justify-content: space-between;"><span class="mono">LEVEL
+                            SUNGAI</span><span class="mono text-red" id="river-val">AMAN</span></div>
                     <input type="range" id="river-slider" min="0" max="100" value="10"
                         style="width: 100%; margin-top: 10px;">
                 </div>
-                <p class="mono text-muted" style="font-size: 0.8rem; margin-top: 2rem;">ADJUST SLIDERS TO SIMULATE
-                    SENSOR FEEDBACK.</p>
+                <p class="mono text-muted" style="font-size: 0.8rem; margin-top: 2rem;">GESER SLIDER UNTUK SIMULASI
+                    UMPAN BALIK SENSOR.</p>
             </div>
         </div>
     </section>
@@ -1544,38 +1571,41 @@
         <div class="stats-grid">
             <!-- Left: Narrative -->
             <div>
-                <div class="mono text-cyan" style="margin-bottom: 1rem;">01 :: THE PROBLEM</div>
-                <h2 style="font-size: clamp(2.5rem, 5vw, 3.5rem); margin-bottom: 3rem; line-height: 1.1;">Water Doesn't
-                    Wait.<br>Neither Should You.</h2>
+                <div class="mono text-cyan" style="margin-bottom: 1rem;">01 :: MASALAH</div>
+                <h2
+                    style="font-size: clamp(2.5rem, 5vw, 3.5rem); margin-bottom: 3rem; line-height: 1.1; background: var(--main-gradient); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Air Tak
+                    Menunggu.<br>Anda Pun Jangan.</h2>
                 <div
                     style="background: rgba(255,255,255,0.03); border-left: 2px solid #555; padding: 2rem; margin-bottom: 2rem;">
-                    <h4 style="margin-bottom: 0.5rem; color: #FFF;">Latency Kills Response</h4>
-                    <p class="text-muted">Traditional manual gauges have a 4-hour delay loop. Floodzy cuts this to
-                        <strong>sub-second updates</strong> utilizing direct IoT uplinks.
+                    <h4 style="margin-bottom: 0.5rem; color: #FFF;">Latensi Membunuh Respons</h4>
+                    <p class="text-muted">Pengukur manual tradisional memiliki jeda 4 jam. Floodzy memangkas ini menjadi
+                        <strong>pembaruan sub-detik</strong> menggunakan uplink IoT langsung.
                     </p>
                 </div>
                 <div style="background: rgba(255,255,255,0.03); border-left: 2px solid #555; padding: 2rem;">
-                    <h4 style="margin-bottom: 0.5rem; color: #FFF;">Invisible Threats</h4>
-                    <p class="text-muted">Rain forecasts are not flood forecasts. We model terrain hydrology to predict
-                        impact, not just precipitation.</p>
+                    <h4 style="margin-bottom: 0.5rem; color: #FFF;">Ancaman Tak Terlihat</h4>
+                    <p class="text-muted">Prakiraan hujan bukan prakiraan banjir. Kami memodelkan hidrologi medan untuk
+                        memprediksi
+                        dampak, bukan hanya curah hujan.</p>
                 </div>
             </div>
             <!-- Right: Stats Panel -->
             <div
-                style="background: #0B0D13; border: 1px solid rgba(46,242,255,0.2); padding: 3rem; border-radius: 4px; position: relative;">
-                <div class="mono text-cyan" style="margin-bottom: 2rem;">> DEPLOYMENT_STATS</div>
+                style="background: #0B0D13; border: 1px solid rgba(0, 198, 255, 0.2); padding: 3rem; border-radius: 4px; position: relative;">
+                <div class="mono text-cyan" style="margin-bottom: 2rem;">> STATISTIK_PENYEBARAN</div>
                 <div
-                    style="font-size: clamp(4rem, 8vw, 6rem); font-weight: 800; line-height: 1; color: #FFF; font-family: var(--font-display);">
-                    3h</div>
-                <div class="text-muted" style="margin-bottom: 4rem;">Early Warning Lead Time</div>
+                    style="font-size: clamp(4rem, 8vw, 6rem); font-weight: 800; line-height: 1; font-family: var(--font-display); background: var(--main-gradient); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    3j</div>
+                <div class="text-muted" style="margin-bottom: 4rem;">Waktu Peringatan Dini</div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div
-                        style="background: rgba(46, 242, 255, 0.05); border-bottom: 2px solid var(--cyan); padding: 1.5rem; height: 100px; display: flex; align-items: end;">
-                        <span class="mono text-cyan" style="font-size: 0.8rem;">RIVER_GAUGE</span>
+                        style="background: rgba(0, 198, 255, 0.05); border-bottom: 2px solid var(--cyan); padding: 1.5rem; height: 100px; display: flex; align-items: end;">
+                        <span class="mono text-cyan" style="font-size: 0.8rem;">PENGUKUR_SUNGAI</span>
                     </div>
                     <div
                         style="background: rgba(255, 59, 48, 0.05); border-bottom: 2px solid var(--red); padding: 1.5rem; height: 100px; display: flex; align-items: end;">
-                        <span class="mono text-red" style="font-size: 0.8rem;">ALERT_RISK</span>
+                        <span class="mono text-red" style="font-size: 0.8rem;">RISIKO_BAHAYA</span>
                     </div>
                 </div>
             </div>
@@ -1602,14 +1632,16 @@
         <div class="final-network"></div>
         <div class="final-node"></div>
         <div class="container" style="position: relative; z-index: 20;">
-            <p class="mono" style="font-size: 1.2rem; margin-bottom: 0.5rem;">YOU CAN'T STOP THE RAIN.</p>
-            <p class="mono text-red" style="font-size: 1.2rem; margin-bottom: 2rem;">BUT YOU CAN SEE IT COMING.</p>
+            <p class="mono" style="font-size: 1.2rem; margin-bottom: 0.5rem;">ANDA TIDAK BISA MENGHENTIKAN HUJAN.</p>
+            <p class="mono text-red" style="font-size: 1.2rem; margin-bottom: 2rem;">TAPI ANDA BISA MELIHATNYA DATANG.
+            </p>
             <p class="mono text-cyan" style="margin-top:1rem; font-size: 1.5rem; max-width: 600px; margin: 0 auto;">
-                FLOODZY IS THE DIFFERENCE BETWEEN WARNING AND LOSS. </p>
+                FLOODZY ADALAH PEMBEDA ANTARA PERINGATAN DAN KEHILANGAN. </p>
             <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 3rem;">
-                <a href="/" class="btn" onclick="localStorage.setItem('floodzy_seen', 'yes')">OPEN
+                <a href="/dashboard" class="btn" onclick="localStorage.setItem('floodzy_seen', 'yes')"
+                    style="background: var(--main-gradient); border: none; color: white;">BUKA
                     DASHBOARD</a>
-                <a href="/contact" class="btn" style="border-color: rgba(255,255,255,0.3); color: #fff;">REQUEST
+                <a href="/contact" class="btn" style="border-color: rgba(255,255,255,0.3); color: #fff;">MINTA
                     DEMO</a>
             </div>
         </div>
@@ -1619,35 +1651,35 @@
             <div class="footer-grid">
                 <div>
                     <div class="logo mono text-cyan" style="margin-bottom: 1rem;">FLOODZY_INTEL</div>
-                    <p class="text-muted" style="font-size: 0.9rem; max-width: 300px;"> Advanced hydrological predictive
-                        system for urban resilience. </p>
+                    <p class="text-muted" style="font-size: 0.9rem; max-width: 300px;"> Sistem prediksi hidrologi
+                        canggih untuk ketahanan kota. </p>
                     <div style="margin-top: 1rem; display: flex; align-items: center;">
                         <span class="system-status-light"></span>
-                        <span class="mono" style="font-size: 0.8rem; color: var(--cyan);">SYSTEM OPERATIONAL</span>
+                        <span class="mono" style="font-size: 0.8rem; color: var(--cyan);">SISTEM OPERASIONAL</span>
                     </div>
                 </div>
                 <div>
-                    <h4 class="mono text-main" style="margin-bottom: 1rem;">// NAVIGATION</h4>
-                    <a href="/" class="footer-link">HOME_BASE</a>
-                    <a href="/" class="footer-link">LIVE_DASHBOARD</a>
-                    <a href="/prakiraan-cuaca" class="footer-link">WEATHER_INTEL</a>
-                    <a href="/privacy.html" class="footer-link">PRIVACY_POLICY</a>
-                    <a href="/data-source.html" class="footer-link">DATA_SOURCE</a>
+                    <h4 class="mono text-main" style="margin-bottom: 1rem;">// NAVIGASI</h4>
+                    <a href="/" class="footer-link">BERANDA</a>
+                    <a href="/" class="footer-link">DASHBOARD_LIVE</a>
+                    <a href="/prakiraan-cuaca" class="footer-link">INTEL_CUACA</a>
+                    <a href="/privacy.html" class="footer-link">KEBIJAKAN_PRIVASI</a>
+                    <a href="/data-source.html" class="footer-link">SUMBER_DATA</a>
                     <a href="#" onclick="localStorage.removeItem('floodzy_seen'); location.reload();"
-                        class="footer-link" style="color: #666; margin-top: 1rem;">↺ REPLAY_INTRO</a>
+                        class="footer-link" style="color: #666; margin-top: 1rem;">↺ ULANG_INTRO</a>
                 </div>
                 <div>
-                    <h4 class="mono text-main" style="margin-bottom: 1rem;">// CONNECT</h4>
-                    <a href="#" class="footer-link">GITHUB_REPO</a>
-                    <a href="#" class="footer-link">CONTACT_HQ</a>
+                    <h4 class="mono text-main" style="margin-bottom: 1rem;">// HUBUNGKAN</h4>
+                    <a href="#" class="footer-link">REPO_GITHUB</a>
+                    <a href="#" class="footer-link">KONTAK_MARKAS</a>
                     <p class="mono text-muted" style="margin-top: 1rem; font-size: 0.8rem;"> JAKARTA • INDONESIA
                         <br>LAT: -6.2088 | LON: 106.8456
                     </p>
                 </div>
             </div>
             <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; text-align: center;">
-                <p class="mono text-muted" style="font-size: 0.75rem;"> © 2026 FLOODZY SYSTEMS. ALL RIGHTS RESERVED. |
-                    <span class="text-cyan">SECURE_CONNECTION_ESTABLISHED</span>
+                <p class="mono text-muted" style="font-size: 0.75rem;"> © 2026 FLOODZY SYSTEMS. HAK CIPTA DILINDUNGI. |
+                    <span class="text-cyan">KONEKSI_AMAN_TERHUBUNG</span>
                 </p>
             </div>
         </div>
