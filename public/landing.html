@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floodzy | The Early Warning System</title>
+    <meta name="description"
+        content="Floodzy - Advanced hydrological predictive system for urban resilience. Real-time flood monitoring and early warning system for Indonesia.">
+    <meta name="keywords"
+        content="flood warning, Indonesia flood monitoring, Jakarta banjir, hydrological prediction, disaster resilience">
+    <link rel="canonical" href="https://floodzy.app/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://floodzy.app/">
+    <meta property="og:title" content="Floodzy | The Early Warning System">
+    <meta property="og:description"
+        content="Advanced hydrological predictive system for urban resilience. Real-time flood monitoring and early warning system.">
+    <meta property="og:image" content="https://floodzy.app/img/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://floodzy.app/">
+    <meta property="twitter:title" content="Floodzy | The Early Warning System">
+    <meta property="twitter:description" content="Advanced hydrological predictive system for urban resilience.">
+    <meta property="twitter:image" content="https://floodzy.app/img/og-image.jpg">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Floodzy",
+      "url": "https://floodzy.app/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://floodzy.app/dashboard?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Floodzy Systems",
+      "url": "https://floodzy.app/",
+      "logo": "https://floodzy.app/logo.png",
+      "sameAs": [
+        "https://twitter.com/floodzy",
+        "https://github.com/floodzy"
+      ]
+    }
+    </script>
+
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display+SC:wght@700;900&family=Black+Ops+One&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/landing.css">
+    </style>
+</head>
+
+<body>
+    <div id="redirect-overlay">
+        <div style="font-size: 1.2rem; letter-spacing: 2px; margin-bottom: 1rem;">SYSTEM RESTORED</div>
+        <div style="font-size: 0.9rem; color: #555;">CONNECTING TO DASHBOARD...</div>
+        <div style="margin-top: 2rem; width: 200px; height: 2px; background: rgba(59,130,246,0.2);">
+            <div style="width: 100%; height: 100%; background: var(--cyan); animation: load 1.5s ease-in-out infinite;">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CURSOR -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- RAIN -->
+    <canvas id="visual-canvas" aria-hidden="true"></canvas>
+
+    <!-- ATMOSPHERE -->
+    <div id="cloud-layer" aria-hidden="true"></div>
+    <div id="bird-layer" aria-hidden="true"></div>
+
+    <!-- FX: droplets + bubbles -->
+    <canvas id="fx-canvas" aria-hidden="true"></canvas>
+
+    <!-- Water splash overlay (ke kamera) -->
+    <div id="splash-overlay" aria-hidden="true"></div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo">
+            <!-- Replaced Text with Dramatic Logo -->
+            <a href="/" class="floodzy-logo">FLOODZY</a>
+        </div>
+        <nav>
+            <a href="/" class="nav-link">HOME</a>
+            <a href="/dashboard" class="nav-link">DASHBOARD</a>
+            <button id="fx-toggle" class="nav-link"
+                style="background:none; border:none; padding:0; font:inherit; text-transform: inherit;">FX: ON</button>
+
+        </nav>
+    </header>
+
+    <!-- SCENE 1: HERO (UPDATED WITH LENS) -->
+    <section class="hero">
+        <div class="hero-lens" id="hero-lens"></div>
+        <div class="hero-submerge" id="hero-submerge"></div>
+
+        <div class="container" style="position: relative; z-index: 20;">
+            <!-- Updated Copy -->
+            <h1 id="hero-title" style="font-size: clamp(3rem, 8vw, 7rem);">Welcome to Floodzy World</h1>
+            <p class="mono text-cyan" id="hero-status" style="margin-bottom: 2rem;">Simulation Initializing...</p>
+
+            <div
+                style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem; position: relative; z-index: 50;">
+                <a href="/dashboard" class="btn" onclick="storeSeen()">OPEN
+                    DASHBOARD</a>
+                <button
+                    onclick="storeSeen(); document.getElementById('predict-section').scrollIntoView({behavior: 'smooth'})"
+                    class="btn" style="border-style: dashed; padding: 1rem 1.5rem;">SKIP SIMULATION</button>
+            </div>
+
+            <div class="mono" style="opacity: 0.5;">↓ SCROLL TO BEGIN</div>
+        </div>
+    </section>
+
+    <!-- TRUST STRIP -->
+    <section class="container"
+        style="padding: 2rem 0; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem;">
+        <p class="mono text-muted"
+            style="font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2rem;">
+            Realtime Telemetry • AI Forecasting • Kecamatan-Level Coverage • Alert-First UX
+        </p>
+        <div
+            style="display: flex; gap: 3rem; justify-content: center; align-items: center; flex-wrap: wrap; opacity: 0.6;">
+            <div class="trust-badge mono">BNPB</div>
+            <div class="trust-badge mono">BMKG</div>
+            <div class="trust-badge mono">JAKARTA_SMART_CITY</div>
+            <div class="trust-badge mono">URBAN_RESILIENCE</div>
+        </div>
+
+    </section>
+
+    <!-- WHAT IS FLOODZY -->
+    <section class="container" style="padding: 4rem 0; text-align: center; max-width: 900px;">
+        <h2 style="margin-bottom: 1.5rem;">The Flood Early Warning System</h2>
+        <p class="text-muted" style="font-size: 1.25rem; margin-bottom: 3rem;">
+            Floodzy is a realtime prediction platform built for BPBD, Government Agencies, and Citizens.
+            We combine ground sensors, satellite data, and machine learning to visualize threats before they happen.
+        </p>
+
+        <!-- How It Works Cards -->
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; text-align: left;">
+            <div
+                style="background: rgba(46, 242, 255, 0.05); border: 1px solid rgba(46, 242, 255, 0.2); padding: 2rem;">
+                <div class="mono text-cyan" style="font-size: 1.5rem; margin-bottom: 1rem;">01. DETECT</div>
+                <p class="text-muted">IoT sensors across key waterways transmit water level and rainfall data with
+                    <strong>sub-second updates</strong>.
+                </p>
+            </div>
+            <div
+                style="background: rgba(46, 242, 255, 0.05); border: 1px solid rgba(46, 242, 255, 0.2); padding: 2rem;">
+                <div class="mono text-cyan" style="font-size: 1.5rem; margin-bottom: 1rem;">02. PREDICT</div>
+                <p class="text-muted">Our AI model processes topography and hydrology data to forecast flood spread.</p>
+            </div>
+            <div style="background: rgba(255, 59, 48, 0.05); border: 1px solid rgba(255, 59, 48, 0.3); padding: 2rem;">
+                <div class="mono text-red" style="font-size: 1.5rem; margin-bottom: 1rem;">03. ALERT</div>
+                <p class="text-muted">Instant warnings sent to stakeholders and citizens in affected zones.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCROLLYTELLING STAGE -->
+    <div id="director-stage">
+        <div id="sticky-viewport">
+            <!-- HUD -->
+            <div id="hud-overlay">
+                <div class="mono text-cyan" id="zone-display" style="background: #000; padding: 5px 10px;">ZONE:
+                    MONITORING</div>
+                <h2 id="status-display" style="font-size: 2.5rem; margin-top: 10px;">NORMAL</h2>
+            </div>
+
+            <!-- CITY -->
+            <div class="skyline"></div>
+
+            <!-- PROPS -->
+            <div class="scenery-obj" id="obj-fence">
+                <svg viewBox="0 0 150 60">
+                    <path
+                        d="M10,60 L10,10 M30,60 L30,10 M50,60 L50,10 M70,60 L70,10 M90,60 L90,10 M110,60 L110,10 M130,60 L130,10 M0,20 L150,20 M0,50 L150,50"
+                        stroke="#555" stroke-width="2" />
+                </svg>
+            </div>
+            <div class="scenery-obj" id="obj-tree">
+                <svg viewBox="0 0 80 180">
+                    <path d="M40,180 L40,100 M40,100 L10,60 M40,100 L70,60 M40,80 L20,40 M40,80 L60,40" stroke="#555"
+                        stroke-width="4" />
+                    <circle cx="40" cy="40" r="30" fill="#232736" stroke="#555" />
+                </svg>
+            </div>
+
+            <!-- SINKING TEXT -->
+            <div id="sinking-text-container" role="img" aria-label="FLOODZY">
+                <span class="sink-char" aria-hidden="true">F</span>
+                <span class="sink-char" aria-hidden="true">L</span>
+                <span class="sink-char" aria-hidden="true">O</span>
+                <span class="sink-char" aria-hidden="true">O</span>
+                <span class="sink-char" aria-hidden="true">D</span>
+                <span class="sink-char" aria-hidden="true">Z</span>
+                <span class="sink-char" aria-hidden="true">Y</span>
+            </div>
+
+            <!-- RESCUE SYSTEM -->
+            <div id="rescue-cord" title="Evacuation Window Open"></div>
+            <div id="rescue-drone">
+                <svg width="60" height="40" viewBox="0 0 60 40">
+                    <path d="M10,20 L50,20 M0,10 L20,20 L0,30 M60,10 L40,20 L60,30" stroke="#333" fill="none" />
+                    <circle cx="30" cy="20" r="5" fill="#111" stroke="var(--cyan)" />
+                    <circle cx="30" cy="20" r="2" class="drone-light" />
+                </svg>
+            </div>
+
+            <!-- WATER & GRID -->
+            <div class="water-overlay" id="water-level">
+                <canvas id="wave-canvas" aria-hidden="true"></canvas>
+
+                <!-- FISH -->
+                <canvas id="fish-canvas" aria-hidden="true"></canvas>
+
+                <div class="water-noise"></div>
+            </div>
+            <div class="system-grid-overlay" id="intervention-grid"></div>
+        </div>
+    </div>
+
+    <!-- SCENE 8: SPLIT NARRATIVE -->
+    <section id="split-section">
+        <div class="split-content split-left">
+            <h3 class="text-red">MANUAL CHAOS</h3>
+            <p class="text-muted" style="font-size: 1.5rem; max-width: 400px; margin-left: auto;">
+                "Fragmented data reporting delays critical response. Manual observation creates blind spots when minutes
+                matter."
+            </p>
+        </div>
+        <div class="split-divider"></div>
+        <div class="split-content split-right">
+            <h3 class="text-cyan">SYSTEM CLARITY</h3>
+            <p style="font-size: 1.5rem; max-width: 400px;">
+                "Real-time sensor fusion eliminates latency. Floodzy predicts impact magnitude before the storm peaks."
+            </p>
+        </div>
+    </section>
+
+    <!-- SCENE: MID HERO (PREDICT SURGE) -->
+    <!-- SCENE: MID HERO (PREDICT SURGE) -->
+    <section id="predict-section" class="container"
+        style="padding: 4rem 0 6rem 0; position: relative; z-index: 20; text-align: center;">
+        <div class="mono text-cyan" style="margin-bottom: 1.5rem; letter-spacing: 2px;">:: SYSTEM STATUS: ONLINE</div>
+
+        <h2 style="font-size: clamp(3.5rem, 6vw, 5.5rem); line-height: 1.1; margin-bottom: 2rem;">
+            Predict the Surge.<br>
+            <span style="color: #666;">Before it Strikes.</span>
+        </h2>
+
+        <p class="text-muted" style="font-size: 1.25rem; max-width: 700px; margin: 0 auto 3rem; line-height: 1.6;">
+            Advanced flood intelligence for a changing climate. Combining satellite altimetry, ML forecasting, and
+            real-time ground telemetry.
+        </p>
+
+        <a href="#" class="btn"
+            style="padding: 1rem 2.5rem; border-color: var(--cyan); background: rgba(46,242,255,0.1);">
+            LAUNCH CONSOLE <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" style="margin-left:8px;">
+                <path d="M7 17l9.2-9.2M17 17V7H7" />
+            </svg>
+        </a>
+    </section>
+
+    <!-- SCENE 9: PLAYGROUND -->
+    <section class="container" style="padding: 6rem 0;">
+        <div class="mono text-cyan">> THREAT_PLAYGROUND</div>
+        <h2>Control the Chaos</h2>
+
+        <div class="playground-container">
+            <div class="tech-corner tl"></div>
+            <div class="tech-corner tr"></div>
+            <div class="tech-corner bl"></div>
+            <div class="tech-corner br"></div>
+
+            <div id="sim-map">
+                <div class="radar-scan"></div>
+                <div class="map-hud">
+                    LAT: -6.2088<br>LON: 106.8456<br>PROVINCES: <span id="sensor-count">--</span> ONLINE<br>SYNC: ACTIVE
+                </div>
+            </div>
+
+            <div>
+                <div style="margin-bottom: 2rem;">
+                    <div style="display: flex; justify-content: space-between;"><span class="mono">RAIN
+                            INTENSITY</span><span class="mono text-cyan" id="rain-val">20%</span></div>
+                    <input type="range" id="rain-slider" min="0" max="100" value="20"
+                        aria-label="Rain Intensity Control" style="width: 100%; margin-top: 10px;">
+                </div>
+                <div>
+                    <div style="display: flex; justify-content: space-between;"><span class="mono">RIVER
+                            LEVEL</span><span class="mono text-red" id="river-val">SAFE</span></div>
+                    <input type="range" id="river-slider" min="0" max="100" value="10"
+                        aria-label="River Level Simulation" style="width: 100%; margin-top: 10px;">
+                </div>
+                <p class="mono text-muted" style="font-size: 0.8rem; margin-top: 2rem;">ADJUST SLIDERS TO SIMULATE
+                    SENSOR FEEDBACK.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCENE 10: DEPLOYMENT STATS (RESTORED) -->
+    <section class="container" style="padding: 6rem 0; position: relative; z-index: 20;">
+        <div class="stats-grid">
+            <!-- Left: Narrative -->
+            <div>
+                <div class="mono text-cyan" style="margin-bottom: 1rem;">01 :: THE PROBLEM</div>
+                <h2 style="font-size: clamp(2.5rem, 5vw, 3.5rem); margin-bottom: 3rem; line-height: 1.1;">Water Doesn't
+                    Wait.<br>Neither Should You.</h2>
+
+                <div
+                    style="background: rgba(255,255,255,0.03); border-left: 2px solid #555; padding: 2rem; margin-bottom: 2rem;">
+                    <h4 style="margin-bottom: 0.5rem; color: #FFF;">Latency Kills Response</h4>
+                    <p class="text-muted">Traditional manual gauges have a 4-hour delay loop. Floodzy cuts this to
+                        <strong>sub-second updates</strong>
+                        utilizing direct IoT uplinks.
+                    </p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.03); border-left: 2px solid #555; padding: 2rem;">
+                    <h4 style="margin-bottom: 0.5rem; color: #FFF;">Invisible Threats</h4>
+                    <p class="text-muted">Rain forecasts are not flood forecasts. We model terrain hydrology to predict
+                        impact, not just precipitation.</p>
+                </div>
+            </div>
+
+            <!-- Right: Stats Panel -->
+            <div
+                style="background: #0B0D13; border: 1px solid rgba(46,242,255,0.2); padding: 3rem; border-radius: 4px; position: relative;">
+                <div class="mono text-cyan" style="margin-bottom: 2rem;">> DEPLOYMENT_STATS</div>
+
+                <div
+                    style="font-size: clamp(4rem, 8vw, 6rem); font-weight: 800; line-height: 1; color: #FFF; font-family: var(--font-display);">
+                    3h</div>
+                <div class="text-muted" style="margin-bottom: 4rem;">Early Warning Lead Time</div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div
+                        style="background: rgba(46, 242, 255, 0.05); border-bottom: 2px solid var(--cyan); padding: 1.5rem; height: 100px; display: flex; align-items: end;">
+                        <span class="mono text-cyan" style="font-size: 0.8rem;">RIVER_GAUGE</span>
+                    </div>
+                    <div
+                        style="background: rgba(255, 59, 48, 0.05); border-bottom: 2px solid var(--red); padding: 1.5rem; height: 100px; display: flex; align-items: end;">
+                        <span class="mono text-red" style="font-size: 0.8rem;">ALERT_RISK</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .stats-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+                align-items: start;
+            }
+
+            @media (max-width: 768px) {
+                .stats-grid {
+                    grid-template-columns: 1fr;
+                    gap: 2rem;
+                }
+            }
+        </style>
+    </section>
+
+    <!-- SCENE 11: SUNRISE (UPDATED WITH QUIET MOMENT) -->
+    <section id="final-sunrise">
+        <div class="sun-orb"></div>
+        <div class="final-network"></div>
+        <div class="final-node"></div>
+
+        <div class="container" style="position: relative; z-index: 20;">
+            <p class="mono" style="font-size: 1.2rem; margin-bottom: 0.5rem;">YOU CAN'T STOP THE RAIN.</p>
+            <p class="mono text-red" style="font-size: 1.2rem; margin-bottom: 2rem;">BUT YOU CAN SEE IT COMING.</p>
+            <p class="mono text-cyan" style="margin-top:1rem; font-size: 1.5rem; max-width: 600px; margin: 0 auto;">
+                FLOODZY IS THE DIFFERENCE BETWEEN WARNING AND LOSS.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 3rem;">
+                <a href="/dashboard" class="btn" onclick="storeSeen()">OPEN
+                    DASHBOARD</a>
+                <a href="/contact" class="btn" style="border-color: rgba(255,255,255,0.3); color: #fff;">REQUEST
+                    DEMO</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="ops-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="logo mono text-cyan" style="margin-bottom: 1rem;">FLOODZY_INTEL</div>
+                    <p class="text-muted" style="font-size: 0.9rem; max-width: 300px;">
+                        Advanced hydrological predictive system for urban resilience.
+                    </p>
+                    <div style="margin-top: 1rem; display: flex; align-items: center;">
+                        <span class="system-status-light"></span>
+                        <span class="mono" style="font-size: 0.8rem; color: var(--cyan);">SYSTEM OPERATIONAL</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="mono text-main" style="margin-bottom: 1rem;">// NAVIGATION</h4>
+                    <a href="/" class="footer-link">HOME_BASE</a>
+                    <a href="/dashboard" class="footer-link">LIVE_DASHBOARD</a>
+                    <a href="/prakiraan-cuaca" class="footer-link">WEATHER_INTEL</a>
+                    <a href="#" onclick="localStorage.removeItem('floodzy_seen'); location.reload();"
+                        class="footer-link" style="color: #666; margin-top: 1rem;">↺ REPLAY_INTRO</a>
+                </div>
+
+                <div>
+                    <h4 class="mono text-main" style="margin-bottom: 1rem;">// CONNECT</h4>
+                    <a href="#" class="footer-link">GITHUB_REPO</a>
+                    <a href="#" class="footer-link">CONTACT_HQ</a>
+                    <p class="mono text-muted" style="margin-top: 1rem; font-size: 0.8rem;">
+                        JAKARTA • INDONESIA
+                        <br>LAT: -6.2088 | LON: 106.8456
+                    </p>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; text-align: center;">
+                <p class="mono text-muted" style="font-size: 0.75rem;">
+                    © 2026 FLOODZY SYSTEMS. ALL RIGHTS RESERVED. | <span
+                        class="text-cyan">SECURE_CONNECTION_ESTABLISHED</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/landing.js"></script>
+</body>
+
+</html>
