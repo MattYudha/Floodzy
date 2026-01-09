@@ -41,6 +41,18 @@ export default function sitemap() {
             lastModified: new Date().toISOString(),
         },
         {
+            url: 'https://floodzy.id/edukasi/panduan-siaga-banjir',
+            lastModified: new Date().toISOString(),
+        },
+        {
+            url: 'https://floodzy.id/edukasi/teknologi-monitoring-banjir',
+            lastModified: new Date().toISOString(),
+        },
+        {
+            url: 'https://floodzy.id/edukasi/banjir-jakarta-realtime',
+            lastModified: new Date().toISOString(),
+        },
+        {
             url: 'https://floodzy.id/privacy',
             lastModified: new Date().toISOString(),
         },

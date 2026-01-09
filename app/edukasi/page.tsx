@@ -19,7 +19,7 @@ export default function EducationHubPage() {
                 </header>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                    {/* Article Card 1 */}
+                    {/* Article Card 1: Analysis */}
                     <Link href="/edukasi/kenapa-jakarta-banjir" className="group">
                         <article className="bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition border border-slate-200 dark:border-slate-800 h-full flex flex-col">
                             <div className="h-48 bg-slate-200 dark:bg-slate-800 relative overflow-hidden">
@@ -33,26 +33,74 @@ export default function EducationHubPage() {
                                     Bedah tuntas faktor topografi, penurunan muka tanah, dan cuaca ekstrem yang membuat ibu kota rentan.
                                 </p>
                                 <div className="flex items-center text-xs text-slate-500 font-mono mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                    <span>RAHMAT YUDI</span>
-                                    <span className="mx-2">•</span>
                                     <span>5 MIN READ</span>
                                 </div>
                             </div>
                         </article>
                     </Link>
 
-                    {/* Placeholder for future articles */}
-                    <article className="bg-slate-100 dark:bg-slate-900/50 rounded-xl p-8 flex flex-col justify-center items-center text-center border-2 border-dashed border-slate-300 dark:border-slate-800 opacity-70">
-                        <div className="text-4xl mb-4">🚧</div>
-                        <h3 className="font-bold text-lg mb-2">Panduan Membaca Sensor</h3>
-                        <p className="text-sm text-slate-500">Coming Soon</p>
-                    </article>
+                    {/* Article Card 2: Mitigation */}
+                    <Link href="/edukasi/panduan-siaga-banjir" className="group">
+                        <article className="bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition border border-slate-200 dark:border-slate-800 h-full flex flex-col">
+                            <div className="h-48 bg-yellow-100 dark:bg-yellow-900/20 relative overflow-hidden flex items-center justify-center">
+                                <span className="text-6xl">🎒</span>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+                                    <span className="text-white font-mono text-xs bg-yellow-600 px-2 py-1 rounded">SAFETY</span>
+                                </div>
+                            </div>
+                            <div className="p-6 flex-1 flex flex-col">
+                                <h3 className="text-xl font-bold mb-3 group-hover:text-cyan-500 transition">Panduan Siaga & Mitigasi</h3>
+                                <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-1">
+                                    Checklist evakuasi keluarga, barang wajib siaga, dan langkah kritis saat sirine berbunyi.
+                                </p>
+                                <div className="flex items-center text-xs text-slate-500 font-mono mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                    <span>7 MIN READ</span>
+                                </div>
+                            </div>
+                        </article>
+                    </Link>
 
-                    <article className="bg-slate-100 dark:bg-slate-900/50 rounded-xl p-8 flex flex-col justify-center items-center text-center border-2 border-dashed border-slate-300 dark:border-slate-800 opacity-70">
-                        <div className="text-4xl mb-4">⚡</div>
-                        <h3 className="font-bold text-lg mb-2">Evakuasi Mandiri</h3>
-                        <p className="text-sm text-slate-500">Coming Soon</p>
-                    </article>
+                    {/* Article Card 3: Technology */}
+                    <Link href="/edukasi/teknologi-monitoring-banjir" className="group">
+                        <article className="bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition border border-slate-200 dark:border-slate-800 h-full flex flex-col">
+                            <div className="h-48 bg-blue-100 dark:bg-blue-900/20 relative overflow-hidden flex items-center justify-center">
+                                <span className="text-6xl">📡</span>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+                                    <span className="text-white font-mono text-xs bg-blue-600 px-2 py-1 rounded">TECH</span>
+                                </div>
+                            </div>
+                            <div className="p-6 flex-1 flex flex-col">
+                                <h3 className="text-xl font-bold mb-3 group-hover:text-cyan-500 transition">Teknologi & Cara Baca Data</h3>
+                                <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-1">
+                                    Memahami sensor IoT, satelit, dan cara membaca status pintu air di dashboard Floodzy.
+                                </p>
+                                <div className="flex items-center text-xs text-slate-500 font-mono mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                    <span>6 MIN READ</span>
+                                </div>
+                            </div>
+                        </article>
+                    </Link>
+
+                    {/* Article Card 4: Jakarta SEO */}
+                    <Link href="/edukasi/banjir-jakarta-realtime" className="group">
+                        <article className="bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition border border-slate-200 dark:border-slate-800 h-full flex flex-col">
+                            <div className="h-48 bg-red-100 dark:bg-red-900/20 relative overflow-hidden flex items-center justify-center">
+                                <span className="text-6xl">🏙️</span>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+                                    <span className="text-white font-mono text-xs bg-red-600 px-2 py-1 rounded">LOKAL</span>
+                                </div>
+                            </div>
+                            <div className="p-6 flex-1 flex flex-col">
+                                <h3 className="text-xl font-bold mb-3 group-hover:text-cyan-500 transition">Status Banjir Jakarta</h3>
+                                <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-1">
+                                    Titik rawan Ciliwung, kondisi pompa air, dan info banjir rob Jakarta Utara realtime.
+                                </p>
+                                <div className="flex items-center text-xs text-slate-500 font-mono mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                    <span>5 MIN READ</span>
+                                </div>
+                            </div>
+                        </article>
+                    </Link>
                 </div>
             </div>
         </div>
