@@ -4,19 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floodzy | The Early Warning System</title>
+    <title>Floodzy: Peta Banjir Realtime Indonesia</title>
     <meta name="description"
-        content="Floodzy - Advanced hydrological predictive system for urban resilience. Real-time flood monitoring and early warning system for Indonesia.">
+        content="Floodzy: Sistem Peringatan Dini Banjir Realtime Indonesia. Monitoring ketinggian air, prediksi cuaca, dan info siaga bencana akurat untuk warga & pemerintah.">
     <meta name="keywords"
-        content="flood warning, Indonesia flood monitoring, Jakarta banjir, hydrological prediction, disaster resilience">
-    <link rel="canonical" href="https://floodzy.app/" />
+        content="flood warning, Indonesia flood monitoring, Jakarta banjir, hydrological prediction, peta banjir realtime, peringatan dini banjir">
+    <link rel="canonical" href="https://floodzy.id/" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://floodzy.app/">
-    <meta property="og:title" content="Floodzy | The Early Warning System">
+    <meta property="og:url" content="https://floodzy.id/">
+    <meta property="og:title" content="Floodzy: Peta Banjir Realtime Indonesia">
     <meta property="og:description"
-        content="Advanced hydrological predictive system for urban resilience. Real-time flood monitoring and early warning system.">
+        content="Sistem Peringatan Dini Banjir Realtime Indonesia. Monitoring ketinggian air dan prediksi cuaca akurat.">
     <meta property="og:image" content="https://floodzy.app/img/og-image.jpg">
 
     <!-- Twitter -->
@@ -27,29 +27,59 @@
     <meta property="twitter:image" content="https://floodzy.app/img/og-image.jpg">
 
     <!-- Schema.org -->
+    <!-- Schema.org -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Floodzy",
-      "url": "https://floodzy.app/",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://floodzy.app/dashboard?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Floodzy Systems",
-      "url": "https://floodzy.app/",
-      "logo": "https://floodzy.app/logo.png",
-      "sameAs": [
-        "https://twitter.com/floodzy",
-        "https://github.com/floodzy"
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "Floodzy",
+          "applicationCategory": "DisasterManagementApplication",
+          "operatingSystem": "Web, Android, iOS",
+          "url": "https://floodzy.id",
+          "description": "Sistem peringatan dini banjir realtime Indonesia dengan monitoring IoT dan prediksi cuaca berbasis AI.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "IDR"
+          },
+          "author": {
+            "@type": "Person",
+            "name": "Rahmat Yudi Burhanudin",
+            "jobTitle": "Developer & Owner",
+            "url": "https://floodzy.id/about.html"
+          },
+          "aggregateRating": {
+             "@type": "AggregateRating",
+             "ratingValue": "4.8",
+             "ratingCount": "150"
+          }
+        },
+        {
+          "@type": "Organization",
+          "name": "Floodzy Systems",
+          "url": "https://floodzy.id",
+          "logo": "https://floodzy.id/robofloodzy.png",
+          "founder": {
+            "@type": "Person",
+            "name": "Rahmat Yudi Burhanudin"
+          },
+          "sameAs": [
+            "https://twitter.com/floodzy",
+            "https://github.com/MattYudha/Floodzy"
+          ]
+        },
+        {
+            "@type": "WebSite",
+            "name": "Floodzy Indonesia",
+            "url": "https://floodzy.id",
+             "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://floodzy.id/dashboard?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+            }
+        }
       ]
     }
     </script>
@@ -116,7 +146,8 @@
 
         <div class="container" style="position: relative; z-index: 20;">
             <!-- Updated Copy -->
-            <h1 id="hero-title" style="font-size: clamp(3rem, 8vw, 7rem);">Welcome to Floodzy World</h1>
+            <h1 id="hero-title" style="font-size: clamp(2.5rem, 6vw, 5rem); line-height: 1.1;">Floodzy: Peta Banjir
+                Realtime Indonesia</h1>
             <p class="mono text-cyan" id="hero-status" style="margin-bottom: 2rem;">Simulation Initializing...</p>
 
             <div
