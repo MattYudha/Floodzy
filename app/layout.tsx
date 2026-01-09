@@ -15,6 +15,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 // ✅ Konfigurasi disesuaikan dengan file yang ada
 export const metadata = {
+  metadataBase: new URL('https://floodzy.id'),
   title: "Floodzy",
   description: "Real-time flood detection and alert system",
   icons: {

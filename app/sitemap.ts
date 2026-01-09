@@ -33,6 +33,14 @@ export default function sitemap() {
             lastModified: new Date().toISOString(),
         },
         {
+            url: 'https://floodzy.id/edukasi',
+            lastModified: new Date().toISOString(),
+        },
+        {
+            url: 'https://floodzy.id/edukasi/kenapa-jakarta-banjir',
+            lastModified: new Date().toISOString(),
+        },
+        {
             url: 'https://floodzy.id/tentang-floodzy',
             lastModified: new Date().toISOString(),
         },
