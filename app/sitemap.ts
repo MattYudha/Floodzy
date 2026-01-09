@@ -41,6 +41,18 @@ export default function sitemap() {
             lastModified: new Date().toISOString(),
         },
         {
+            url: 'https://floodzy.id/privacy',
+            lastModified: new Date().toISOString(),
+        },
+        {
+            url: 'https://floodzy.id/data-source',
+            lastModified: new Date().toISOString(),
+        },
+        {
+            url: 'https://floodzy.id/contact',
+            lastModified: new Date().toISOString(),
+        },
+        {
             url: 'https://floodzy.id/tentang-floodzy',
             lastModified: new Date().toISOString(),
         },
