@@ -24,6 +24,9 @@ export const metadata = {
     ],
     apple: { url: '/apple-icon.png' },
   },
+  verification: {
+    google: 'od3kGfaYj9zBkKYrLnZFTFlynJDYt9dDxa22ivRHMtQ',
+  },
 };
 
 
