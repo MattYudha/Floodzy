@@ -4,7 +4,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floodzy | The Early Warning System</title>
+    <title>Floodzy: Peta Banjir Realtime Indonesia</title>
+    <meta name="description"
+        content="Sistem peringatan dini banjir realtime untuk Indonesia. Pantau ketinggian air, curah hujan, dan prediksi banjir menggunakan IoT dan AI untuk antisipasi bencana.">
+    <meta name="keywords"
+        content="banjir, IoT, realtime, BMKG, peringatan dini, flood monitoring, Jakarta, Indonesia, AI forecasting">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "name": "Floodzy",
+          "url": "https://floodzy.id",
+          "logo": "https://floodzy.id/logo.png",
+          "description": "Platform sistem peringatan dini banjir realtime berbasis IoT dan AI.",
+          "founder": {
+            "@type": "Person",
+            "name": "Rahmat Yudi Burhanudin"
+          }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Floodzy",
+          "applicationCategory": "DisasterManagementApplication",
+          "operatingSystem": "Web",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "IDR"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [{
+            "@type": "Question",
+            "name": "Apakah Floodzy gratis?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Ya, Floodzy dapat diakses secara gratis oleh masyarakat umum untuk memantau potensi banjir."
+            }
+          }, {
+            "@type": "Question",
+            "name": "Apakah data realtime terpercaya?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Data Floodzy dikurasi dari sumber terpercaya seperti sensor IoT terkalibrasi dan data publik BMKG, namun tetap berfungsi sebagai alat bantu peringatan dini."
+            }
+          }, {
+            "@type": "Question",
+            "name": "Bagaimana Floodzy bekerja?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Floodzy menggabungkan data curah hujan, ketinggian air sungai, dan topografi wilayah menggunakan AI untuk memprediksi potensi genangan."
+            }
+          }]
+        }
+      ]
+    }
+    </script>
     <script>
         if (location.search.includes('force_intro')) {
             localStorage.removeItem('floodzy_seen');
@@ -1287,6 +1345,29 @@
             <div class="mono" style="opacity: 0.5;">↓ SCROLL TO BEGIN</div>
         </div>
     </section>
+
+    <!-- ABOUT FLOODZY (SEO & TRUST) -->
+    <section class="container" style="padding: 5rem 0; max-width:800px;">
+        <h2 style="text-align:center; margin-bottom:1.5rem;">About Floodzy</h2>
+        <p style="line-height:1.6; color:var(--text-muted); font-size: 1.1rem;">
+            Floodzy adalah platform sistem peringatan banjir realtime yang dikembangkan di Indonesia untuk membantu
+            pemerintah daerah, BPBD, relawan, dan masyarakat dalam mengantisipasi potensi banjir secara cepat.
+            Platform ini menggabungkan data ketinggian air, curah hujan, radar cuaca, satelit, dan pemodelan
+            machine learning untuk menampilkan kondisi banjir hingga tingkat kecamatan.
+        </p>
+        <p style="line-height:1.6; margin-top:1.2rem; color:var(--text-muted);">
+            Floodzy dikembangkan oleh <strong>Rahmat Yudi Burhanudin</strong>, seorang software engineer dan peneliti
+            yang berfokus pada pemanfaatan data dan teknologi untuk kesiapsiagaan bencana. Proyek ini lahir dari
+            keprihatinan terhadap banjir berulang di kota-kota besar Indonesia dan keterbatasan informasi yang
+            dapat digunakan warga dan instansi untuk mengambil keputusan cepat.
+        </p>
+        <p style="line-height:1.6; margin-top:1.2rem; color:var(--text-muted);">
+            Misi Floodzy adalah menyediakan akses informasi banjir yang transparan, realtime, dan mudah dipahami.
+            Ke depannya, Floodzy akan terhubung ke sistem notifikasi otomatis, integrasi sirine komunitas,
+            serta API terbuka agar lembaga dan developer dapat membangun solusi turunan berbasis data bencana.
+        </p>
+    </section>
+
     <!-- TRUST STRIP -->
     <section class="container"
         style="padding: 2rem 0; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem;">
@@ -1306,7 +1387,8 @@
                 style="background: rgba(46, 242, 255, 0.05); border: 1px solid rgba(46, 242, 255, 0.2); padding: 2rem;">
                 <div class="mono text-cyan" style="font-size: 1.5rem; margin-bottom: 1rem;">01. DETECT</div>
                 <p class="text-muted">IoT sensors across key waterways transmit water level and rainfall data with
-                    <strong>sub-second updates</strong>. </p>
+                    <strong>sub-second updates</strong>.
+                </p>
             </div>
             <div
                 style="background: rgba(46, 242, 255, 0.05); border: 1px solid rgba(46, 242, 255, 0.2); padding: 2rem;">
@@ -1449,7 +1531,8 @@
                     style="background: rgba(255,255,255,0.03); border-left: 2px solid #555; padding: 2rem; margin-bottom: 2rem;">
                     <h4 style="margin-bottom: 0.5rem; color: #FFF;">Latency Kills Response</h4>
                     <p class="text-muted">Traditional manual gauges have a 4-hour delay loop. Floodzy cuts this to
-                        <strong>sub-second updates</strong> utilizing direct IoT uplinks. </p>
+                        <strong>sub-second updates</strong> utilizing direct IoT uplinks.
+                    </p>
                 </div>
                 <div style="background: rgba(255,255,255,0.03); border-left: 2px solid #555; padding: 2rem;">
                     <h4 style="margin-bottom: 0.5rem; color: #FFF;">Invisible Threats</h4>
@@ -1528,6 +1611,8 @@
                     <a href="/" class="footer-link">HOME_BASE</a>
                     <a href="/peta-banjir" class="footer-link">LIVE_DASHBOARD</a>
                     <a href="/prakiraan-cuaca" class="footer-link">WEATHER_INTEL</a>
+                    <a href="/privacy.html" class="footer-link">PRIVACY_POLICY</a>
+                    <a href="/data-source.html" class="footer-link">DATA_SOURCE</a>
                     <a href="#" onclick="localStorage.removeItem('floodzy_seen'); location.reload();"
                         class="footer-link" style="color: #666; margin-top: 1rem;">↺ REPLAY_INTRO</a>
                 </div>
@@ -1536,12 +1621,14 @@
                     <a href="#" class="footer-link">GITHUB_REPO</a>
                     <a href="#" class="footer-link">CONTACT_HQ</a>
                     <p class="mono text-muted" style="margin-top: 1rem; font-size: 0.8rem;"> JAKARTA • INDONESIA
-                        <br>LAT: -6.2088 | LON: 106.8456 </p>
+                        <br>LAT: -6.2088 | LON: 106.8456
+                    </p>
                 </div>
             </div>
             <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; text-align: center;">
                 <p class="mono text-muted" style="font-size: 0.75rem;"> © 2026 FLOODZY SYSTEMS. ALL RIGHTS RESERVED. |
-                    <span class="text-cyan">SECURE_CONNECTION_ESTABLISHED</span> </p>
+                    <span class="text-cyan">SECURE_CONNECTION_ESTABLISHED</span>
+                </p>
             </div>
         </div>
     </footer>

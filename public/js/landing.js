@@ -485,7 +485,14 @@ function stopFish() {
 }
 
 // === START ANIMATIONS ===
-if (shouldAnimate()) {
+let fxEnabled = true;
+
+if (window.innerWidth < 600) {
+    fxEnabled = false;
+    // Ensure all heavy updates are stopped/cleared if logic runs these by default
+}
+
+if (shouldAnimate() && fxEnabled) {
     startRain();
     startWave();
     startFx();
