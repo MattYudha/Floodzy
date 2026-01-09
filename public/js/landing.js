@@ -326,14 +326,103 @@ function drawWave(level = 20) {
     waveCtx.shadowBlur = 15; // Expensive blur, kept for aesthetics but point count is lower now
     waveCtx.fill();
 
-    waveCtx.globalCompositeOperation = 'source-atop';
-    waveCtx.fillStyle = 'rgba(255,255,255,0.3)';
-    if (level > 60) waveCtx.fillRect(0, 0, width, 15);
     waveCtx.globalCompositeOperation = 'source-over';
     waveCtx.shadowBlur = 0;
 }
 
-// ... (Effect Loops) ...
+function loopWave() {
+    waveTime += 0.02;
+    drawWave(globalRain);
+    waveRaf = requestAnimationFrame(loopWave);
+}
+function startWave() { if (!waveRaf) waveRaf = requestAnimationFrame(loopWave); }
+function stopWave() { if (!waveRaf) return; cancelAnimationFrame(waveRaf); waveRaf = 0; }
+
+// 3. FX (Droplets + Bubbles)
+const MAX_DROPLETS = isLowEnd ? 100 : 600;
+const MAX_BUBBLES = isLowEnd ? 30 : 100; // Significantly reduced from 300
+
+function spawnDropletBurst(power) {
+    if (droplets.length > MAX_DROPLETS) return;
+    const count = Math.floor(18 + power * 42);
+    for (let i = 0; i < count; i++) {
+        droplets.push({
+            x: window.innerWidth * (0.25 + Math.random() * 0.5),
+            y: window.innerHeight * (0.35 + Math.random() * 0.35),
+            vx: (Math.random() - 0.5) * (3 + power * 10),
+            vy: (-2 - Math.random() * 6) * (1 + power),
+            r: 1 + Math.random() * (2 + power * 3),
+            a: 0.25 + Math.random() * 0.35,
+            life: 1
+        });
+    }
+}
+function spawnBubbleBurst(x, count = 5) {
+    if (bubbles.length >= MAX_BUBBLES) return;
+    const remaining = MAX_BUBBLES - bubbles.length;
+    const c = Math.min(count, remaining);
+
+    for (let i = 0; i < c; i++) {
+        bubbles.push({
+            x: x + (Math.random() - 0.5) * 20,
+            y: window.innerHeight + 10,
+            vy: 2 + Math.random() * 3, // Faster upward speed
+            r: 2 + Math.random() * 5,
+            a: 0.4 + Math.random() * 0.4,
+            wobble: Math.random() * Math.PI * 2
+        });
+    }
+}
+function spawnBubble() {
+    if (bubbles.length > MAX_BUBBLES) return;
+    if (!water) return;
+    const waterRect = water.getBoundingClientRect();
+    if (waterRect.height < 40) return;
+    const x = Math.random() * window.innerWidth;
+    const y = waterRect.top + waterRect.height - (Math.random() * 20);
+    bubbles.push({
+        x, y,
+        vy: 0.4 + Math.random() * 1.2,
+        r: 1.5 + Math.random() * 4,
+        a: 0.10 + Math.random() * 0.18,
+        wobble: Math.random() * Math.PI * 2
+    });
+}
+function fxLoop() {
+    fxCtx.clearRect(0, 0, width, height);
+
+    // Spawn logic
+    const bubbleRate = (globalRain / 100) * 0.2; // Reduced spawn rate (was 0.8)
+    if (Math.random() < bubbleRate) spawnBubble();
+
+    // Render Bubbles
+    fxCtx.globalCompositeOperation = 'lighter';
+    for (let i = bubbles.length - 1; i >= 0; i--) {
+        const b = bubbles[i];
+        b.wobble += 0.06;
+        b.y -= b.vy;
+        b.x += Math.sin(b.wobble) * 0.35;
+        b.a *= 0.998;
+        fxCtx.beginPath(); fxCtx.strokeStyle = `rgba(255,255,255,${b.a})`;
+        fxCtx.lineWidth = 1; fxCtx.arc(b.x, b.y, b.r, 0, Math.PI * 2); fxCtx.stroke();
+        if (b.y < 0 || b.a < 0.02) bubbles.splice(i, 1);
+    }
+
+    // Render Droplets
+    fxCtx.globalCompositeOperation = 'screen';
+    for (let i = droplets.length - 1; i >= 0; i--) {
+        const d = droplets[i];
+        d.x += d.vx; d.y += d.vy; d.vy += 0.18; d.vx *= 0.985;
+        d.life *= 0.965; d.a *= 0.97;
+        fxCtx.beginPath(); fxCtx.fillStyle = `rgba(59,130,246,${d.a})`;
+        fxCtx.arc(d.x, d.y, d.r, 0, Math.PI * 2); fxCtx.fill();
+        if (d.life < 0.08 || d.y > window.innerHeight + 50) droplets.splice(i, 1);
+    }
+    fxCtx.globalCompositeOperation = 'source-over';
+    fxRaf = requestAnimationFrame(fxLoop);
+}
+function startFx() { if (!fxRaf) fxRaf = requestAnimationFrame(fxLoop); }
+function stopFx() { if (!fxRaf) return; cancelAnimationFrame(fxRaf); fxRaf = 0; }
 
 // Optimized Splash FX
 function applySplashFX(p) {
