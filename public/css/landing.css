@@ -11,10 +11,10 @@
     --red-glow: rgba(255, 59, 48, 0.4);
 
     /* Fonts */
-    --font-disaster: 'Black Ops One', system-ui, sans-serif;
-    --font-body: 'Space Grotesk', system-ui, sans-serif;
-    --font-display: 'Outfit', system-ui, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --font-disaster: 'Space Grotesk', system-ui, sans-serif;
+    --font-body: 'Outfit', system-ui, sans-serif;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-mono: monospace;
 
     /* Z-Index Layers */
     --z-bg: 0;
@@ -315,6 +315,22 @@ body.sentinel-active #cursor-ring::after {
     #splash-overlay {
         display: none !important;
     }
+
+    /* Disable expensive paints */
+    .hero-lens,
+    .hero-submerge,
+    .water-overlay {
+        backdrop-filter: none !important;
+        filter: none !important;
+        box-shadow: none !important;
+    }
+
+    .floodzy-logo,
+    .text-cyan,
+    .text-red,
+    .text-warning {
+        text-shadow: none !important;
+    }
 }
 
 /* HEADER */
@@ -334,7 +350,8 @@ header {
 
 /* DRAMATIC LOGO */
 .floodzy-logo {
-    font-family: 'Playfair Display SC', serif;
+    font-family: var(--font-display);
+    text-transform: uppercase;
     font-size: 2rem;
     font-weight: 700;
     letter-spacing: 0.05em;
@@ -1250,7 +1267,7 @@ h3 {
     }
 }
 
-</style>
+
 
 /* Loading Animation */
 @keyframes load {
